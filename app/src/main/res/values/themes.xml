@@ -13,4 +13,13 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.SmartHomeNoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar"/>
+
+
+    <style name="bottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="background">@color/cardview_light_background</item>
+        <item name="backgroundTint">@color/cardview_light_background</item>
+    </style>
+
 </resources>
