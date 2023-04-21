@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#fdfdfd">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -113,7 +114,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                tools:listitem="@layout/item_room"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
