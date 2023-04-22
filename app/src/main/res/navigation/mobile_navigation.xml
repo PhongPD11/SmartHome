@@ -8,18 +8,15 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.smartlamp.fragment.HomeFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        android:label="Home" />
     <fragment
-        android:id="@+id/navigation_statistic"
-        android:name="com.example.smartlamp.fragment.StatisticFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_consumption"
+        android:name="com.example.smartlamp.fragment.ConsumptionFragment"
+        android:label="Home" />
 
     <fragment
         android:id="@+id/navigation_user"
         android:name="com.example.smartlamp.fragment.UserFragment"
-        android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        android:label="Home" />
 
 </navigation>

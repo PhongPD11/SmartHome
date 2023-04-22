@@ -12,7 +12,9 @@ import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener,
     NavController.OnDestinationChangedListener {
     lateinit var binding: ActivityMainBinding
@@ -45,11 +47,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 true
             }
             R.id.navigation_statistic -> {
-                navController.navigate(R.id.navigation_statistic)
+//                navController.navigate(R.id.navigation_statistic)
                 true
             }
             R.id.navigation_user -> {
-                navController.navigate(R.id.navigation_user)
+//                navController.navigate(R.id.navigation_user)
                 true
             }
             else -> {

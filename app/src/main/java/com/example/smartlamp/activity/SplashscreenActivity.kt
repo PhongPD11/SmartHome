@@ -8,10 +8,12 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartlamp.R
+import com.example.smartlamp.model.WeatherModel
 
 
 @SuppressLint("CustomSplashScreen")
 class SplashscreenActivity : AppCompatActivity() {
+    var weather = ArrayList<WeatherModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

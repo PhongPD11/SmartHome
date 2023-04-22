@@ -4,15 +4,15 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="@string/home" />
     <item
         android:id="@+id/navigation_statistic"
         android:icon="@drawable/ic_chart"
-        android:title="Chart" />
+        android:title="@string/consumption" />
 
     <item
         android:id="@+id/navigation_user"
         android:icon="@drawable/ic_user"
-        android:title="Profile"/>
+        android:title="@string/profile" />
 
 </menu>
