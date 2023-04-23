@@ -1,6 +1,6 @@
 package com.example.smartlamp.viewmodel
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.smartlamp.activity.repository.WeatherRepository
 import com.example.smartlamp.model.WeatherModel
@@ -8,35 +8,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val repository: WeatherRepository): ViewModel() {
+class HomeViewModel @Inject constructor(private val weatherRepository: WeatherRepository): ViewModel() {
+
+    val weather: LiveData<WeatherModel>
+        get() = weatherRepository.weather
+
+
     init {
-        test()
-//        getWeatherDaily()
+        weatherRepository.getWeatherDaily()
     }
 
-    private val _data = MutableLiveData<WeatherModel>()
-    val data: MutableLiveData<WeatherModel> = _data
-
-    private val _temp = MutableLiveData<Double>()
-    val temp: MutableLiveData<Double> = _temp
-
-
-    fun test() : Boolean{
-        _temp.value = 2.0
-        return true
-    }
-
-//    private val weatherData = repository.getWeatherDaily()
-//    fun getWeatherDaily(): MutableLiveData<WeatherModel> {
-//        _data.value = repository.getWeatherDaily().value
-//        return weatherData
+//    fun deleteWeather(weather: Weather) = viewModelScope.launch(Dispatchers.IO) {
+//        weatherRepository.delete(weather)
 //    }
 //
-//    fun setUp(){
-//        _temp.value = _data.value?.DailyForecasts?.Temperature?.Minimum?.Value
+//    fun updateWeather(weather: Weather) = viewModelScope.launch(Dispatchers.IO) {
+//        weatherRepository.update(weather)
 //    }
-
-//    private val _photos = MutableLiveData<List<CntInternetPhoto>>()
-//    val photos: LiveData<List<CntInternetPhoto>> = _photos
-
+//
+//    fun addWeather(weather: Weather) = viewModelScope.launch(Dispatchers.IO) {
+//        weatherRepository.insert(weather)
+//    }
 }

@@ -6,12 +6,13 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ApiInterface {
-
+interface
+ApiInterface {
     @GET(GET_WEATHER_FORECAST)
     fun getWeather(
         @Query("apikey") apiKey: String,
-        @Query("language") language: String,
+        @Query("language") language: String
     ): Call<WeatherModel>
-
 }
+
+

@@ -9,8 +9,10 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartlamp.R
 import com.example.smartlamp.model.WeatherModel
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 @SuppressLint("CustomSplashScreen")
 class SplashscreenActivity : AppCompatActivity() {
     var weather = ArrayList<WeatherModel>()

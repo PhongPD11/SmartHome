@@ -1,44 +1,35 @@
 package com.example.smartlamp.model
 
+import com.google.gson.annotations.SerializedName
+
+
 data class WeatherModel(
-    val Headline : HeadlineData,
-    val DailyForecasts: DailyData,
+    @SerializedName("Headline") val headline: Headline,
+    @SerializedName("DailyForecasts") val dailyForecasts: List<DailyForecast>
 )
 
-data class  HeadlineData(
-    val EffectiveDate: String,
-    val EffectiveEpochDate: Int,
-    val EndDate: String,
-    val EndEpochDate: Int,
-
-    val Severity: Int,
-    val Text: String,
-    val Category: String,
+data class Headline(
+    @SerializedName("Text") val text: String
 )
 
-data class  DailyData (
-    val Date: String,
-    val EpochDate: Int,
-    val Temperature : TemperatureData,
-    val Day: Status,
-    val Night: Status,
+data class DailyForecast(
+    @SerializedName("Date") val date: String,
+    @SerializedName("Temperature") val temperature: Temperature,
+    @SerializedName("Day") val day: Status,
+    @SerializedName("Night") val night: Status,
+)
+
+data class Temperature(
+    @SerializedName("Minimum") val minimum: Temp,
+    @SerializedName("Maximum") val maximum: Temp
 )
 
 data class Status(
-    val IconPhrase: String,
-    val HasPrecipitation: Boolean,
-    val PrecipitationType: String,
-    val PrecipitationIntensity: String,
-)
-
-
-data class TemperatureData(
-    val Minimum: Temp,
-    val Maximum: Temp,
+    @SerializedName("IconPhrase") val icon : String,
+    @SerializedName("HasPrecipitation") val hasPrecipitation : Boolean,
 )
 
 data class Temp(
-    val Value: Double,
-    val Unit: String,
-    val UnitType: Int
+    @SerializedName("Value") val value: Double,
+    @SerializedName("Unit") val unit: String
 )
