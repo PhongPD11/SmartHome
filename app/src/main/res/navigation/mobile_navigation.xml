@@ -19,4 +19,9 @@
         android:name="com.example.smartlamp.fragment.UserFragment"
         android:label="Home" />
 
+    <fragment
+        android:id="@+id/navigation_room"
+        android:name="com.example.smartlamp.fragment.RoomFragment"
+        android:label="Home" />
+
 </navigation>

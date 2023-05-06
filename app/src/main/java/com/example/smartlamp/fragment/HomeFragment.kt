@@ -10,12 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.RoomAdapter
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.RoomModel
+import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -42,6 +44,19 @@ class HomeFragment: Fragment() {
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(layoutInflater)
+
+        binding.rvRoom.addOnItemTouchListener(
+            RecyclerTouchListener(activity,
+                binding.rvRoom,
+                object : RecyclerTouchListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        findNavController().navigate(R.id.navigation_room)
+                    }
+
+                    override fun onLongItemClick(view: View?, position: Int) {
+                    }
+                })
+        )
         setObserb()
         setUI()
         return binding.root
