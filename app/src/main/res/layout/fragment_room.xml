@@ -33,7 +33,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:padding="5dp"
+                android:textSize="20sp"
                 android:text="Bed Room"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/iv_back"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
                 app:layout_constraintTop_toTopOf="@id/iv_back" />
@@ -51,7 +53,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvDevice"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_device"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

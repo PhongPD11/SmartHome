@@ -5,24 +5,24 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.smartlamp.databinding.ItemRoomBinding
-import com.example.smartlamp.model.RoomModel
+import com.example.smartlamp.databinding.ItemDeviceBinding
+import com.example.smartlamp.model.DeviceModel
 
-class RoomAdapter(
+class RoomDetailAdapter(
     var context: Context,
-    var rooms: List<RoomModel>,
-) : RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
+    var rooms: List<DeviceModel>,
+) : RecyclerView.Adapter<RoomDetailAdapter.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         return position
     }
 
-    inner class ViewHolder(var binding: ItemRoomBinding) :
+    inner class ViewHolder(var binding: ItemDeviceBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemRoomBinding.inflate(
+            ItemDeviceBinding.inflate(
                 LayoutInflater.from(context),
                 parent,
                 false
@@ -35,8 +35,10 @@ class RoomAdapter(
         val item = rooms[position]
         val bind = holder.binding
 
-        holder.binding.ivRoom.setImageResource(item.image)
-        holder.binding.tvRoom.text = item.room
+        bind.ivDevice.setImageResource(item.image)
+        bind.tvDevice.text = item.name
+        bind.swDevice.isChecked = item.button
+        bind.slider.value = item.track
     }
 
 
