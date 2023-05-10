@@ -14,7 +14,7 @@ import com.example.smartlamp.model.DeviceModel
 
 class RoomDetailAdapter(
     var context: Context,
-    var rooms: List<DeviceModel>,
+    var devices: List<DeviceModel>,
     private val onSwitchClickInterface: SwitchClickInterface,
     private val onDeviceClickInterface: DeviceClickInterface,
     private val onTrackChangeInterface: TrackChangeInterface,
@@ -39,32 +39,43 @@ class RoomDetailAdapter(
 
     @SuppressLint("SetTextI18n", "ResourceAsColor", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = rooms[position]
+        val item = devices[position]
         val bind = holder.binding
 
-        bind.ivDevice.setImageResource(item.image)
-        bind.tvDevice.text = item.name
-//        bind.swDevice.isChecked = item.button
+        if (item.state == 1){
+            bind.swDevice.isChecked = true
+            bind.ivDevice.setImageResource(R.drawable.lamp_on)
+        } else {
+            bind.swDevice.isChecked = false
+            bind.ivDevice.setImageResource(R.drawable.lamp)
+        }
+
+        bind.tvDevice.text = "Lamp"
 
         bind.swDevice.setOnCheckedChangeListener { _, isChecked ->
             onSwitchClickInterface.onSwitchClick(position, isChecked)
+            if (isChecked){
+                bind.ivDevice.setImageResource(R.drawable.lamp_on)
+            } else {
+                bind.ivDevice.setImageResource(R.drawable.lamp)
+            }
         }
 
         holder.itemView.setOnClickListener {
             onDeviceClickInterface.onDeviceClick(item)
         }
 
-        bind.slider.addOnChangeListener { slider, value, fromUser ->
+        bind.slider.addOnChangeListener { _, value, _ ->
             onTrackChangeInterface.onTrackChange(value)
         }
 
-        bind.slider.value = item.track
+        bind.slider.value = item.brightness
 
     }
 
 
     override fun getItemCount(): Int {
-        return rooms.size
+        return devices.size
     }
 
     interface SwitchClickInterface {

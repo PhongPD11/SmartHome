@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.AlarmFragment">
+    tools:context=".fragment.ScheduleFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -34,7 +34,7 @@
                 android:gravity="center_vertical"
                 android:padding="5dp"
                 android:textSize="20sp"
-                android:text="Alarm"
+                android:text="Schedule"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/iv_back"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
@@ -51,10 +51,10 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvAlarm"
+            android:id="@+id/rvSchedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_alarm"/>
+            tools:listitem="@layout/item_schedule"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

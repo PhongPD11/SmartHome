@@ -19,6 +19,7 @@ import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.RoomModel
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.viewmodel.HomeViewModel
+import com.example.smartlamp.viewmodel.LampViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.math.round
@@ -29,6 +30,7 @@ class HomeFragment: Fragment() {
 
     var data = MutableLiveData<List<DailyForecast>>()
     val viewModel: HomeViewModel by activityViewModels()
+    val lampViewModel: LampViewModel by activityViewModels()
 
     private val livingRoom = RoomModel( R.drawable.living_room, "Living Room")
     private val bedroom = RoomModel( R.drawable.bed_room, "Bedroom")
@@ -57,6 +59,7 @@ class HomeFragment: Fragment() {
                     }
                 })
         )
+        lampViewModel.getLampData()
         setObserb()
         setUI()
         return binding.root

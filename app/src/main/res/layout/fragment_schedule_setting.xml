@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -33,7 +33,7 @@
                 android:gravity="center_vertical"
                 android:padding="5dp"
                 android:textSize="20sp"
-                android:text="Alarm"
+                android:text="@string/time_setting"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/iv_back"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
@@ -67,7 +67,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvCoroutine"
+            android:id="@+id/tvRepeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Once"
@@ -115,18 +115,103 @@
                 android:scaleY="1.2"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <Button
-                android:id="@+id/btnSetTime"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/consTimeOff"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/complete"
-                android:textAllCaps="false"
-                android:backgroundTint="@color/main_color"
-                app:layout_constraintTop_toBottomOf="@id/timePicker"
-                tools:ignore="VisualLintButtonSize" />
+                android:padding="20dp"
+                app:layout_constraintTop_toBottomOf="@id/timePicker">
+
+                <TextView
+                    android:id="@+id/tvTimeOffLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_off"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvTimeOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="9:30"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ivEdtTimeOff"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/ivEdtTimeOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_more"
+                    app:tint="#AAA"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/consRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                app:layout_constraintTop_toBottomOf="@id/consTimeOff">
+
+                <TextView
+                    android:id="@+id/tvRepeatLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/repeat"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvRepeatTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Once"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ivEdtRepeat"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/ivEdtRepeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_more"
+                    app:tint="#AAA"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btnSetTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:textAllCaps="false"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        style="@style/cardBackground"
+        android:backgroundTint="@color/main_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="VisualLintButtonSize"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

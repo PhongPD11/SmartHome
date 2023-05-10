@@ -24,11 +24,32 @@
         android:name="com.example.smartlamp.fragment.RoomFragment" />
 
     <fragment
-        android:id="@+id/navigation_alarm"
-        android:name="com.example.smartlamp.fragment.AlarmFragment" />
+        android:id="@+id/navigation_schedule"
+        android:name="com.example.smartlamp.fragment.ScheduleFragment" />
 
     <fragment
-        android:id="@+id/navigation_alarm_setting"
-        android:name="com.example.smartlamp.fragment.AlarmSettingFragment" />
+        android:id="@+id/navigation_schedule_setting"
+        android:name="com.example.smartlamp.fragment.ScheduleSettingFragment" >
+
+        <argument
+            android:name="schedule"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="time"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="repeat"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="sw_device"
+            app:argType="boolean" />
+
+    </fragment>
 
 </navigation>

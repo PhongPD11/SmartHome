@@ -5,27 +5,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.RoomDetailAdapter
 import com.example.smartlamp.databinding.FragmentRoomBinding
 import com.example.smartlamp.model.DeviceModel
-import com.example.smartlamp.utils.RecyclerTouchListener
+import com.example.smartlamp.viewmodel.LampViewModel
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface, RoomDetailAdapter.SwitchClickInterface, RoomDetailAdapter.DeviceClickInterface {
+class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
+    RoomDetailAdapter.SwitchClickInterface, RoomDetailAdapter.DeviceClickInterface {
     lateinit var binding: FragmentRoomBinding
 
-    private val device1 = DeviceModel(R.drawable.lamp, "Lamp", false, 20f)
-    private val device2 = DeviceModel(R.drawable.lamp_on, "Lamp", true, 20f)
-    private val devices = listOf(device1, device2)
+
+    private val devices = ArrayList<DeviceModel>()
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val ledNodeRef: DatabaseReference = database.getReference("Led")
+
 
     private lateinit var deviceAdapter: RoomDetailAdapter
+    private val viewModel: LampViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +42,14 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface, RoomDet
             findNavController().popBackStack()
         }
 
+        viewModel.getLampData().observe(viewLifecycleOwner) {
+            val device = it?.state?.let { it1 -> DeviceModel(it1, it.brightness) }
+            if (device != null) {
+                devices.clear()
+                devices.add(device)
+            }
+        }
+
         setUI()
         return binding.root
     }
@@ -44,8 +57,12 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface, RoomDet
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        deviceAdapter = RoomDetailAdapter(requireContext(),devices, this, this, this)
-
+        deviceAdapter = RoomDetailAdapter(
+            requireContext(),
+            devices, this,
+            this,
+            this
+        )
         binding.rvDevice.apply {
             adapter = deviceAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -54,14 +71,15 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface, RoomDet
     }
 
     override fun onSwitchClick(position: Int, isChecked: Boolean) {
-        Toast.makeText(requireContext(), "$isChecked", Toast.LENGTH_SHORT).show()
+        val newState = if (isChecked) 1 else 0
+        ledNodeRef.child("state").setValue(newState)
     }
 
     override fun onDeviceClick(device: DeviceModel) {
-        findNavController().navigate(R.id.navigation_alarm)
+        findNavController().navigate(R.id.navigation_schedule)
     }
 
     override fun onTrackChange(value: Float) {
-
+        ledNodeRef.child("brightness").setValue(value)
     }
 }
