@@ -15,16 +15,13 @@ import com.example.smartlamp.model.DeviceModel
 class RoomDetailAdapter(
     var context: Context,
     var rooms: List<DeviceModel>,
+    private val onSwitchClickInterface: SwitchClickInterface,
+    private val onDeviceClickInterface: DeviceClickInterface,
+    private val onTrackChangeInterface: TrackChangeInterface,
     ) : RecyclerView.Adapter<RoomDetailAdapter.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         return position
-    }
-
-    private var onSwitchCompatClickListener: OnSwitchCompatClickListener? = null
-
-    fun setOnSwitchCompatClickListener(listener: OnSwitchCompatClickListener) {
-        onSwitchCompatClickListener = listener
     }
 
     inner class ViewHolder(var binding: ItemDeviceBinding) :
@@ -48,6 +45,19 @@ class RoomDetailAdapter(
         bind.ivDevice.setImageResource(item.image)
         bind.tvDevice.text = item.name
 //        bind.swDevice.isChecked = item.button
+
+        bind.swDevice.setOnCheckedChangeListener { _, isChecked ->
+            onSwitchClickInterface.onSwitchClick(position, isChecked)
+        }
+
+        holder.itemView.setOnClickListener {
+            onDeviceClickInterface.onDeviceClick(item)
+        }
+
+        bind.slider.addOnChangeListener { slider, value, fromUser ->
+            onTrackChangeInterface.onTrackChange(value)
+        }
+
         bind.slider.value = item.track
 
     }
@@ -57,8 +67,16 @@ class RoomDetailAdapter(
         return rooms.size
     }
 
-    interface OnSwitchCompatClickListener {
-        fun onSwitchCompatClick(position: Int, isChecked: Boolean)
+    interface SwitchClickInterface {
+        fun onSwitchClick(position: Int, isChecked: Boolean)
+    }
+
+    interface DeviceClickInterface {
+        fun onDeviceClick(device: DeviceModel)
+    }
+
+    interface TrackChangeInterface {
+        fun onTrackChange(value: Float)
     }
 
 }

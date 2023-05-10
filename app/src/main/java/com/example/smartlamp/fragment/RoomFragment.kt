@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,7 @@ import com.example.smartlamp.utils.RecyclerTouchListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoomFragment : Fragment(), RoomDetailAdapter.OnSwitchCompatClickListener {
+class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface, RoomDetailAdapter.SwitchClickInterface, RoomDetailAdapter.DeviceClickInterface {
     lateinit var binding: FragmentRoomBinding
 
     private val device1 = DeviceModel(R.drawable.lamp, "Lamp", false, 20f)
@@ -36,28 +37,14 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnSwitchCompatClickListener {
             findNavController().popBackStack()
         }
 
-        binding.rvDevice.addOnItemTouchListener(
-            RecyclerTouchListener(activity,
-                binding.rvDevice,
-                object : RecyclerTouchListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        findNavController().navigate(R.id.navigation_alarm)
-                    }
-                    override fun onLongItemClick(view: View?, position: Int) {
-                    }
-                })
-        )
-
         setUI()
-        deviceAdapter.setOnSwitchCompatClickListener(this)
-
         return binding.root
     }
 
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        deviceAdapter = RoomDetailAdapter(requireContext(),devices)
+        deviceAdapter = RoomDetailAdapter(requireContext(),devices, this, this, this)
 
         binding.rvDevice.apply {
             adapter = deviceAdapter
@@ -66,20 +53,15 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnSwitchCompatClickListener {
         deviceAdapter.notifyDataSetChanged()
     }
 
-    override fun onSwitchCompatClick(position: Int, isChecked: Boolean) {
-        val item = devices[position]
-        item.button = isChecked
+    override fun onSwitchClick(position: Int, isChecked: Boolean) {
+        Toast.makeText(requireContext(), "$isChecked", Toast.LENGTH_SHORT).show()
+    }
 
-        if (item.button){
-            item.image = R.drawable.lamp_on
-        } else {
-            item.image = R.drawable.lamp
-        }
+    override fun onDeviceClick(device: DeviceModel) {
+        findNavController().navigate(R.id.navigation_alarm)
+    }
 
-        devices
+    override fun onTrackChange(value: Float) {
 
-        binding.rvDevice.post {
-            deviceAdapter.notifyItemChanged(position)
-        }
     }
 }

@@ -27,4 +27,8 @@
         android:id="@+id/navigation_alarm"
         android:name="com.example.smartlamp.fragment.AlarmFragment" />
 
+    <fragment
+        android:id="@+id/navigation_alarm_setting"
+        android:name="com.example.smartlamp.fragment.AlarmSettingFragment" />
+
 </navigation>
