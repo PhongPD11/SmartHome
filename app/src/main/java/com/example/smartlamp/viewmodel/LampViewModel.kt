@@ -21,8 +21,8 @@ class LampViewModel @Inject constructor(private val repository: LampRepository) 
     private fun startObservingLampData() {
         val listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val lampModel = dataSnapshot.getValue(LampModel::class.java)
-                lampData.value = lampModel
+                    val lampModel = dataSnapshot.getValue(LampModel::class.java)
+                    lampData.value = lampModel
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

@@ -66,7 +66,7 @@ class ScheduleSettingFragment : Fragment() {
 
         viewModel.getLampData().observe(viewLifecycleOwner) {
             if (it != null) {
-                repeat = ArrayList(it.schedule[key]?.repeat!!.values)
+                repeat = it.schedule[key]!!.repeat
                 val time = it.schedule[key]?.time
                 if (time != null) {
                     hourOn = time.hourOn
@@ -178,7 +178,6 @@ class ScheduleSettingFragment : Fragment() {
         val newState = if (swOn) 1 else 0
         ledNodeRef.child("schedule/$key/state").setValue(newState)
         ledNodeRef.child("schedule/$key/repeat").setValue(repeat)
-
     }
 
 }

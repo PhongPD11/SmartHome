@@ -45,7 +45,7 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
                 for (i in 0 until it.schedule.size) {
                     val time = it.schedule["schedule${i+1}"]
                     if (time != null) {
-                        list.add(ScheduleModel(time.time.hourOn, time.time.minOn, time.state, ArrayList(time.repeat.values)))
+                        list.add(ScheduleModel(time.time.hourOn, time.time.minOn, time.state, time.repeat))
                     }
                 }
                 schedules.clear()
