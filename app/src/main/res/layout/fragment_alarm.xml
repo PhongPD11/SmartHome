@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.RoomFragment">
+    tools:context=".fragment.AlarmFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -34,23 +34,11 @@
                 android:gravity="center_vertical"
                 android:padding="5dp"
                 android:textSize="20sp"
-                android:text="Bed Room"
+                android:text="Alarm"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/iv_back"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
                 app:layout_constraintTop_toTopOf="@id/iv_back" />
-
-            <Switch
-                android:id="@+id/swDevice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="10dp"
-                android:thumb="@drawable/thumb_selector"
-                android:track="@drawable/track_selector"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -63,10 +51,10 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvDevice"
+            android:id="@+id/rvAlarm"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_device"/>
+            tools:listitem="@layout/item_alarm"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

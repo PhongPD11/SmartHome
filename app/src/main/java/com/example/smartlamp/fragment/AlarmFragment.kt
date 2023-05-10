@@ -8,48 +8,47 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.smartlamp.R
+import com.example.smartlamp.adapter.AlarmAdapter
 import com.example.smartlamp.adapter.RoomDetailAdapter
-import com.example.smartlamp.databinding.FragmentRoomBinding
-import com.example.smartlamp.model.DeviceModel
+import com.example.smartlamp.databinding.FragmentAlarmBinding
+import com.example.smartlamp.model.AlarmModel
 import com.example.smartlamp.utils.RecyclerTouchListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoomFragment : Fragment(), RoomDetailAdapter.OnSwitchCompatClickListener {
-    lateinit var binding: FragmentRoomBinding
+class AlarmFragment : Fragment(), RoomDetailAdapter.OnSwitchCompatClickListener {
+    lateinit var binding: FragmentAlarmBinding
 
-    private val device1 = DeviceModel(R.drawable.lamp, "Lamp", false, 20f)
-    private val device2 = DeviceModel(R.drawable.lamp_on, "Lamp", true, 20f)
-    private val devices = listOf(device1, device2)
+    private val alarm1 = AlarmModel("5:30", true, listOf("Wed","Sar"))
 
-    private lateinit var deviceAdapter: RoomDetailAdapter
+    private val alarms = listOf(alarm1)
+
+    private lateinit var alarmAdapter: AlarmAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentRoomBinding.inflate(layoutInflater)
+        binding = FragmentAlarmBinding.inflate(layoutInflater)
 
         binding.ivBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        binding.rvDevice.addOnItemTouchListener(
+        binding.rvAlarm.addOnItemTouchListener(
             RecyclerTouchListener(activity,
-                binding.rvDevice,
+                binding.rvAlarm,
                 object : RecyclerTouchListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        findNavController().navigate(R.id.navigation_alarm)
                     }
+
                     override fun onLongItemClick(view: View?, position: Int) {
                     }
                 })
         )
 
         setUI()
-        deviceAdapter.setOnSwitchCompatClickListener(this)
+        alarmAdapter
 
         return binding.root
     }
@@ -57,29 +56,21 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnSwitchCompatClickListener {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        deviceAdapter = RoomDetailAdapter(requireContext(),devices)
+        alarmAdapter = AlarmAdapter(requireContext(),alarms)
 
-        binding.rvDevice.apply {
-            adapter = deviceAdapter
+        binding.rvAlarm.apply {
+            adapter = alarmAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-        deviceAdapter.notifyDataSetChanged()
+        alarmAdapter.notifyDataSetChanged()
     }
 
     override fun onSwitchCompatClick(position: Int, isChecked: Boolean) {
-        val item = devices[position]
+        val item = alarms[position]
         item.button = isChecked
 
-        if (item.button){
-            item.image = R.drawable.lamp_on
-        } else {
-            item.image = R.drawable.lamp
-        }
-
-        devices
-
-        binding.rvDevice.post {
-            deviceAdapter.notifyItemChanged(position)
+        binding.rvAlarm.post {
+            alarmAdapter.notifyItemChanged(position)
         }
     }
 }

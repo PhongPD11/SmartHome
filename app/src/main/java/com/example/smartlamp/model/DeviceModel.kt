@@ -1,8 +1,8 @@
 package com.example.smartlamp.model
 
 data class DeviceModel(
-    val image: Int,
+    var image: Int,
     val name: String,
-    val button: Boolean,
+    var button: Boolean,
     val track: Float,
 )
