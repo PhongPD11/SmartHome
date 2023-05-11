@@ -4,11 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Switch
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemScheduleBinding
 import com.example.smartlamp.model.ScheduleModel
-import com.example.smartlamp.utils.RepeatDisplay
+import com.example.smartlamp.utils.Utils
 
 class ScheduleAdapter(
     var context: Context,
@@ -40,9 +39,9 @@ class ScheduleAdapter(
         val bind = holder.binding
         var switch: Boolean
 
-        bind.tvTime.text = "${item.hour}:${item.min}"
+        bind.tvTime.text = Utils.updateTime(item.hour,item.min)
 
-        val timeDisplay = RepeatDisplay.repeatDisplay(item.repeat)
+        val timeDisplay = Utils.repeatDisplay(item.repeat)
         bind.tvRepeat.text = timeDisplay
 
         switch = (item.button == 1)

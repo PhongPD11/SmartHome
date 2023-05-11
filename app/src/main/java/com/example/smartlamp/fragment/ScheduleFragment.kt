@@ -15,6 +15,7 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.ScheduleAdapter
 import com.example.smartlamp.databinding.FragmentScheduleBinding
 import com.example.smartlamp.model.ScheduleModel
+import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -30,6 +31,7 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
     private val ledNodeRef: DatabaseReference = database.getReference("Led")
 
     private val schedules = ArrayList<ScheduleModel>()
+    private var keyList = ArrayList<String>()
 
     private lateinit var scheduleAdapter: ScheduleAdapter
 
@@ -42,8 +44,10 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
         viewModel.getLampData().observe(viewLifecycleOwner) {
             if (it != null) {
                 val list = ArrayList<ScheduleModel>()
-                for (i in 0 until it.schedule.size) {
-                    val time = it.schedule["schedule${i+1}"]
+                val keys: Set<String> = it.schedule.keys
+                keyList = ArrayList(keys)
+                for (i in keyList.indices) {
+                    val time = it.schedule[keyList[i]]
                     if (time != null) {
                         list.add(ScheduleModel(time.time.hourOn, time.time.minOn, time.state, time.repeat))
                     }
@@ -51,6 +55,11 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
                 schedules.clear()
                 schedules.addAll(list)
             }
+        }
+
+        binding.fabAdd.setOnClickListener {
+            val bundle = bundleOf("addSchedule" to (keyList.size+1).toString())
+            findNavController().navigate(R.id.navigation_schedule_setting, bundle)
         }
 
         binding.ivBack.setOnClickListener {
@@ -73,14 +82,14 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
     }
 
     override fun onScheduleClick(schedule: ScheduleModel, repeat: String, switch: Boolean, position: Int) {
-        val time = "${schedule.hour}:${schedule.min}"
-        val bundle = bundleOf("time" to time, "repeat" to repeat, "sw_device" to switch, "schedule" to "schedule${position+1}")
+        val time = Utils.updateTime(schedule.hour,schedule.min)
+        val bundle = bundleOf("time" to time, "repeat" to repeat, "sw_device" to switch, "schedule" to keyList[position])
         findNavController().navigate(R.id.navigation_schedule_setting, bundle)
     }
 
     override fun onSwitchClick(position: Int, isChecked: Boolean) {
         val newState = if (isChecked) 1 else 0
-        ledNodeRef.child("schedule/schedule${position+1}/state").setValue(newState)
+        ledNodeRef.child("schedule/${keyList[position]}/state").setValue(newState)
     }
 
 }

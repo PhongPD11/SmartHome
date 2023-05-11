@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -29,8 +30,8 @@ class HomeFragment: Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     var data = MutableLiveData<List<DailyForecast>>()
-    val viewModel: HomeViewModel by activityViewModels()
-    val lampViewModel: LampViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
+    private val lampViewModel: LampViewModel by activityViewModels()
 
     private val livingRoom = RoomModel( R.drawable.living_room, "Living Room")
     private val bedroom = RoomModel( R.drawable.bed_room, "Bedroom")
@@ -52,7 +53,9 @@ class HomeFragment: Fragment() {
                 binding.rvRoom,
                 object : RecyclerTouchListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        findNavController().navigate(R.id.navigation_room)
+                        val name = rooms[position].room
+                        val bundle = bundleOf("name" to name)
+                        findNavController().navigate(R.id.navigation_room, bundle)
                     }
 
                     override fun onLongItemClick(view: View?, position: Int) {

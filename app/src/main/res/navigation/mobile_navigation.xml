@@ -21,7 +21,14 @@
 
     <fragment
         android:id="@+id/navigation_room"
-        android:name="com.example.smartlamp.fragment.RoomFragment" />
+        android:name="com.example.smartlamp.fragment.RoomFragment" >
+
+        <argument
+            android:name="name"
+            app:argType="string"
+            android:defaultValue="" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_schedule"
@@ -49,6 +56,11 @@
         <argument
             android:name="sw_device"
             app:argType="boolean" />
+
+        <argument
+            android:name="addSchedule"
+            app:argType="string"
+            android:defaultValue=""/>
 
     </fragment>
 

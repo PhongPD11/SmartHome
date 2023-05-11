@@ -1,6 +1,6 @@
 package com.example.smartlamp.utils
 
-class RepeatDisplay {
+class Utils {
     companion object{
         private val dotw = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
@@ -23,6 +23,24 @@ class RepeatDisplay {
                 timeDisplay = "Daily"
             }
             return timeDisplay
+        }
+
+        fun updateTime(hour: Int, min: Int) : String{
+            var display = ""
+            var displayHour = ""
+            var displayMin = ""
+            displayHour = if (hour < 10 ){
+                "0${hour}"
+            } else {
+                hour.toString()
+            }
+            displayMin = if (min<10){
+                "0${min}"
+            } else {
+                min.toString()
+            }
+            display = "$displayHour:$displayMin"
+            return display
         }
     }
 }

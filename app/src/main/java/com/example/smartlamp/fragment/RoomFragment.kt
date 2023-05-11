@@ -23,6 +23,7 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
     RoomDetailAdapter.SwitchClickInterface, RoomDetailAdapter.DeviceClickInterface {
     lateinit var binding: FragmentRoomBinding
 
+    private var room = ""
 
     private val devices = ArrayList<DeviceModel>()
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
@@ -38,15 +39,20 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
     ): View? {
         binding = FragmentRoomBinding.inflate(layoutInflater)
 
+        room = arguments?.getString("name")!!
+        binding.tvTitle.text = room
+
         binding.ivBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        viewModel.getLampData().observe(viewLifecycleOwner) {
-            val device = it?.state?.let { it1 -> DeviceModel(it1, it.brightness) }
-            if (device != null) {
-                devices.clear()
-                devices.add(device)
+        if (room == "Bedroom"){
+            viewModel.getLampData().observe(viewLifecycleOwner) {
+                val device = it?.state?.let { it1 -> DeviceModel(it1, it.brightness) }
+                if (device != null) {
+                    devices.clear()
+                    devices.add(device)
+                }
             }
         }
 
