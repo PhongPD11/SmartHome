@@ -36,5 +36,42 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
+    <style name="editTextMaterial" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintAnimationEnabled">false</item>
+        <item name="hintEnabled">true</item>
+        <item name="hintTextColor">@color/black</item>
+        <item name="expandedHintEnabled">false</item>
+        <item name="expandedTitleMargin">5dp</item>
+        <item name="android:labelTextSize">10sp</item>
+        <item name="hintTextAppearance">@style/hintTextAppearance</item>
+        <!--        <item name="editTextBackground">@drawable/edit_bg</item>-->
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+        <item name="errorTextColor">@color/red</item>
+        <item name="boxStrokeColor">@color/text_input_layout_light</item>
+        <item name="boxStrokeErrorColor">@color/red</item>
+        <!--            <item name="boxBackgroundColor">@color/white</item>-->
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxCornerRadiusTopEnd">6dp</item>
+        <item name="boxCornerRadiusTopStart">6dp</item>
+        <item name="boxCornerRadiusBottomEnd">6dp</item>
+        <item name="boxCornerRadiusBottomStart">6dp</item>
+        <item name="helperTextTextColor">@color/hintTextColorLight</item>
+        <item name="colorControlNormal">@color/hintTextColorLight</item>
+        <item name="colorControlActivated">@color/main_color</item>
+        <item name="android:textSize">8sp</item>
+        <item name="android:editTextColor">@color/black</item>
+        <item name="iconSize">10dp</item>
+        <item name="iconPadding">10dp</item>
+
+    </style>
+
+    <style name="hintTextAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
 
 </resources>

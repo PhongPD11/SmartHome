@@ -1,13 +1,18 @@
 package com.example.smartlamp.appModule
 
 import android.content.Context
+import androidx.room.Room
 import com.example.smartlamp.api.ApiInterface
+import com.example.smartlamp.database.UserDao
+import com.example.smartlamp.database.UserDatabase
 import com.example.smartlamp.utils.Urls.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -44,16 +49,21 @@ object AppModule {
     fun provideApiInterface(retrofit: Retrofit): ApiInterface =
         retrofit.create(ApiInterface::class.java)
 
-//    @Provides
-//    @Singleton
-//    fun provideWeatherDatabase(@ApplicationContext appContext: Context): WeatherDatabase{
-//        return Room.databaseBuilder(appContext, WeatherDatabase::class.java, "weather_database").build()
-//    }
-//
-//    @Provides
-//    fun provideWeatherDao(weatherDatabase: WeatherDatabase): WeatherDao{
-//        return weatherDatabase.getWeatherDao()
-//    }
+    @Provides
+    @Singleton
+    fun provideUserDatabase(@ApplicationContext context: Context) : UserDatabase {
+        return Room.databaseBuilder(context, UserDatabase::class.java, "user_database").build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDao(userDatabase: UserDatabase) : UserDao {
+        return userDatabase.getUserDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
 
 }

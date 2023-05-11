@@ -28,4 +28,15 @@
     <string name="mode">Mode</string>
     <string name="light_mode">Light Mode</string>
     <string name="lamp">Lamp</string>
+    <string name="sign_in">Sign In</string>
+    <string name="login">Login</string>
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="email">Email</string>
+    <string name="email_error">Enter your email</string>
+    <string name="password_error">Enter your password</string>
+    <string name="password_confirm_error">Your confirm password is not true</string>
+    <string name="register">Register</string>
 </resources>
