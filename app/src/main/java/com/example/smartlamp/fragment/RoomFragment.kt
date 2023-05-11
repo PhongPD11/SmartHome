@@ -1,7 +1,11 @@
 package com.example.smartlamp.fragment
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.RoomDetailAdapter
+import com.example.smartlamp.databinding.DialogModeScheduleBinding
+import com.example.smartlamp.databinding.DialogTimeOffBinding
 import com.example.smartlamp.databinding.FragmentRoomBinding
 import com.example.smartlamp.model.DeviceModel
 import com.example.smartlamp.viewmodel.LampViewModel
@@ -76,13 +82,36 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
         deviceAdapter.notifyDataSetChanged()
     }
 
+    private fun showModeOrSchedule(context: Context){
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        val bindingDialog: DialogModeScheduleBinding = DialogModeScheduleBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+        val window = dialog.window
+        val params = window?.attributes
+
+        bindingDialog.cvMode.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.navigation_light_mode)
+        }
+
+        bindingDialog.cvSchedule.setOnClickListener {
+            dialog.dismiss()
+            findNavController().navigate(R.id.navigation_schedule)
+        }
+
+        params?.gravity = Gravity.CENTER
+        window?.attributes = params
+
+        dialog.show()
+    }
+
     override fun onSwitchClick(position: Int, isChecked: Boolean) {
         val newState = if (isChecked) 1 else 0
         ledNodeRef.child("state").setValue(newState)
     }
 
     override fun onDeviceClick(device: DeviceModel) {
-        findNavController().navigate(R.id.navigation_schedule)
+        showModeOrSchedule(requireContext())
     }
 
     override fun onTrackChange(value: Float) {

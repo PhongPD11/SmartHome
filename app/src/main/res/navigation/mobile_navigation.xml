@@ -31,6 +31,10 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_light_mode"
+        android:name="com.example.smartlamp.fragment.LightModeFragment" />
+
+    <fragment
         android:id="@+id/navigation_schedule"
         android:name="com.example.smartlamp.fragment.ScheduleFragment" />
 

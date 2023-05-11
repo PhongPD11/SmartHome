@@ -25,4 +25,7 @@
     <string name="sunday">Sunday</string>
     <string name="cancel">Cancel</string>
     <string name="time_off_title">Time Off</string>
+    <string name="mode">Mode</string>
+    <string name="light_mode">Light Mode</string>
+    <string name="lamp">Lamp</string>
 </resources>

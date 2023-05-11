@@ -33,6 +33,10 @@ class HomeFragment: Fragment() {
     private val viewModel: HomeViewModel by activityViewModels()
     private val lampViewModel: LampViewModel by activityViewModels()
 
+    private var welcome = ""
+
+    private val SMALL_SUN = "Nắng nhẹ"
+    private val NO_CLOUD = "Trời quang"
     private val livingRoom = RoomModel( R.drawable.living_room, "Living Room")
     private val bedroom = RoomModel( R.drawable.bed_room, "Bedroom")
     private val kitchenRoom = RoomModel( R.drawable.kitchen, "Kitchen")
@@ -47,6 +51,8 @@ class HomeFragment: Fragment() {
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(layoutInflater)
+
+        binding.tvWelcome.text = ""
 
         binding.rvRoom.addOnItemTouchListener(
             RecyclerTouchListener(activity,
@@ -75,7 +81,8 @@ class HomeFragment: Fragment() {
         binding.tvPosition.visibility = View.GONE
         binding.ivWeather.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
-        viewModel.weather.observe(viewLifecycleOwner, Observer { weather ->
+
+        viewModel.weather.observe(viewLifecycleOwner) { weather ->
             val dailyForecast = weather.dailyForecasts[0]
             val temperature = dailyForecast.temperature
 
@@ -85,31 +92,32 @@ class HomeFragment: Fragment() {
             binding.ivWeather.visibility = View.VISIBLE
             binding.progressBar.visibility = View.GONE
 
-            if (isNight()){
+            if (isNight()) {
                 val status = dailyForecast.night.icon
                 binding.tvStatus.text = status
-                if (dailyForecast.night.hasPrecipitation){
-                   binding.ivWeather.setImageResource(R.drawable.night_rain)
+                if (dailyForecast.night.hasPrecipitation) {
+                    binding.ivWeather.setImageResource(R.drawable.night_rain)
                 } else {
-                    when (status){
-                        "Trời quang" -> binding.ivWeather.setImageResource(R.drawable.night)
+                    when (status) {
+                        NO_CLOUD -> binding.ivWeather.setImageResource(R.drawable.night)
                         else -> binding.ivWeather.setImageResource(R.drawable.night_cloud)
                     }
                 }
             } else {
                 val status = dailyForecast.day.icon
                 binding.tvStatus.text = dailyForecast.day.icon
-                if (dailyForecast.night.hasPrecipitation){
+                if (dailyForecast.night.hasPrecipitation) {
                     binding.ivWeather.setImageResource(R.drawable.day_rain)
                 } else {
-                    when (status){
-                        "Nắng nhẹ" -> binding.ivWeather.setImageResource(R.drawable.partly_sunny)
+                    when (status) {
+                        SMALL_SUN -> binding.ivWeather.setImageResource(R.drawable.partly_sunny)
                         else -> binding.ivWeather.setImageResource(R.drawable.blazing_sunshine)
                     }
                 }
             }
             binding.tvTemp.text = ConvertTemp(temperature.maximum.unit, temperature.maximum.value)
-        })
+        }
+
     }
 
     private fun ConvertTemp(type: String, value: Double) : String{
@@ -121,9 +129,20 @@ class HomeFragment: Fragment() {
     }
 
     private fun isNight() : Boolean{
+        var isNight = true
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        return hour >= 18
+
+        if (hour in 5..18) {
+            welcome = "Good Morning"
+            isNight = false
+            if (hour in 12 .. 18){
+                welcome = "Good Afternoon"
+            }
+        } else {
+            welcome = "Good Evening"
+        }
+        return isNight
     }
 
 

@@ -1,0 +1,119 @@
+package com.example.smartlamp.fragment
+
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.smartlamp.R
+import com.example.smartlamp.adapter.RoomAdapter
+import com.example.smartlamp.databinding.FragmentHomeBinding
+import com.example.smartlamp.databinding.FragmentLightModeBinding
+import com.example.smartlamp.model.DailyForecast
+import com.example.smartlamp.model.RoomModel
+import com.example.smartlamp.utils.RecyclerTouchListener
+import com.example.smartlamp.viewmodel.HomeViewModel
+import com.example.smartlamp.viewmodel.LampViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
+import kotlin.math.round
+
+@AndroidEntryPoint
+class LightModeFragment: Fragment() {
+    private lateinit var binding: FragmentLightModeBinding
+
+    private val lampViewModel: LampViewModel by activityViewModels()
+
+//    private val livingRoom = RoomModel( R.drawable.living_room, "Living Room")
+//    private val bedroom = RoomModel( R.drawable.bed_room, "Bedroom")
+//    private val kitchenRoom = RoomModel( R.drawable.kitchen, "Kitchen")
+//    private val rooms = listOf(livingRoom, bedroom, kitchenRoom)
+
+//    private lateinit var roomAdapter: RoomAdapter
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreate(savedInstanceState)
+        binding = FragmentLightModeBinding.inflate(layoutInflater)
+
+
+
+        binding.rvMode .addOnItemTouchListener(
+            RecyclerTouchListener(activity,
+                binding.rvMode,
+                object : RecyclerTouchListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+
+                    }
+
+                    override fun onLongItemClick(view: View?, position: Int) {
+                    }
+                })
+        )
+        lampViewModel.getLampData()
+//        setObserb()
+        setUI()
+        return binding.root
+    }
+
+//    @SuppressLint("SetTextI18n")
+//    private fun setObserb(){
+//        binding.tvStatus.visibility = View.GONE
+//        binding.tvTemp.visibility = View.GONE
+//        binding.tvPosition.visibility = View.GONE
+//        binding.ivWeather.visibility = View.GONE
+//        binding.progressBar.visibility = View.VISIBLE
+//
+//        viewModel.weather.observe(viewLifecycleOwner) { weather ->
+//            val dailyForecast = weather.dailyForecasts[0]
+//            val temperature = dailyForecast.temperature
+//
+//            binding.tvStatus.visibility = View.VISIBLE
+//            binding.tvTemp.visibility = View.VISIBLE
+//            binding.tvPosition.visibility = View.VISIBLE
+//            binding.ivWeather.visibility = View.VISIBLE
+//            binding.progressBar.visibility = View.GONE
+//
+//            if (isNight()) {
+//                val status = dailyForecast.night.icon
+//                binding.tvStatus.text = status
+//                if (dailyForecast.night.hasPrecipitation) {
+//                    binding.ivWeather.setImageResource(R.drawable.night_rain)
+//                } else {
+//                    when (status) {
+//                        NO_CLOUD -> binding.ivWeather.setImageResource(R.drawable.night)
+//                        else -> binding.ivWeather.setImageResource(R.drawable.night_cloud)
+//                    }
+//                }
+//            } else {
+//                val status = dailyForecast.day.icon
+//                binding.tvStatus.text = dailyForecast.day.icon
+//                if (dailyForecast.night.hasPrecipitation) {
+//                    binding.ivWeather.setImageResource(R.drawable.day_rain)
+//                } else {
+//                    when (status) {
+//                        SMALL_SUN -> binding.ivWeather.setImageResource(R.drawable.partly_sunny)
+//                        else -> binding.ivWeather.setImageResource(R.drawable.blazing_sunshine)
+//                    }
+//                }
+//            }
+//            binding.tvTemp.text = ConvertTemp(temperature.maximum.unit, temperature.maximum.value)
+//        }
+//    }
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setUI(){
+    }
+
+}
