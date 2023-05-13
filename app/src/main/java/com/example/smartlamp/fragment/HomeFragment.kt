@@ -10,7 +10,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
@@ -18,15 +17,19 @@ import com.example.smartlamp.adapter.RoomAdapter
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.RoomModel
+import com.example.smartlamp.utils.Constants.NO_CLOUD
+import com.example.smartlamp.utils.Constants.SMALL_SUN
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.math.round
 
 @AndroidEntryPoint
-class HomeFragment: Fragment() {
+class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     var data = MutableLiveData<List<DailyForecast>>()
@@ -34,12 +37,13 @@ class HomeFragment: Fragment() {
     private val lampViewModel: LampViewModel by activityViewModels()
 
     private var welcome = ""
+    private var userName = ""
+    private val auth = FirebaseAuth.getInstance()
 
-    private val SMALL_SUN = "Nắng nhẹ"
-    private val NO_CLOUD = "Trời quang"
-    private val livingRoom = RoomModel( R.drawable.living_room, "Living Room")
-    private val bedroom = RoomModel( R.drawable.bed_room, "Bedroom")
-    private val kitchenRoom = RoomModel( R.drawable.kitchen, "Kitchen")
+
+    private val livingRoom = RoomModel(R.drawable.living_room, "Living Room")
+    private val bedroom = RoomModel(R.drawable.bed_room, "Bedroom")
+    private val kitchenRoom = RoomModel(R.drawable.kitchen, "Kitchen")
     private val rooms = listOf(livingRoom, bedroom, kitchenRoom)
 
 
@@ -51,8 +55,19 @@ class HomeFragment: Fragment() {
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(layoutInflater)
-
+        lampViewModel.startObservingKey()
         binding.tvWelcome.text = ""
+
+        val currentUser: FirebaseUser? = auth.currentUser
+        if (currentUser != null) {
+            lampViewModel.uid.value = currentUser.uid
+            lampViewModel.startObservingUser(currentUser.uid)
+            lampViewModel.getUserData().observe(viewLifecycleOwner) {
+                if (it != null) {
+                    userName = ", ${it.firstName}"
+                }
+            }
+        }
 
         binding.rvRoom.addOnItemTouchListener(
             RecyclerTouchListener(activity,
@@ -69,13 +84,16 @@ class HomeFragment: Fragment() {
                 })
         )
         lampViewModel.getLampData()
+
         setObserb()
         setUI()
+        isNight()
+
         return binding.root
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setObserb(){
+    private fun setObserb() {
         binding.tvStatus.visibility = View.GONE
         binding.tvTemp.visibility = View.GONE
         binding.tvPosition.visibility = View.GONE
@@ -120,7 +138,7 @@ class HomeFragment: Fragment() {
 
     }
 
-    private fun ConvertTemp(type: String, value: Double) : String{
+    private fun ConvertTemp(type: String, value: Double): String {
         var temp = value
         if (type == "F") {
             temp = round((value - 32) * 5 / 9 * 100) / 100
@@ -128,33 +146,35 @@ class HomeFragment: Fragment() {
         return "$temp °C"
     }
 
-    private fun isNight() : Boolean{
+    private fun isNight(): Boolean {
         var isNight = true
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
 
         if (hour in 5..18) {
-            welcome = "Good Morning"
+            welcome = "Good Morning$userName"
             isNight = false
-            if (hour in 12 .. 18){
-                welcome = "Good Afternoon"
+            if (hour in 12..17) {
+                welcome = "Good Afternoon$userName"
             }
+        } else if (hour in 18..21) {
+            welcome = "Good Evening$userName"
         } else {
-            welcome = "Good Evening"
+            welcome = "Good Night$userName"
         }
-        return isNight
+
+    binding.tvWelcome.text = welcome
+    return isNight
+}
+
+@SuppressLint("NotifyDataSetChanged")
+private fun setUI() {
+    roomAdapter = RoomAdapter(requireContext(), rooms)
+    binding.rvRoom.apply {
+        adapter = roomAdapter
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
-
-
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun setUI(){
-        roomAdapter = RoomAdapter(requireContext(), rooms)
-        binding.rvRoom.apply{
-            adapter = roomAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        }
-        roomAdapter.notifyDataSetChanged()
-    }
+    roomAdapter.notifyDataSetChanged()
+}
 
 }

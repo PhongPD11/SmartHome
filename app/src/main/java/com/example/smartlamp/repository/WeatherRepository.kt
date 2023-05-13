@@ -1,4 +1,4 @@
-package com.example.smartlamp.activity.repository
+package com.example.smartlamp.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.example.smartlamp.api.ApiInterface

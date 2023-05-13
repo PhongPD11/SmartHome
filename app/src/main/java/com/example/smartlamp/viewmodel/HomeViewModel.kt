@@ -2,7 +2,7 @@ package com.example.smartlamp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.smartlamp.activity.repository.WeatherRepository
+import com.example.smartlamp.repository.WeatherRepository
 import com.example.smartlamp.model.WeatherModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

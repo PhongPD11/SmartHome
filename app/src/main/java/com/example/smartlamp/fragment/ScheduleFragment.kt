@@ -58,7 +58,7 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
         }
 
         binding.fabAdd.setOnClickListener {
-            val bundle = bundleOf("addSchedule" to (keyList.size+1).toString())
+            val bundle = bundleOf("add_schedule" to (keyList.size+1).toString())
             findNavController().navigate(R.id.navigation_schedule_setting, bundle)
         }
 

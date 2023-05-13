@@ -39,6 +39,17 @@
         android:name="com.example.smartlamp.fragment.ScheduleFragment" />
 
     <fragment
+        android:id="@+id/navigation_auth"
+        android:name="com.example.smartlamp.fragment.AuthFragment" >
+
+        <argument
+            android:name="signed"
+            app:argType="string"
+            android:defaultValue=""/>
+
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_schedule_setting"
         android:name="com.example.smartlamp.fragment.ScheduleSettingFragment" >
 
@@ -62,7 +73,7 @@
             app:argType="boolean" />
 
         <argument
-            android:name="addSchedule"
+            android:name="add_schedule"
             app:argType="string"
             android:defaultValue=""/>
 

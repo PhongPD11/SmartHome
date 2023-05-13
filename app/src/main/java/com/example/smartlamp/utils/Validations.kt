@@ -24,30 +24,33 @@ class Validations {
             pass: String,
             passwordTextInputLayout: TextInputLayout
         ): Boolean {
-            if (pass.length < 8) {
+            var isError = false
+            if (pass.isEmpty()) {
+                isError = true
+                passwordTextInputLayout.error = "Enter your password"
+            } else if (pass.length < 8) {
+                isError = true
                 passwordTextInputLayout.error = "Password must have at least 8 characters"
-                return false
             }
-//            if (!pass.matches(".*\\d.*".toRegex())) {
-//                passwordTextInputLayout.error = "Password must include one number"
-//                return false
-//            }
-//            if (!pass.matches(".*[a-z].*".toRegex())) {
-//                passwordTextInputLayout.error = "Password must include one lowercase letter"
-//                return false
-//            }
-//            if (!pass.matches(".*[A-Z].*".toRegex())) {
-//                passwordTextInputLayout.error = "Password must include one uppercase letter"
-//                return false
-//            }
-//            if (!pass.matches(".*[!@#$%^&*+=?\"'(),-./:;<>_`{|}~-].*".toRegex())) {
-//                passwordTextInputLayout.error =
-//                    "Password must include one special character !@#\$%^&*+=?\"'(),-./:;<>_`{|}~"
-//                return false
-//            }
-            return true
+            return isError
         }
 
+        fun nameValidate(
+            name: String,
+            nameTextInputLayout: TextInputLayout
+        ): Boolean {
+            var isError = false
+            val pattern = Regex("^[A-Z][a-zA-Z]*$")
+
+            if (name.isEmpty()) {
+                isError = true
+                nameTextInputLayout.error = "Enter your first name"
+            } else if (!pattern.matches(name)) {
+                isError = true
+                nameTextInputLayout.error = "Your name is Invalid"
+            }
+            return isError
+        }
     }
 
 }

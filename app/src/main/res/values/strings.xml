@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smart Home</string>
+    <string name="app_name" translatable="false">Smart Home</string>
     <string name="consumption">Consumption</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
@@ -36,7 +36,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="email_error">Enter your email</string>
-    <string name="password_error">Enter your password</string>
-    <string name="password_confirm_error">Your confirm password is not true</string>
+    <string name="password_error">Enter password</string>
+    <string name="password_confirm_error">Password mismatch</string>
     <string name="register">Register</string>
+    <string name="register_success">Register Successfully!</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="key">Key</string>
 </resources>

@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 true
             }
             R.id.navigation_user -> {
-//                navController.navigate(R.id.navigation_user)
+                navController.navigate(R.id.navigation_auth)
                 true
             }
             else -> {
