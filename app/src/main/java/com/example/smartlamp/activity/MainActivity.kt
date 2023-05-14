@@ -3,15 +3,23 @@ package com.example.smartlamp.activity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
+import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,6 +28,15 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     lateinit var navView: BottomNavigationView
+
+    private var name = ""
+    private val viewModel: LampViewModel by viewModels()
+
+
+    private val auth = FirebaseAuth.getInstance()
+    private var signed = false
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -27,6 +44,18 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         navView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
+
+        val currentUser: FirebaseUser? = auth.currentUser
+        if (currentUser != null) {
+            signed = true
+            viewModel.uid.value = currentUser.uid
+            viewModel.startObservingUser(currentUser.uid)
+            viewModel.getUserData().observe(this) {
+                if (it != null) {
+                    name = ", ${it.firstName}"
+                }
+            }
+        }
 
         val graphInflater = navController.navInflater
         val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)
@@ -43,6 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.navigation_home -> {
+                val bundle = bundleOf("signed" to signed, "name" to name )
                 navController.navigate(R.id.navigation_home)
                 true
             }
@@ -51,7 +81,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 true
             }
             R.id.navigation_user -> {
-                navController.navigate(R.id.navigation_auth)
+                if(signed){
+                    navController.navigate(R.id.navigation_profile)
+                } else {
+                    navController.navigate(R.id.navigation_auth)
+                }
                 true
             }
             else -> {

@@ -8,7 +8,8 @@ import androidx.room.PrimaryKey
 class User(
     @ColumnInfo(name = "user") var user: String,
     @ColumnInfo(name = "password") var password: String,
-    @ColumnInfo(name = "password") var key: String,
+    @ColumnInfo(name = "uid") var uid: String,
+    @ColumnInfo(name = "key") var key: Int,
     @ColumnInfo(name = "pin") var pin: Int,
 ){
     @PrimaryKey(autoGenerate = true)

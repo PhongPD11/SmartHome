@@ -72,6 +72,16 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="headingTextBold" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#666</item>
 
+    </style>
+
+    <style name="descText" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#999</item>
+    </style>
 
 </resources>

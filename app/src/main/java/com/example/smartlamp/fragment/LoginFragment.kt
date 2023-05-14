@@ -11,17 +11,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.databinding.FragmentLoginBinding
 import com.example.smartlamp.databinding.FragmentRegisterBinding
 import com.example.smartlamp.utils.Validations
+import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -34,6 +38,8 @@ class LoginFragment : Fragment() {
 
     private var isValidate = false
     lateinit var auth: FirebaseAuth
+    private val lampViewModel: LampViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -136,7 +142,15 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    findNavController().navigate(R.id.navigation_home)
+                    val currentUser: FirebaseUser? = auth.currentUser
+                    var signed = false
+                    if (currentUser != null) {
+                        signed = true
+                        lampViewModel.uid.value = currentUser.uid
+                        lampViewModel.startObservingUser(currentUser.uid)
+                    }
+                    val bundle = bundleOf( "signed" to signed)
+                    findNavController().navigate(R.id.navigation_home, bundle)
                 } else {
                     binding.layPassword.isErrorEnabled = true
                     binding.layPassword.error = "Password is not true!"

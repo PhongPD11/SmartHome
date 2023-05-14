@@ -8,15 +8,30 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.smartlamp.fragment.HomeFragment"
-        android:label="Home" />
+        android:label="Home">
+
+        <argument
+            android:name="signed"
+            app:argType="boolean" />
+
+        <argument
+            android:name="key"
+            app:argType="string" />
+
+        <argument
+            android:name="name"
+            app:argType="string" />
+
+    </fragment>
+
     <fragment
         android:id="@+id/navigation_consumption"
         android:name="com.example.smartlamp.fragment.ConsumptionFragment"
         android:label="Consumption" />
 
     <fragment
-        android:id="@+id/navigation_user"
-        android:name="com.example.smartlamp.fragment.UserFragment"
+        android:id="@+id/navigation_profile"
+        android:name="com.example.smartlamp.fragment.ProfileFragment"
         android:label="User" />
 
     <fragment
@@ -32,7 +47,17 @@
 
     <fragment
         android:id="@+id/navigation_light_mode"
-        android:name="com.example.smartlamp.fragment.LightModeFragment" />
+        android:name="com.example.smartlamp.fragment.LightModeFragment" >
+
+        <argument
+            android:name="sw_lamp"
+            app:argType="boolean" />
+
+        <argument
+            android:name="brightness"
+            app:argType="float" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_schedule"

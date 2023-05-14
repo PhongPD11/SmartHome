@@ -113,4 +113,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx:22.0.0'
 //    implementation 'com.google.firebase:firebase-admin:8.0.0'
 
+    //Image
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }

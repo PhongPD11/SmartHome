@@ -2,7 +2,10 @@ package com.example.smartlamp.fragment
 
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +17,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.RoomAdapter
+import com.example.smartlamp.databinding.DialogSuccessBinding
+import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.RoomModel
@@ -38,6 +43,7 @@ class HomeFragment : Fragment() {
 
     private var welcome = ""
     private var userName = ""
+    private var signed = false
     private val auth = FirebaseAuth.getInstance()
 
 
@@ -58,10 +64,10 @@ class HomeFragment : Fragment() {
         lampViewModel.startObservingKey()
         binding.tvWelcome.text = ""
 
-        val currentUser: FirebaseUser? = auth.currentUser
-        if (currentUser != null) {
-            lampViewModel.uid.value = currentUser.uid
-            lampViewModel.startObservingUser(currentUser.uid)
+        signed = arguments?.getBoolean("signed")?: false
+        userName = arguments?.getString("name")?: ""
+
+        if (signed) {
             lampViewModel.getUserData().observe(viewLifecycleOwner) {
                 if (it != null) {
                     userName = ", ${it.firstName}"
@@ -76,7 +82,11 @@ class HomeFragment : Fragment() {
                     override fun onItemClick(view: View?, position: Int) {
                         val name = rooms[position].room
                         val bundle = bundleOf("name" to name)
-                        findNavController().navigate(R.id.navigation_room, bundle)
+                        if (signed){
+                            findNavController().navigate(R.id.navigation_room, bundle)
+                        } else {
+                            showDialog(context!!)
+                        }
                     }
 
                     override fun onLongItemClick(view: View?, position: Int) {
@@ -136,6 +146,28 @@ class HomeFragment : Fragment() {
             binding.tvTemp.text = ConvertTemp(temperature.maximum.unit, temperature.maximum.value)
         }
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showDialog(context: Context) {
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        val bindingDialog: DialogYesNoBinding = DialogYesNoBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+
+        val window = dialog.window
+        val params = window?.attributes
+
+        params?.gravity = Gravity.CENTER
+        window?.attributes = params
+
+        bindingDialog.btnCancel.setOnClickListener{
+            dialog.dismiss()
+        }
+        bindingDialog.btnYes.setOnClickListener{
+            dialog.dismiss()
+            findNavController().navigate(R.id.navigation_auth)
+        }
+        dialog.show()
     }
 
     private fun ConvertTemp(type: String, value: Double): String {

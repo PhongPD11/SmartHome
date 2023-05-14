@@ -37,7 +37,7 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     private lateinit var binding: FragmentLightModeBinding
 
     private var state = 1
-    private var brightness = 50F
+    private var brightness = -1F
 
     private val viewModel: LampViewModel by activityViewModels()
 
@@ -59,10 +59,9 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
         super.onCreate(savedInstanceState)
         binding = FragmentLightModeBinding.inflate(layoutInflater)
 
-        viewModel.getLampData()
+        brightness = arguments?.getFloat("brightness")!!
 
         binding.slider.addOnChangeListener { _, value, _ ->
-//            onlyOneMode(-1)
             ledNodeRef.child("brightness").setValue(value)
         }
 
@@ -71,21 +70,24 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
         }
 
         binding.swDevice.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked){
-                state = 1
-                binding.ivLamp.setImageResource(R.drawable.lamp_on)
-            } else {
-                state = 0
-                binding.ivLamp.setImageResource(R.drawable.lamp)
-            }
+            state = controlLamp(isChecked)
             ledNodeRef.child("state").setValue(state)
         }
 
-        setObserb()
         setUI()
         return binding.root
     }
 
+    private fun controlLamp(isChecked: Boolean): Int{
+        if (isChecked){
+            state = 1
+            binding.ivLamp.setImageResource(R.drawable.lamp_on)
+        } else {
+            state = 0
+            binding.ivLamp.setImageResource(R.drawable.lamp)
+        }
+        return state
+    }
     @SuppressLint("NotifyDataSetChanged")
     private fun onlyOneMode(position: Int){
         for (i in modes.indices){
@@ -96,24 +98,11 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
         }
         modeAdapter.notifyDataSetChanged()
     }
-    private fun setObserb(){
-        viewModel.getLampData().observe(viewLifecycleOwner) {
-            if (it != null) {
-                state = it.state
-                brightness = it.brightness
-            }
-        }
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI(){
-        if (state == 1){
-            binding.swDevice.isChecked = true
-            binding.ivLamp.setImageResource(R.drawable.lamp_on)
-        } else {
-            binding.swDevice.isChecked = false
-            binding.ivLamp.setImageResource(R.drawable.lamp)
-        }
+        val sw = arguments?.getBoolean("sw_lamp")!!
+        controlLamp(sw)
         binding.slider.value = brightness
 
         modeAdapter = ModeAdapter(requireContext(), modes, this)
