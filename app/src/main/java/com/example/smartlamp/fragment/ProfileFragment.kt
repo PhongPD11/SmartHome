@@ -4,6 +4,7 @@ package com.example.smartlamp.fragment
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,6 +17,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
+import com.example.smartlamp.activity.MainActivity
+import com.example.smartlamp.activity.SplashscreenActivity
 import com.example.smartlamp.adapter.RoomAdapter
 import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.databinding.DialogYesNoBinding
@@ -41,12 +44,12 @@ class ProfileFragment : Fragment() {
     var data = MutableLiveData<List<DailyForecast>>()
     private val viewModel: LampViewModel by activityViewModels()
 
-    private var welcome = ""
+
     private var userName = ""
-    private var signed = false
     private val auth = FirebaseAuth.getInstance()
 
     private lateinit var roomAdapter: RoomAdapter
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,18 +57,19 @@ class ProfileFragment : Fragment() {
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentProfileBinding.inflate(layoutInflater)
-        viewModel.startObservingKey()
 
-        val currentUser: FirebaseUser? = auth.currentUser
-        if (currentUser != null) {
-            signed = true
-            viewModel.uid.value = currentUser.uid
-            viewModel.startObservingUser(currentUser.uid)
-            viewModel.getUserData().observe(viewLifecycleOwner) {
-                if (it != null) {
-                    userName = it.firstName + " " + it.lastName
-                }
+        viewModel.getUserData().observe(viewLifecycleOwner){
+            if (it != null) {
+                binding.tvName.text = it.firstName +" "+ it.lastName
             }
+        }
+
+        binding.cardLogout.setOnClickListener {
+            showDialog(requireContext())
+        }
+
+        binding.ivBack.setOnClickListener{
+            findNavController().popBackStack()
         }
 
         setObserb()
@@ -94,9 +98,15 @@ class ProfileFragment : Fragment() {
         bindingDialog.btnCancel.setOnClickListener{
             dialog.dismiss()
         }
+
+        bindingDialog.btnYes.text = "Yes"
+        bindingDialog.tvTitle.text = getString(R.string.log_out)
+
         bindingDialog.btnYes.setOnClickListener{
             dialog.dismiss()
-            findNavController().navigate(R.id.navigation_auth)
+            auth.signOut()
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
         }
         dialog.show()
     }

@@ -36,6 +36,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="email_error">Enter your email</string>
+    <string name="first_error">Enter your first name</string>
     <string name="password_error">Enter password</string>
     <string name="password_confirm_error">Password mismatch</string>
     <string name="register">Register</string>

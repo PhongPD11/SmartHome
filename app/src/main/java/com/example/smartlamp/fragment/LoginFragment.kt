@@ -3,7 +3,9 @@ package com.example.smartlamp.fragment
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
@@ -18,9 +20,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.smartlamp.R
+import com.example.smartlamp.activity.MainActivity
 import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.databinding.FragmentLoginBinding
 import com.example.smartlamp.databinding.FragmentRegisterBinding
+import com.example.smartlamp.model.UserSaveModel
 import com.example.smartlamp.utils.Validations
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.textfield.TextInputEditText
@@ -55,7 +59,7 @@ class LoginFragment : Fragment() {
 
         auth = Firebase.auth
 
-        binding.etEmail.addTextChangedListener(object: TextWatcher {
+        binding.etEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -75,7 +79,6 @@ class LoginFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                checkEmailRegistered(s.toString())
             }
         })
 
@@ -111,52 +114,49 @@ class LoginFragment : Fragment() {
             }
 
             else -> {
-                if (isValidate){
+                if (isValidate) {
                     val email = binding.etEmail.text.toString()
                     val pass = binding.etPassword.text.toString()
-                    loginUser(email,pass)
+                    loginUser(email, pass)
                 }
             }
         }
-    }
-
-    private fun checkEmailRegistered(email: String) {
-        auth.fetchSignInMethodsForEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val signInMethods = task.result?.signInMethods
-                    if (signInMethods.isNullOrEmpty()) {
-                        binding.layUsername.error = "The email address is not registered!"
-                        binding.layUsername.isErrorEnabled = true
-                        isValidate = false
-                    } else {
-                        isValidate = true
-                        binding.layUsername.error = null
-                        binding.layUsername.isErrorEnabled = false
-                    }
-                }
-            }
     }
 
     private fun loginUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val currentUser: FirebaseUser? = auth.currentUser
-                    var signed = false
-                    if (currentUser != null) {
-                        signed = true
-                        lampViewModel.uid.value = currentUser.uid
-                        lampViewModel.startObservingUser(currentUser.uid)
+                    val user = auth.currentUser
+                    if (user != null) {
+//                        saveNewUser(user, email, password)
                     }
-                    val bundle = bundleOf( "signed" to signed)
-                    findNavController().navigate(R.id.navigation_home, bundle)
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+//                    intent.putExtra("signed", true)
+                    startActivity(intent)
                 } else {
-                    binding.layPassword.isErrorEnabled = true
-                    binding.layPassword.error = "Password is not true!"
+                    binding.layUsername.isErrorEnabled = true
+                    binding.layUsername.error = "Email or Password is not true!"
                 }
             }
     }
+
+//    private fun saveNewUser(user: FirebaseUser, email: String, password: String) {
+//        val pin = "1111"
+//        var firstName = ""
+//        var lastName = ""
+//        val key = 123456789
+//        val uid = user.uid
+//        lampViewModel.getUserData().observe(viewLifecycleOwner) {
+//            if (it != null) {
+//                firstName = it.firstName
+//                lastName = it.lastName
+//            }
+//            val userSave = UserSaveModel(email, password, firstName, lastName, key, uid, pin)
+//            lampViewModel.saveUser(userSave)
+//        }
+//
+//    }
 
 
 }

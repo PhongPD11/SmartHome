@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
+import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
@@ -45,16 +46,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
 
-        val currentUser: FirebaseUser? = auth.currentUser
-        if (currentUser != null) {
+        viewModel.startObservingKey()
+        val user = auth.currentUser
+        if (user!= null){
+            viewModel.fetchUserData(user.uid)
             signed = true
-            viewModel.uid.value = currentUser.uid
-            viewModel.startObservingUser(currentUser.uid)
-            viewModel.getUserData().observe(this) {
-                if (it != null) {
-                    name = ", ${it.firstName}"
-                }
-            }
         }
 
         val graphInflater = navController.navInflater
@@ -73,7 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         return when(item.itemId){
             R.id.navigation_home -> {
                 val bundle = bundleOf("signed" to signed, "name" to name )
-                navController.navigate(R.id.navigation_home)
+                navController.navigate(R.id.navigation_home, bundle)
                 true
             }
             R.id.navigation_statistic -> {

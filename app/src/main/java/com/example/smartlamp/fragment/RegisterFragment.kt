@@ -142,8 +142,10 @@ class RegisterFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                checkEmailRegistered(s.toString())
-            }
+                if (s.toString() != "" && s.toString() != " ") {
+                        checkEmailRegistered(s.toString())
+                    }
+                }
         })
 
         binding.etPassword.addTextChangedListener(object: TextWatcher {
@@ -221,7 +223,7 @@ class RegisterFragment : Fragment() {
 
             binding.etFirstName.onText().isEmpty() -> {
                 isValidate = false
-                binding.layConfirmPassword.error = resources.getString(R.string.password_error)
+                binding.layFirstName.error = resources.getString(R.string.first_error)
             }
 
             else -> {
@@ -266,7 +268,9 @@ class RegisterFragment : Fragment() {
         params?.gravity = Gravity.CENTER
         window?.attributes = params
 
-        bindingDialog.btnClose.setOnClickListener{
+        bindingDialog.tvTitle.text = getString(R.string.register_success)
+
+        bindingDialog.btnYes.setOnClickListener{
             dialog.dismiss()
             findNavController().navigate(R.id.navigation_auth)
         }

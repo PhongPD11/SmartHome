@@ -26,18 +26,8 @@ class LampRepository @Inject constructor(){
         val lampDataRef = databaseRef.child("Key")
         lampDataRef.addValueEventListener(listener)
     }
-    fun observeUser(uid: String): MutableLiveData<UserModel> {
-        val lampDataRef = databaseRef.child("User/$uid")
-        lampDataRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                userData.value = dataSnapshot.getValue(UserModel::class.java)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
-        return userData
+    fun getUserData(uid: String): DatabaseReference {
+        return databaseRef.child("User/$uid")
     }
 
 }

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.AuthPagerAdapter
 import com.example.smartlamp.databinding.FragmentAuthBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -25,11 +27,17 @@ class AuthFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAuthBinding.inflate(inflater, container, false)
+        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        bottomNavigationView.visibility = View.GONE
 
         auth = FirebaseAuth.getInstance()
 
         viewPager = binding.viewPager
         tabLayout = binding.tabLayout
+
+        binding.ivBack.setOnClickListener{
+            findNavController().popBackStack()
+        }
 
         val adapter = AuthPagerAdapter(this)
         viewPager.adapter = adapter

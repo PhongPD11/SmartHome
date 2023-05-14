@@ -10,12 +10,18 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(user: User)
 
-//    @Insert
-//    fun insertAll(list: List<User>)
+    @Delete
+    fun delete(user: User)
 
-    @Query("DELETE FROM authenticLocal")
+    @Update
+    fun update(user: User)
+
+    @Query("SELECT * FROM userDatabase ORDER BY uid")
+    fun getAllUsers(): List<User>
+
+    @Query("DELETE FROM userDatabase")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM authenticLocal")
-    fun getAllUsers(): List<User>
+    @Query("SELECT * FROM userDatabase WHERE email = :value")
+    suspend fun getUser(value: String): User
 }

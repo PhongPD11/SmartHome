@@ -25,6 +25,7 @@ import com.example.smartlamp.model.RoomModel
 import com.example.smartlamp.utils.Constants.NO_CLOUD
 import com.example.smartlamp.utils.Constants.SMALL_SUN
 import com.example.smartlamp.utils.RecyclerTouchListener
+import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -44,8 +45,6 @@ class HomeFragment : Fragment() {
     private var welcome = ""
     private var userName = ""
     private var signed = false
-    private val auth = FirebaseAuth.getInstance()
-
 
     private val livingRoom = RoomModel(R.drawable.living_room, "Living Room")
     private val bedroom = RoomModel(R.drawable.bed_room, "Bedroom")
@@ -54,6 +53,8 @@ class HomeFragment : Fragment() {
 
 
     private lateinit var roomAdapter: RoomAdapter
+
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,19 +62,9 @@ class HomeFragment : Fragment() {
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(layoutInflater)
-        lampViewModel.startObservingKey()
-        binding.tvWelcome.text = ""
+        signed = arguments?.getBoolean("signed") ?: false
 
-        signed = arguments?.getBoolean("signed")?: false
-        userName = arguments?.getString("name")?: ""
-
-        if (signed) {
-            lampViewModel.getUserData().observe(viewLifecycleOwner) {
-                if (it != null) {
-                    userName = ", ${it.firstName}"
-                }
-            }
-        }
+        signed = Utils.checkAuthentication()
 
         binding.rvRoom.addOnItemTouchListener(
             RecyclerTouchListener(activity,
@@ -82,7 +73,7 @@ class HomeFragment : Fragment() {
                     override fun onItemClick(view: View?, position: Int) {
                         val name = rooms[position].room
                         val bundle = bundleOf("name" to name)
-                        if (signed){
+                        if (signed) {
                             findNavController().navigate(R.id.navigation_room, bundle)
                         } else {
                             showDialog(context!!)
@@ -145,7 +136,6 @@ class HomeFragment : Fragment() {
             }
             binding.tvTemp.text = ConvertTemp(temperature.maximum.unit, temperature.maximum.value)
         }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -160,10 +150,12 @@ class HomeFragment : Fragment() {
         params?.gravity = Gravity.CENTER
         window?.attributes = params
 
-        bindingDialog.btnCancel.setOnClickListener{
+        bindingDialog.tvTitle.text = getString(R.string.guest_user)
+
+        bindingDialog.btnCancel.setOnClickListener {
             dialog.dismiss()
         }
-        bindingDialog.btnYes.setOnClickListener{
+        bindingDialog.btnYes.setOnClickListener {
             dialog.dismiss()
             findNavController().navigate(R.id.navigation_auth)
         }
@@ -184,29 +176,29 @@ class HomeFragment : Fragment() {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
 
         if (hour in 5..18) {
-            welcome = "Good Morning$userName"
+            welcome = "Good Morning"
             isNight = false
             if (hour in 12..17) {
-                welcome = "Good Afternoon$userName"
+                welcome = "Good Afternoon"
             }
         } else if (hour in 18..21) {
-            welcome = "Good Evening$userName"
+            welcome = "Good Evening"
         } else {
-            welcome = "Good Night$userName"
+            welcome = "Good Night"
         }
 
-    binding.tvWelcome.text = welcome
-    return isNight
-}
-
-@SuppressLint("NotifyDataSetChanged")
-private fun setUI() {
-    roomAdapter = RoomAdapter(requireContext(), rooms)
-    binding.rvRoom.apply {
-        adapter = roomAdapter
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.tvWelcome.text = welcome
+        return isNight
     }
-    roomAdapter.notifyDataSetChanged()
-}
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setUI() {
+        roomAdapter = RoomAdapter(requireContext(), rooms)
+        binding.rvRoom.apply {
+            adapter = roomAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
+        roomAdapter.notifyDataSetChanged()
+    }
 
 }

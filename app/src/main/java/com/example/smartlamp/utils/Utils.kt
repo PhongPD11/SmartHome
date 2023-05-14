@@ -1,5 +1,7 @@
 package com.example.smartlamp.utils
 
+import com.google.firebase.auth.FirebaseAuth
+
 class Utils {
     companion object{
         private val dotw = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
@@ -41,6 +43,12 @@ class Utils {
             }
             display = "$displayHour:$displayMin"
             return display
+        }
+
+        fun checkAuthentication(): Boolean {
+            val auth: FirebaseAuth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+            return user != null
         }
     }
 }
