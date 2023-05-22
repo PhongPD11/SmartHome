@@ -22,6 +22,7 @@ import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.RoomModel
+import com.example.smartlamp.utils.Constants.BIG_RAIN
 import com.example.smartlamp.utils.Constants.NO_CLOUD
 import com.example.smartlamp.utils.Constants.SMALL_SUN
 import com.example.smartlamp.utils.RecyclerTouchListener
@@ -116,8 +117,12 @@ class HomeFragment : Fragment() {
                 binding.tvStatus.text = status
                 if (dailyForecast.night.hasPrecipitation) {
                     binding.ivWeather.setImageResource(R.drawable.night_rain)
+                    if (status == BIG_RAIN){
+                        binding.ivWeather.setImageResource(R.drawable.thunderstorm)
+                    }
                 } else {
                     when (status) {
+                        BIG_RAIN -> binding.ivWeather.setImageResource(R.drawable.storm)
                         NO_CLOUD -> binding.ivWeather.setImageResource(R.drawable.night)
                         else -> binding.ivWeather.setImageResource(R.drawable.night_cloud)
                     }
@@ -127,6 +132,9 @@ class HomeFragment : Fragment() {
                 binding.tvStatus.text = dailyForecast.day.icon
                 if (dailyForecast.night.hasPrecipitation) {
                     binding.ivWeather.setImageResource(R.drawable.day_rain)
+                    if (status == BIG_RAIN){
+                        binding.ivWeather.setImageResource(R.drawable.thunderstorm)
+                    }
                 } else {
                     when (status) {
                         SMALL_SUN -> binding.ivWeather.setImageResource(R.drawable.partly_sunny)

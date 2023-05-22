@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
+class RoomFragment : Fragment(), RoomDetailAdapter.OnStopTrackingTouchListener,
     RoomDetailAdapter.SwitchClickInterface, RoomDetailAdapter.DeviceClickInterface {
     lateinit var binding: FragmentRoomBinding
 
@@ -52,10 +52,11 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
 
         if (room == "Bedroom"){
             viewModel.getLampData().observe(viewLifecycleOwner) {
-                val device = it?.state?.let { it1 -> DeviceModel(it1, it.brightness) }
-                if (device != null) {
+                if(it!= null) {
+                    val device = DeviceModel(it.state, it.brightness)
                     devices.clear()
                     devices.add(device)
+                    setUI()
                 }
             }
         }
@@ -114,7 +115,8 @@ class RoomFragment : Fragment(), RoomDetailAdapter.TrackChangeInterface,
         showModeOrSchedule(requireContext(), device.state, device.brightness)
     }
 
-    override fun onTrackChange(value: Float) {
+    override fun onStopTrackingTouch(value: Float) {
         ledNodeRef.child("brightness").setValue(value)
     }
+
 }

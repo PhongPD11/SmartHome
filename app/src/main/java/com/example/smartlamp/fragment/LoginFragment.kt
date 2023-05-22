@@ -127,12 +127,7 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    if (user != null) {
-//                        saveNewUser(user, email, password)
-                    }
                     val intent = Intent(requireContext(), MainActivity::class.java)
-//                    intent.putExtra("signed", true)
                     startActivity(intent)
                 } else {
                     binding.layUsername.isErrorEnabled = true

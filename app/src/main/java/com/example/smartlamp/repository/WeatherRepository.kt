@@ -10,10 +10,7 @@ import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
     private val apiInterface: ApiInterface,
-//    private val weatherDao: WeatherDao
 ){
-
-//    val localWeather: LiveData<List<Weather>> = weatherDao.getAllWeathers()
     var weather = MutableLiveData<WeatherModel>()
     private val apikey = "UTvSQMVsY9jObnFYvAGUDX2g7qgrzSfA"
     private val language = "vi"
@@ -21,7 +18,7 @@ class WeatherRepository @Inject constructor(
 
     fun getWeatherDaily() {
         try {
-            apiInterface.getWeather(apikey,language)
+            apiInterface.getWeather(locationKey,apikey,language)
                 .enqueue(object : Callback<WeatherModel> {
                     override fun onResponse(
                         call: Call<WeatherModel>,
@@ -39,7 +36,7 @@ class WeatherRepository @Inject constructor(
                     }
                 })
         } catch (e: java.lang.Exception){
-            println("Ngu nhu cho" + e.message)
+            println( e.message)
         }
     }
 

@@ -5,11 +5,16 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,6 +32,7 @@ import com.example.smartlamp.databinding.FragmentProfileBinding
 import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.RoomModel
 import com.example.smartlamp.utils.Constants.NO_CLOUD
+import com.example.smartlamp.utils.Constants.PICK_IMAGE
 import com.example.smartlamp.utils.Constants.SMALL_SUN
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.viewmodel.HomeViewModel
@@ -34,6 +40,10 @@ import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 import kotlin.math.round
 
@@ -66,6 +76,11 @@ class ProfileFragment : Fragment() {
 
         binding.cardLogout.setOnClickListener {
             showDialog(requireContext())
+        }
+
+        binding.ivCamera.setOnClickListener {
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            startActivityForResult(gallery, PICK_IMAGE)
         }
 
         binding.ivBack.setOnClickListener{

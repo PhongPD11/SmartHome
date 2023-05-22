@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ItemDeviceBinding
 import com.example.smartlamp.model.DeviceModel
+import com.google.android.material.slider.Slider
 
 
 class RoomDetailAdapter(
@@ -17,7 +18,7 @@ class RoomDetailAdapter(
     var devices: List<DeviceModel>,
     private val onSwitchClickInterface: SwitchClickInterface,
     private val onDeviceClickInterface: DeviceClickInterface,
-    private val onTrackChangeInterface: TrackChangeInterface,
+    private val onStopTrackingTouchListener: OnStopTrackingTouchListener,
     ) : RecyclerView.Adapter<RoomDetailAdapter.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
@@ -65,9 +66,16 @@ class RoomDetailAdapter(
             onDeviceClickInterface.onDeviceClick(item)
         }
 
-        bind.slider.addOnChangeListener { _, value, _ ->
-            onTrackChangeInterface.onTrackChange(value)
-        }
+        bind.slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                // Không làm gì khi bắt đầu kéo
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                val value = slider.value
+                onStopTrackingTouchListener.onStopTrackingTouch(value)
+            }
+        })
 
         bind.slider.value = item.brightness
 
@@ -86,8 +94,8 @@ class RoomDetailAdapter(
         fun onDeviceClick(device: DeviceModel)
     }
 
-    interface TrackChangeInterface {
-        fun onTrackChange(value: Float)
+    interface OnStopTrackingTouchListener {
+        fun onStopTrackingTouch(value: Float)
     }
 
 }

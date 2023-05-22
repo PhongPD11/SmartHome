@@ -55,6 +55,7 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
                 schedules.clear()
                 schedules.addAll(list)
             }
+            setUI()
         }
 
         binding.fabAdd.setOnClickListener {

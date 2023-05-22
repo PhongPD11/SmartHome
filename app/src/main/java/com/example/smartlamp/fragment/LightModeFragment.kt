@@ -20,12 +20,14 @@ import com.example.smartlamp.adapter.RoomDetailAdapter
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.databinding.FragmentLightModeBinding
 import com.example.smartlamp.model.DailyForecast
+import com.example.smartlamp.model.DeviceModel
 import com.example.smartlamp.model.ModeModel
 import com.example.smartlamp.model.RoomModel
 import com.example.smartlamp.model.ScheduleModel
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
+import com.google.android.material.slider.Slider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,32 +63,49 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
 
         brightness = arguments?.getFloat("brightness")!!
 
-        binding.slider.addOnChangeListener { _, value, _ ->
-            ledNodeRef.child("brightness").setValue(value)
-        }
+        binding.slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                val value = slider.value
+                ledNodeRef.child("brightness").setValue(value)
+            }
+        })
+
 
         binding.ivBack.setOnClickListener{
             findNavController().popBackStack()
         }
 
         binding.swDevice.setOnCheckedChangeListener { _, isChecked ->
-            state = controlLamp(isChecked)
+            state = if(isChecked)
+                1
+            else
+                0
             ledNodeRef.child("state").setValue(state)
+        }
+
+        viewModel.getLampData().observe(viewLifecycleOwner){
+            if(it!= null) {
+                state = it.state
+                brightness = it.brightness
+                setUI()
+            }
         }
 
         setUI()
         return binding.root
     }
 
-    private fun controlLamp(isChecked: Boolean): Int{
-        if (isChecked){
-            state = 1
+    private fun controlLamp(state: Int){
+        if (state == 1){
+            binding.swDevice.isChecked = true
             binding.ivLamp.setImageResource(R.drawable.lamp_on)
         } else {
-            state = 0
             binding.ivLamp.setImageResource(R.drawable.lamp)
+            binding.swDevice.isChecked = false
         }
-        return state
     }
     @SuppressLint("NotifyDataSetChanged")
     private fun onlyOneMode(position: Int){
@@ -101,8 +120,7 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI(){
-        val sw = arguments?.getBoolean("sw_lamp")!!
-        controlLamp(sw)
+        controlLamp(state)
         binding.slider.value = brightness
 
         modeAdapter = ModeAdapter(requireContext(), modes, this)

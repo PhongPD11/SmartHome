@@ -102,7 +102,7 @@ class ScheduleSettingFragment : Fragment() {
             repeatDisplay = "Once"
             binding.tvTime.text = Utils.updateTime(hourOn,minOn)
             binding.swDevice.isChecked = true
-            newPosition = arguments?.getString("addSchedule")!!
+            newPosition = arguments?.getString("add_schedule")!!
             updateRepeat(repeatDisplay)
             updateTimeOff()
             updateDays(days, repeat)

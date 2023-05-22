@@ -17,16 +17,4 @@ class HomeViewModel @Inject constructor(private val weatherRepository: WeatherRe
     init {
         weatherRepository.getWeatherDaily()
     }
-
-//    fun deleteWeather(weather: Weather) = viewModelScope.launch(Dispatchers.IO) {
-//        weatherRepository.delete(weather)
-//    }
-//
-//    fun updateWeather(weather: Weather) = viewModelScope.launch(Dispatchers.IO) {
-//        weatherRepository.update(weather)
-//    }
-//
-//    fun addWeather(weather: Weather) = viewModelScope.launch(Dispatchers.IO) {
-//        weatherRepository.insert(weather)
-//    }
 }
