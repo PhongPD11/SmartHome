@@ -38,8 +38,9 @@ import kotlin.math.round
 class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     private lateinit var binding: FragmentLightModeBinding
 
-    private var state = 1
+    private var state = -1
     private var brightness = -1F
+    private var pos = -1
 
     private val viewModel: LampViewModel by activityViewModels()
 
@@ -60,8 +61,6 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentLightModeBinding.inflate(layoutInflater)
-
-        brightness = arguments?.getFloat("brightness")!!
 
         binding.slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
@@ -107,29 +106,34 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
             binding.swDevice.isChecked = false
         }
     }
-    @SuppressLint("NotifyDataSetChanged")
-    private fun onlyOneMode(position: Int){
-        for (i in modes.indices){
+    @SuppressLint("NotifyDataSetChanged")private fun onlyOneMode(position: Int) {
+        for (i in modes.indices) {
             modes[i].modeOn = false
         }
-        if (position != -1){
+        if (position != -1) {
             modes[position].modeOn = true
+            pos = position
         }
-        modeAdapter.notifyDataSetChanged()
+       // modeAdapter.notifyDataSetChanged()
+        setUI()
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setUI(){
+    private fun setUI() {
         controlLamp(state)
         binding.slider.value = brightness
 
         modeAdapter = ModeAdapter(requireContext(), modes, this)
-        binding.rvMode.apply{
+        binding.rvMode.apply {
             adapter = modeAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            itemAnimator = null
+            binding.rvMode.scrollToPosition(pos)
         }
         modeAdapter.notifyDataSetChanged()
     }
+
 
     override fun onModeClick(position: Int) {
         onlyOneMode(position)

@@ -31,7 +31,6 @@ class LampViewModel @Inject constructor(
         get() = _user
 
     init {
-//        isLogin()
         startObservingLampData()
         startObservingKey()
     }

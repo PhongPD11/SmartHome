@@ -14,8 +14,6 @@ import javax.inject.Inject
 
 class LampRepository @Inject constructor(){
     private val databaseRef: DatabaseReference = FirebaseDatabase.getInstance().reference
-    private val userData: MutableLiveData<UserModel> = MutableLiveData()
-
 
     fun observeLampData(listener: ValueEventListener) {
         val lampDataRef = databaseRef.child("Led")

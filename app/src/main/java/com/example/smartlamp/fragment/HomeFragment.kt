@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.RoomAdapter
-import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.DailyForecast
@@ -29,14 +28,12 @@ import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.math.round
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
     private lateinit var binding: FragmentHomeBinding
 
     var data = MutableLiveData<List<DailyForecast>>()
@@ -44,7 +41,6 @@ class HomeFragment : Fragment() {
     private val lampViewModel: LampViewModel by activityViewModels()
 
     private var welcome = ""
-    private var userName = ""
     private var signed = false
 
     private val livingRoom = RoomModel(R.drawable.living_room, "Living Room")
@@ -60,31 +56,13 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(layoutInflater)
         signed = arguments?.getBoolean("signed") ?: false
 
         signed = Utils.checkAuthentication()
 
-        binding.rvRoom.addOnItemTouchListener(
-            RecyclerTouchListener(activity,
-                binding.rvRoom,
-                object : RecyclerTouchListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        val name = rooms[position].room
-                        val bundle = bundleOf("name" to name)
-                        if (signed) {
-                            findNavController().navigate(R.id.navigation_room, bundle)
-                        } else {
-                            showDialog(context!!)
-                        }
-                    }
-
-                    override fun onLongItemClick(view: View?, position: Int) {
-                    }
-                })
-        )
         lampViewModel.getLampData()
 
         setObserb()
@@ -201,12 +179,22 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        roomAdapter = RoomAdapter(requireContext(), rooms)
+        roomAdapter = RoomAdapter(requireContext(), rooms, this)
         binding.rvRoom.apply {
             adapter = roomAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         roomAdapter.notifyDataSetChanged()
+    }
+
+    override fun onRoomClick(room: RoomModel) {
+        val name = room.room
+        val bundle = bundleOf("name" to name)
+        if (signed) {
+            findNavController().navigate(R.id.navigation_room, bundle)
+        } else {
+            showDialog(requireContext())
+        }
     }
 
 }

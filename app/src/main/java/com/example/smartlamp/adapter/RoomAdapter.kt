@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemRoomBinding
+import com.example.smartlamp.model.DeviceModel
 import com.example.smartlamp.model.RoomModel
 
 class RoomAdapter(
     var context: Context,
     var rooms: List<RoomModel>,
-) : RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
+    private val onRoomClickInterface: RoomClickInterface,
+    ) : RecyclerView.Adapter<RoomAdapter.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         return position
@@ -33,15 +35,22 @@ class RoomAdapter(
     @SuppressLint("SetTextI18n", "ResourceAsColor", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = rooms[position]
-        val bind = holder.binding
 
         holder.binding.ivRoom.setImageResource(item.image)
         holder.binding.tvRoom.text = item.room
+
+        holder.itemView.setOnClickListener {
+            onRoomClickInterface.onRoomClick(item)
+        }
     }
 
 
     override fun getItemCount(): Int {
         return rooms.size
+    }
+
+    interface RoomClickInterface {
+        fun onRoomClick(room: RoomModel)
     }
 
 }
