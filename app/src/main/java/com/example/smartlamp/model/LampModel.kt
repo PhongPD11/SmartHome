@@ -3,7 +3,8 @@ package com.example.smartlamp.model
 data class LampModel(
     var brightness: Float = 0f,
     var schedule: Map<String, Schedule> = HashMap(),
-    var state: Int = 0
+    var state: Int = 0,
+    var flicker: Int = 0,
 )
 
 data class Schedule(

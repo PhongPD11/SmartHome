@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import com.example.smartlamp.database.entity.Mode
 import com.example.smartlamp.database.entity.User
 import com.example.smartlamp.repository.LampRepository
 import com.example.smartlamp.model.LampModel
+import com.example.smartlamp.model.ModeModel
 import com.example.smartlamp.model.UserModel
 import com.example.smartlamp.model.UserSaveModel
+import com.example.smartlamp.repository.ModeRepository
 import com.example.smartlamp.repository.UserRepository
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,18 +24,21 @@ import javax.inject.Inject
 @HiltViewModel
 class LampViewModel @Inject constructor(
     private val repository: LampRepository,
+    private val modeRepository: ModeRepository
 ) : ViewModel() {
     private val lampData: MutableLiveData<LampModel?> = MutableLiveData()
     private val userData: MutableLiveData<UserModel?> = MutableLiveData()
     val keyApp: MutableLiveData<String> = MutableLiveData()
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
-        get() = _user
+    var size = 0
+    private val _modes = MutableLiveData<List<Mode>>()
+    val modes: LiveData<List<Mode>>
+        get() = _modes
 
     init {
         startObservingLampData()
         startObservingKey()
+        getAllModes()
     }
 
     private fun startObservingLampData() {
@@ -79,27 +85,40 @@ class LampViewModel @Inject constructor(
         return lampData
     }
 
-//    fun saveUser(user: UserSaveModel) {
-//        viewModelScope.launch {
-//            val name = user.firstName + user.lastName
-//            val email = user.email
-//            val pass = user.password
-//            val pin = user.pin
-//            val key = user.key
-//            val uid = user.uid
-//
-//            val newUser = User(email,pass,uid,key,pin,name)
-//
-//            userRepo.saveNewUser(newUser)
-//            _user.value = userRepo.getUser(email)
-//        }
-//    }
-//
-//    fun getCurrentUser(email: String){
-//        viewModelScope.launch {
-//            _user.value = userRepo.getUser(email)
-//        }
-//    }
+    fun saveMode(mode: ModeModel) {
+        viewModelScope.launch {
+            val name = mode.mode
+            val image = mode.image
+            val flicker = mode.flicker
+            val brightness = mode.brightness
+            val newMode = Mode(name,image,brightness,flicker)
+
+            modeRepository.saveNewMode(newMode)
+        }
+    }
+
+    fun initMode(list: List<ModeModel>) {
+        viewModelScope.launch {
+            var listInit = mutableListOf<Mode>()
+            for (i in list.indices){
+                val mode = list[i]
+                val name = mode.mode
+                val image = mode.image
+                val flicker = mode.flicker
+                val brightness = mode.brightness
+                val newMode = Mode(name,image,brightness,flicker)
+                listInit.add(newMode)
+            }
+            modeRepository.initMode(listInit)
+        }
+    }
+
+    fun getAllModes(){
+        viewModelScope.launch {
+            _modes.value = modeRepository.getListMode()
+            size = _modes.value!!.size
+        }
+    }
 
 //    fun isLogin(){
 //        viewModelScope.launch {

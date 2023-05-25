@@ -39,6 +39,7 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     private lateinit var binding: FragmentLightModeBinding
 
     private var state = -1
+    private var flicker = -1
     private var brightness = -1F
     private var pos = -1
 
@@ -47,11 +48,7 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val ledNodeRef: DatabaseReference = database.getReference("Led")
 
-    private val workMode = ModeModel( 100F, R.drawable.working, "Working", 0, false)
-    private val readingMode = ModeModel( 80F, R.drawable.reading_book, "Reading", 0, false)
-    private val sleepingMode = ModeModel( 30F,R.drawable.sleep, "Sleeping", 0, false)
-    private val childrenMode = ModeModel(60F, R.drawable.playtime, "Playing Time", 1, false)
-    private val modes = listOf(workMode, readingMode, sleepingMode, childrenMode)
+    private val modes = mutableListOf<ModeModel>()
 
     private lateinit var modeAdapter: ModeAdapter
     override fun onCreateView(
@@ -72,6 +69,17 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
             }
         })
 
+        viewModel.modes.observe(viewLifecycleOwner){
+            if (!it.isNullOrEmpty()){
+                modes.clear()
+                for (i in it.indices){
+                    val data = it[i]
+                    val mode = ModeModel(data.brightness, data.image, data.name, data.flickering, false)
+                    modes.add(mode)
+                }
+            }
+            setUI()
+        }
 
         binding.ivBack.setOnClickListener{
             findNavController().popBackStack()
@@ -85,10 +93,19 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
             ledNodeRef.child("state").setValue(state)
         }
 
+        binding.swFlicker.setOnCheckedChangeListener { _, isChecked ->
+            flicker = if(isChecked)
+                1
+            else
+                0
+            ledNodeRef.child("flicker").setValue(flicker)
+        }
+
         viewModel.getLampData().observe(viewLifecycleOwner){
             if(it!= null) {
                 state = it.state
                 brightness = it.brightness
+                flicker = it.flicker
                 setUI()
             }
         }
@@ -123,6 +140,7 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     private fun setUI() {
         controlLamp(state)
         binding.slider.value = brightness
+        binding.swFlicker.isChecked = flicker == 1
 
         modeAdapter = ModeAdapter(requireContext(), modes, this)
         binding.rvMode.apply {
@@ -140,7 +158,6 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
         brightness = modes[position].brightness
         binding.slider.value = brightness
         ledNodeRef.child("brightness").setValue(brightness)
-
     }
 
 }

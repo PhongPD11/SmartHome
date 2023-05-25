@@ -18,6 +18,7 @@ import com.example.smartlamp.adapter.RoomDetailAdapter
 import com.example.smartlamp.databinding.DialogModeScheduleBinding
 import com.example.smartlamp.databinding.FragmentRoomBinding
 import com.example.smartlamp.model.DeviceModel
+import com.example.smartlamp.model.ModeModel
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -34,6 +35,8 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnStopTrackingTouchListener,
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val ledNodeRef: DatabaseReference = database.getReference("Led")
 
+    private val modes = mutableListOf<ModeModel>()
+
     private lateinit var deviceAdapter: RoomDetailAdapter
     private val viewModel: LampViewModel by activityViewModels()
 
@@ -49,6 +52,8 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnStopTrackingTouchListener,
         binding.ivBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        viewModel.getAllModes()
 
         if (room == "Bedroom"){
             viewModel.getLampData().observe(viewLifecycleOwner) {
@@ -88,10 +93,15 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnStopTrackingTouchListener,
         val window = dialog.window
         val params = window?.attributes
 
+        if (viewModel.size < 1){
+            viewModel.initMode(modes)
+        }
+
         bindingDialog.cvMode.setOnClickListener {
             dialog.dismiss()
             val sw = (state == 1)
             val bundle = bundleOf("sw_lamp" to sw, "brightness" to brightness)
+            viewModel.getAllModes()
             findNavController().navigate(R.id.navigation_light_mode, bundle)
         }
 

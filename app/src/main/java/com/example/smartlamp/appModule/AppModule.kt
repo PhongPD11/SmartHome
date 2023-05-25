@@ -3,6 +3,8 @@ package com.example.smartlamp.appModule
 import android.content.Context
 import androidx.room.Room
 import com.example.smartlamp.api.ApiInterface
+import com.example.smartlamp.database.ModeDao
+import com.example.smartlamp.database.ModeDatabase
 import com.example.smartlamp.database.UserDao
 import com.example.smartlamp.database.UserDatabase
 import com.example.smartlamp.utils.Urls.BASE_URL
@@ -59,6 +61,18 @@ object AppModule {
     @Singleton
     fun provideUserDao(userDatabase: UserDatabase) : UserDao {
         return userDatabase.getUserDao()
+    }
+
+  @Provides
+    @Singleton
+    fun provideModeDatabase(@ApplicationContext context: Context) : ModeDatabase {
+        return Room.databaseBuilder(context, ModeDatabase::class.java, "mode_database").build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideModeDao(modeDatabase: ModeDatabase) : ModeDao {
+        return modeDatabase.getModeDao()
     }
 
     @Provides
