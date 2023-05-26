@@ -75,6 +75,16 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_change_pass"
+        android:name="com.example.smartlamp.fragment.ChangePasswordFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_profile_setting"
+        android:name="com.example.smartlamp.fragment.ProfileSettingFragment" >
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_schedule_setting"
         android:name="com.example.smartlamp.fragment.ScheduleSettingFragment" >
 
