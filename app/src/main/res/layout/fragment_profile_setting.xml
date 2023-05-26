@@ -34,7 +34,7 @@
                 android:gravity="center_vertical"
                 android:padding="5dp"
                 android:textSize="20sp"
-                android:text="@string/profile"
+                android:text="@string/profile_setting"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/iv_back"
                 app:layout_constraintLeft_toRightOf="@id/iv_back"
@@ -44,46 +44,15 @@
 
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/consInfo"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            tools:text="Duy Phong"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivAvatar"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:src="@drawable/ic_user"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#999"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/consInfo"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_setting"
+            android:id="@+id/card_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -104,7 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/settings"
+                    android:text="@string/information"
                     app:layout_constraintStart_toEndOf="@+id/iv_setting"
                     app:layout_constraintTop_toTopOf="@id/iv_setting" />
 
@@ -115,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="4dp"
-                    android:text="@string/update_your_account"
+                    android:text="@string/update_your_profile"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/iv_setting"
                     app:layout_constraintStart_toEndOf="@+id/iv_setting"
@@ -127,7 +96,7 @@
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:padding="2dp"
-                    android:src="@drawable/settings"
+                    android:src="@drawable/ic_edit_pro"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -149,7 +118,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_profile"
+            android:id="@+id/card_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -170,7 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/profile_setting"
+                    android:text="@string/password"
                     app:layout_constraintStart_toEndOf="@+id/iv_profile"
                     app:layout_constraintTop_toTopOf="@id/iv_profile" />
 
@@ -182,7 +151,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="4dp"
                     android:textSize="12sp"
-                    android:text="@string/update_your_profile"
+                    android:text="@string/change_your_password"
                     app:layout_constraintBottom_toBottomOf="@id/iv_profile"
                     app:layout_constraintStart_toEndOf="@+id/iv_profile"
                     app:layout_constraintTop_toBottomOf="@id/tv_profile" />
@@ -193,7 +162,7 @@
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:padding="2dp"
-                    android:src="@drawable/profile"
+                    android:src="@drawable/ic_lock"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -223,6 +192,7 @@
             app:cardUseCompatPadding="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"

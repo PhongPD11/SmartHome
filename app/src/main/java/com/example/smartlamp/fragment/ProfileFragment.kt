@@ -50,15 +50,11 @@ import kotlin.math.round
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
-
-    var data = MutableLiveData<List<DailyForecast>>()
     private val viewModel: LampViewModel by activityViewModels()
-
 
     private var userName = ""
     private val auth = FirebaseAuth.getInstance()
 
-    private lateinit var roomAdapter: RoomAdapter
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,13 +74,12 @@ class ProfileFragment : Fragment() {
             showDialog(requireContext())
         }
 
-        binding.ivCamera.setOnClickListener {
-            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            startActivityForResult(gallery, PICK_IMAGE)
-        }
-
         binding.ivBack.setOnClickListener{
             findNavController().popBackStack()
+        }
+
+        binding.cardProfile.setOnClickListener {
+            findNavController().navigate(R.id.navigation_profile_setting)
         }
 
         setObserb()

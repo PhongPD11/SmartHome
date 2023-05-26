@@ -33,6 +33,7 @@
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign Up</string>
+    <string name="confirm">Confirm</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="email_error">Enter your email</string>
@@ -41,6 +42,7 @@
     <string name="password_confirm_error">Password mismatch</string>
     <string name="register">Register</string>
     <string name="register_success">Register Successfully!</string>
+    <string name="change_pass_success">Change Password Successfully!</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="key">Key</string>
@@ -52,4 +54,8 @@
     <string name="flickering">Flickering</string>
     <string name="custom_mode">Custom Mode</string>
     <string name="color">Color</string>
+    <string name="change_password">Change Password</string>
+    <string name="information">Information</string>
+    <string name="change_your_password">Change your password</string>
+    <string name="new_password">New Password</string>
 </resources>
