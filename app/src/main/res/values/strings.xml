@@ -50,4 +50,6 @@
     <string name="update_your_profile">Update your profile information</string>
     <string name="log_out">Log Out</string>
     <string name="flickering">Flickering</string>
+    <string name="custom_mode">Custom Mode</string>
+    <string name="color">Color</string>
 </resources>

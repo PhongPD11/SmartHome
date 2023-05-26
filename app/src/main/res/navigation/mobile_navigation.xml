@@ -64,6 +64,10 @@
         android:name="com.example.smartlamp.fragment.ScheduleFragment" />
 
     <fragment
+        android:id="@+id/navigation_add_mode"
+        android:name="com.example.smartlamp.fragment.AddModeFragment" />
+
+    <fragment
         android:id="@+id/navigation_auth"
         android:name="com.example.smartlamp.fragment.AuthFragment" >
 

@@ -85,6 +85,10 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
             findNavController().popBackStack()
         }
 
+        binding.ivAdd.setOnClickListener{
+            findNavController().navigate(R.id.navigation_add_mode)
+        }
+
         binding.swDevice.setOnCheckedChangeListener { _, isChecked ->
             state = if(isChecked)
                 1

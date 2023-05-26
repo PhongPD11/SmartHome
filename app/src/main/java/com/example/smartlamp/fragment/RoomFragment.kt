@@ -35,7 +35,12 @@ class RoomFragment : Fragment(), RoomDetailAdapter.OnStopTrackingTouchListener,
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val ledNodeRef: DatabaseReference = database.getReference("Led")
 
-    private val modes = mutableListOf<ModeModel>()
+    private val workMode = ModeModel( 100F, R.drawable.working, "Working", 0, false)
+    private val readingMode = ModeModel( 80F, R.drawable.reading_book, "Reading", 0, false)
+    private val sleepingMode = ModeModel( 30F,R.drawable.sleep, "Sleeping", 0, false)
+    private val childrenMode = ModeModel(60F, R.drawable.playtime, "Playing Time", 1, false)
+    private val modes = listOf(workMode, readingMode, sleepingMode, childrenMode)
+
 
     private lateinit var deviceAdapter: RoomDetailAdapter
     private val viewModel: LampViewModel by activityViewModels()

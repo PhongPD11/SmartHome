@@ -134,7 +134,7 @@ class LampViewModel @Inject constructor(
 
 //    fun deleteList() {
 //        viewModelScope.launch {
-//            userRepo.deleteAll()
+//            modeRepository.deleteAll()
 ////            _check.value = userRepo.getListUser().isNotEmpty()
 //        }
 //    }
