@@ -160,7 +160,9 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     override fun onModeClick(position: Int) {
         onlyOneMode(position)
         brightness = modes[position].brightness
+        flicker = modes[position].flicker
         binding.slider.value = brightness
+        ledNodeRef.child("flicker").setValue(flicker)
         ledNodeRef.child("brightness").setValue(brightness)
     }
 

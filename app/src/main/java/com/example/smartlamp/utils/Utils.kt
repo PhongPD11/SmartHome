@@ -1,5 +1,10 @@
 package com.example.smartlamp.utils
 
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.example.smartlamp.R
 import com.google.firebase.auth.FirebaseAuth
 
 class Utils {
@@ -50,5 +55,18 @@ class Utils {
             val user = auth.currentUser
             return user != null
         }
+
+        fun loadImageFromUrl(url: String, imageView: ImageView) {
+            val requestOptions = RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.ic_user)
+                .error(R.drawable.ic_user)
+
+            Glide.with(imageView.context)
+                .load(url)
+                .apply(requestOptions)
+                .into(imageView)
+        }
     }
+
 }

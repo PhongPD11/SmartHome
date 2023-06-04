@@ -164,7 +164,7 @@ class ChangePasswordFragment : Fragment() {
         params?.gravity = Gravity.CENTER
         window?.attributes = params
 
-        bindingDialog.tvTitle.text = getString(R.string.register_success)
+        bindingDialog.tvTitle.text = getString(R.string.change_pass_success)
 
         bindingDialog.btnYes.setOnClickListener{
             dialog.dismiss()
@@ -189,6 +189,7 @@ class ChangePasswordFragment : Fragment() {
                 } else {
                     binding.layPassword.error = resources.getString(R.string.password_confirm_error)
                     binding.layPassword.isErrorEnabled = true
+                    binding.progressBar.visibility = View.GONE
                 }
             }
     }

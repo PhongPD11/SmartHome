@@ -89,6 +89,17 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_profile_information"
+        android:name="com.example.smartlamp.fragment.ProfileInformationFragment" >
+
+        <argument
+            android:name="image"
+            app:argType="string"
+            android:defaultValue="" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_schedule_setting"
         android:name="com.example.smartlamp.fragment.ScheduleSettingFragment" >
 

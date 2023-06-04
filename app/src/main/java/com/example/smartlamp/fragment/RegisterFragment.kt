@@ -12,9 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -34,11 +32,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
     private lateinit var binding: FragmentRegisterBinding
     lateinit var viewPager: ViewPager2
     lateinit var tabLayout: TabLayout
+
 
     private val viewModel: LampViewModel by activityViewModels()
 
@@ -97,7 +97,7 @@ class RegisterFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pattern = Regex("^[A-Z][a-zA-Z]*$")
+                val pattern = Regex("^[A-Z][a-zA-Z ]*$")
                 val name = s.toString().trim()
                 if (name.isNotEmpty()) {
                     if (pattern.matches(name)){
@@ -200,6 +200,7 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
+
     private fun TextInputEditText.onText(): String {
         return text.toString().trim()
     }
@@ -282,6 +283,7 @@ class RegisterFragment : Fragment() {
         Handler().postDelayed({
             userNodeRef.child("$uid/firstName").setValue(firstName)
             userNodeRef.child("$uid/lastName").setValue(lastName)
+            userNodeRef.child("$uid/imageUrl").setValue("")
         }, 2000)
     }
 

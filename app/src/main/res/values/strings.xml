@@ -43,6 +43,7 @@
     <string name="register">Register</string>
     <string name="register_success">Register Successfully!</string>
     <string name="change_pass_success">Change Password Successfully!</string>
+    <string name="update_success">Update Successfully!</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="key">Key</string>
@@ -58,4 +59,6 @@
     <string name="information">Information</string>
     <string name="change_your_password">Change your password</string>
     <string name="new_password">New Password</string>
+    <string name="edit_information">Edit Information</string>
+    <string name="save">Save</string>
 </resources>

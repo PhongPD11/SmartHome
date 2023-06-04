@@ -28,6 +28,7 @@ class LampViewModel @Inject constructor(
 ) : ViewModel() {
     private val lampData: MutableLiveData<LampModel?> = MutableLiveData()
     private val userData: MutableLiveData<UserModel?> = MutableLiveData()
+    val image: MutableLiveData<String> = MutableLiveData()
     val keyApp: MutableLiveData<String> = MutableLiveData()
 
     var size = 0
@@ -120,22 +121,4 @@ class LampViewModel @Inject constructor(
         }
     }
 
-//    fun isLogin(){
-//        viewModelScope.launch {
-//            val check = userRepo.getListUser()
-//        }
-//    }
-
-//    fun delete(user: User) {
-//        viewModelScope.launch {
-//            userRepo.deleteUser(user)
-//        }
-//    }
-
-//    fun deleteList() {
-//        viewModelScope.launch {
-//            modeRepository.deleteAll()
-////            _check.value = userRepo.getListUser().isNotEmpty()
-//        }
-//    }
 }

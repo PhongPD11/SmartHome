@@ -40,7 +40,7 @@ class Validations {
             nameTextInputLayout: TextInputLayout
         ): Boolean {
             var isError = false
-            val pattern = Regex("^[A-Z][a-zA-Z]*$")
+            val pattern = Regex("^[A-Z][a-zA-Z ]*$")
 
             if (name.isEmpty()) {
                 isError = true
