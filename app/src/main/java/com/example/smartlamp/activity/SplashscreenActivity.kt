@@ -11,6 +11,7 @@ import com.example.smartlamp.R
 import com.example.smartlamp.model.WeatherModel
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceId
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -29,6 +30,15 @@ class SplashscreenActivity : AppCompatActivity() {
 
         FirebaseApp.initializeApp(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful()) {
+                    return@addOnCompleteListener
+                }
+                val token: String = task.getResult().getToken()
+                println("FCM: $token")
+            }
 
         setContentView(R.layout.activity_splashscreen)
         Handler().postDelayed({

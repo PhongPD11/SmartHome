@@ -123,5 +123,7 @@ dependencies {
     //Image
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+
 
 }

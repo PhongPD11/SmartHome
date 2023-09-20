@@ -1,37 +1,26 @@
 {
   "project_info": {
-    "project_number": "588207377104",
-    "firebase_url": "https://forfun-b1029-default-rtdb.firebaseio.com",
-    "project_id": "forfun-b1029",
-    "storage_bucket": "forfun-b1029.appspot.com"
+    "project_number": "312011844429",
+    "project_id": "library-3e026",
+    "storage_bucket": "library-3e026.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:588207377104:android:66740f1bb68d04f3c4ecd5",
+        "mobilesdk_app_id": "1:312011844429:android:f38dee3af7f9b869656504",
         "android_client_info": {
           "package_name": "com.example.smartlamp"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "588207377104-ivjpouf0ib32tq92j9oa7dkdmbi1eiv5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB-KzhGr9LBqNrrud34qgmM77nyZz0UpiY"
+          "current_key": "AIzaSyDQkocCFExvimq0gQrnFDZsVFpVDQRvlDA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "588207377104-ivjpouf0ib32tq92j9oa7dkdmbi1eiv5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
