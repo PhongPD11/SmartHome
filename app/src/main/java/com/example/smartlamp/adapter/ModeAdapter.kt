@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemModeBinding
-import com.example.smartlamp.databinding.ItemRoomBinding
-import com.example.smartlamp.model.DeviceModel
 import com.example.smartlamp.model.ModeModel
-import com.example.smartlamp.model.RoomModel
 
 class ModeAdapter(
     var context: Context,

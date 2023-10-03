@@ -31,7 +31,7 @@ class ProfileSettingFragment : Fragment() {
         }
 
         binding.cardInfo.setOnClickListener {
-
+            findNavController().navigate(R.id.navigation_edit_profile)
         }
 
         binding.cardPass.setOnClickListener {

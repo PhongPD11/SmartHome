@@ -3,11 +3,21 @@ package com.example.smartlamp.utils
 
 
 object Urls {
-    const val BASE_URL = "http://dataservice.accuweather.com/"
+    const val BASE_URL = "http://192.168.1.22:8080/"
 
-    private const val ROOT_URL = BASE_URL + "forecasts/v1/"
+    //account
 
-    const val GET_WEATHER_FORECAST = ROOT_URL + "daily/1day"
+    const val LOGIN = "login"
+    const val REGISTER = "register"
+    const val VERIFY = "verify"
+    const val PROFILE = "profile"
+
+    //book
+
+    const val FAVORITE = "library/favorite"
+    const val FAVORITES = "library/favorites"
+    const val GET_BOOK = "library/book"
+    const val GET_BOOKS = "library/books"
 
 }
 

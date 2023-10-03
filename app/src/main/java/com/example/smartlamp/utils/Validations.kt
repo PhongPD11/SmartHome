@@ -29,8 +29,8 @@ class Validations {
                 isError = true
                 passwordTextInputLayout.error = "Enter your password"
             } else if (pass.length < 8) {
-                isError = true
-                passwordTextInputLayout.error = "Password must have at least 8 characters"
+//                isError = true
+//                passwordTextInputLayout.error = "Password must have at least 8 characters"
             }
             return isError
         }

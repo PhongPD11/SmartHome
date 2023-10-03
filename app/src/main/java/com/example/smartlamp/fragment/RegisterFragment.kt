@@ -4,7 +4,6 @@ package com.example.smartlamp.fragment
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
@@ -12,26 +11,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.DialogSuccessBinding
+import com.example.smartlamp.databinding.DialogVerifyEmailBinding
 import com.example.smartlamp.databinding.FragmentRegisterBinding
+import com.example.smartlamp.utils.Constants.CLASS_ID
+import com.example.smartlamp.utils.Constants.EMAIL
+import com.example.smartlamp.utils.Constants.EXIST_EMAIL
+import com.example.smartlamp.utils.Constants.EXIST_USERNAME
+import com.example.smartlamp.utils.Constants.FULL_NAME
+import com.example.smartlamp.utils.Constants.MAJOR
+import com.example.smartlamp.utils.Constants.PASSWORD
+import com.example.smartlamp.utils.Constants.USERNAME
 import com.example.smartlamp.utils.Validations
-import com.example.smartlamp.viewmodel.LampViewModel
+import com.example.smartlamp.viewmodel.AccountViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,15 +39,9 @@ class RegisterFragment : Fragment() {
     private lateinit var binding: FragmentRegisterBinding
     lateinit var viewPager: ViewPager2
     lateinit var tabLayout: TabLayout
-
-    private val viewModel: LampViewModel by activityViewModels()
-
+    private val accountViewModel: AccountViewModel by activityViewModels()
     private var isValidate = false
-    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private var keyApp = ""
-    private val userNodeRef: DatabaseReference = database.getReference("User")
-
-    lateinit var auth: FirebaseAuth
+    private var emailRegister = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,17 +50,12 @@ class RegisterFragment : Fragment() {
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentRegisterBinding.inflate(layoutInflater)
-
-        auth = Firebase.auth
-
         viewPager = requireActivity().findViewById(R.id.viewPager)
         tabLayout = requireActivity().findViewById(R.id.tabLayout)
 
         binding.btnSend.setOnClickListener {
             sendRegister()
         }
-
-        keyApp = viewModel.keyApp.value!!
 
         binding.etFirstName.doAfterTextChanged { text ->
             val notValidate: Boolean =
@@ -80,19 +69,11 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        binding.etKey.doAfterTextChanged { text ->
-            if (text.toString() == keyApp) {
-                binding.layKey.error = null
-                binding.layKey.isErrorEnabled = false
-                isValidate = true
-            } else {
-                binding.layKey.error = "Your key is not true"
-                binding.layKey.isErrorEnabled = true
-                isValidate = false
-            }
+        binding.etMajor.doAfterTextChanged { text ->
+
         }
 
-        binding.etLastName.addTextChangedListener(object: TextWatcher {
+        binding.etLastName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -100,7 +81,7 @@ class RegisterFragment : Fragment() {
                 val pattern = Regex("^[A-Z][a-zA-Z]*$")
                 val name = s.toString().trim()
                 if (name.isNotEmpty()) {
-                    if (pattern.matches(name)){
+                    if (pattern.matches(name)) {
                         binding.layLastName.error = null
                         binding.layLastName.isErrorEnabled = false
                         isValidate = true
@@ -116,39 +97,24 @@ class RegisterFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()){
+                if (s.isNullOrEmpty()) {
                     isValidate = true
                 }
             }
         })
 
-        binding.etEmail.addTextChangedListener(object: TextWatcher {
+        binding.etEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val notValidate: Boolean = Validations.checkEmailValidates(
-                    s.toString(),
-                    binding.layUsername,
-                    requireContext()
-                )
-                if (!notValidate) {
-                    binding.layUsername.error = null
-                    binding.layUsername.isErrorEnabled = false
-                    isValidate = true
-                } else {
-                    isValidate = false
-                }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.toString() != "" && s.toString() != " ") {
-                        checkEmailRegistered(s.toString())
-                    }
-                }
+            }
         })
 
-        binding.etPassword.addTextChangedListener(object: TextWatcher {
+        binding.etPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
@@ -168,13 +134,13 @@ class RegisterFragment : Fragment() {
             }
         })
 
-        binding.etConfirmPassword.addTextChangedListener(object: TextWatcher {
+        binding.etConfirmPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val notValidate: Boolean =
-                    Validations.passwordValidate(s.toString() ,binding.layConfirmPassword)
+                    Validations.passwordValidate(s.toString(), binding.layConfirmPassword)
                 if (!notValidate) {
                     binding.layConfirmPassword.error = null
                     binding.layConfirmPassword.isErrorEnabled = false
@@ -185,7 +151,7 @@ class RegisterFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (s.toString() == binding.etPassword.text.toString()){
+                if (s.toString() == binding.etPassword.text.toString()) {
                     isValidate = true
                     binding.layConfirmPassword.error = null
                     binding.layConfirmPassword.isErrorEnabled = false
@@ -196,6 +162,36 @@ class RegisterFragment : Fragment() {
                 }
             }
         })
+
+        accountViewModel.registerModel.observe(viewLifecycleOwner) {
+            if (accountViewModel.isSuccess) {
+                showVerifyDialog(requireContext(), emailRegister)
+            } else {
+                when (it.message) {
+                    EXIST_USERNAME -> {
+                        binding.layUsername.apply {
+                            error = getString(R.string.exist_username)
+                            isErrorEnabled = true
+                        }
+                    }
+                    EXIST_EMAIL -> {
+                        binding.layEmail.apply {
+                            error = getString(R.string.exist_email)
+                            isErrorEnabled = true
+                        }
+                    }
+                    else -> Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        accountViewModel.isVerifySuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                showDialogSendSuccess(requireContext())
+            } else {
+                showVerifyDialog(requireContext(), emailRegister)
+            }
+        }
 
         return binding.root
     }
@@ -227,34 +223,19 @@ class RegisterFragment : Fragment() {
             }
 
             else -> {
-                if (isValidate){
+                if (isValidate) {
                     val email = binding.etEmail.text.toString()
                     val pass = binding.etPassword.text.toString()
-                    val firstName = binding.etFirstName.onText()
-                    val lastName = binding.etLastName.onText()
-                    registerUser(email,pass,firstName,lastName)
+                    val fullName = "${binding.etFirstName.onText()} ${binding.etLastName.onText()}"
+                    val major = binding.etMajor.onText()
+                    val classID = binding.etClassId.onText()
+                    val username = binding.etUsername.onText()
+
+                    registerUser(email, username, pass, fullName, major, classID)
                     binding.progressBar.visibility = View.VISIBLE
                 }
             }
         }
-    }
-
-    private fun checkEmailRegistered(email: String) {
-        auth.fetchSignInMethodsForEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val signInMethods = task.result?.signInMethods
-                    if (!signInMethods.isNullOrEmpty()) {
-                        binding.layUsername.error = "This email is already in use!"
-                        binding.layUsername.isErrorEnabled = true
-                        isValidate = false
-                    } else {
-                        isValidate = true
-                        binding.layUsername.error = null
-                        binding.layUsername.isErrorEnabled = false
-                    }
-                }
-            }
     }
 
     private fun showDialogSendSuccess(context: Context) {
@@ -270,34 +251,65 @@ class RegisterFragment : Fragment() {
 
         bindingDialog.tvTitle.text = getString(R.string.register_success)
 
-        bindingDialog.btnYes.setOnClickListener{
+        bindingDialog.btnYes.setOnClickListener {
             dialog.dismiss()
             findNavController().navigate(R.id.navigation_auth)
         }
         dialog.show()
     }
 
-    private fun createName(firstName: String, lastName: String, uid : String){
-        userNodeRef.child("User").setValue(uid)
-        Handler().postDelayed({
-            userNodeRef.child("$uid/firstName").setValue(firstName)
-            userNodeRef.child("$uid/lastName").setValue(lastName)
-        }, 2000)
+
+    private fun registerUser(
+        email: String,
+        username: String,
+        password: String,
+        fullName: String,
+        major: String,
+        classID: String
+    ) {
+        accountViewModel.registerAccount(
+            hashMapOf(
+                USERNAME to username,
+                PASSWORD to password,
+                EMAIL to email,
+                FULL_NAME to fullName,
+                MAJOR to major,
+                CLASS_ID to classID
+            )
+        )
+        emailRegister = email
     }
 
-    private fun registerUser(email: String, password: String,firstName: String, lastName: String) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-                task ->
-            if (task.isSuccessful) {
-                val currentUser: FirebaseUser? = auth.currentUser
-                if (currentUser != null) {
-                    createName(firstName, lastName, currentUser.uid)
+    private fun showVerifyDialog(context: Context, email: String) {
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        val bindingDialog: DialogVerifyEmailBinding =
+            DialogVerifyEmailBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+        val window = dialog.window
+        val params = window?.attributes
+        bindingDialog.btnYes.isEnabled = false
+        var code = 0
+
+        bindingDialog.etCode.doAfterTextChanged { text ->
+            if (text != null) {
+                if (text.length != 6) {
+                    bindingDialog.btnYes.isEnabled = false
+                } else {
+                    bindingDialog.btnYes.isEnabled = true
+                    code = text.toString().toInt()
                 }
-                showDialogSendSuccess(requireContext())
-            } else {
-                Toast.makeText(context, "Register Unsuccessfully", Toast.LENGTH_LONG).show()
             }
         }
+
+        bindingDialog.btnYes.setOnClickListener {
+            accountViewModel.verifyMail(email, code)
+            dialog.dismiss()
+        }
+
+        params?.gravity = Gravity.CENTER
+        window?.attributes = params
+
+        dialog.show()
     }
 
 }

@@ -5,7 +5,7 @@
     <string name="profile">Profile</string>
     <string name="profile_setting">Profile Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="room">Room</string>
+    <string name="favorite">Favorite</string>
     <string name="ho_chi_minh_city">Ho Chi Minh City</string>
     <string name="complete">Complete</string>
     <string name="schedule">Schedule</string>
@@ -28,24 +28,32 @@
     <string name="mode">Mode</string>
     <string name="light_mode">Light Mode</string>
     <string name="lamp">Lamp</string>
+
+    //login - sign up
     <string name="sign_in">Sign In</string>
     <string name="login">Login</string>
-    <string name="user_name">User Name</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign Up</string>
     <string name="confirm">Confirm</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
-    <string name="email_error">Enter your email</string>
+    <string name="username">Username</string>
+    <string name="email_error">Enter your username</string>
     <string name="first_error">Enter your first name</string>
     <string name="password_error">Enter password</string>
     <string name="password_confirm_error">Password mismatch</string>
     <string name="register">Register</string>
     <string name="register_success">Register Successfully!</string>
+    <string name="update_success">Update Successfully!</string>
     <string name="change_pass_success">Change Password Successfully!</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="key">Key</string>
+    <string name="exist_username">This username is already taken.</string>
+    <string name="exist_email">An account with this email address already exists.</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="user_not_found">User not found.</string>
+
+
     <string name="guest_user">You must Sign In to use Room</string>
     <string name="settings">Settings</string>
     <string name="update_your_account">Update your account</string>
@@ -56,4 +64,10 @@
     <string name="information">Information</string>
     <string name="change_your_password">Change your password</string>
     <string name="new_password">New Password</string>
+    <string name="class_id">Class ID</string>
+    <string name="major">Major</string>
+    <string name="email_confirmation">Email Confirmation</string>
+    <string name="verification_guide">Enter your verification to complete registration!</string>
+    <string name="hint_code">ex: 345678</string>
+    <string name="save">Save</string>
 </resources>

@@ -47,6 +47,9 @@ class ChangePasswordFragment : Fragment() {
             sendChange()
         }
 
+        binding.ivBack.setOnClickListener{
+            findNavController().popBackStack()
+        }
 
         binding.etPassword.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

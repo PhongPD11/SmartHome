@@ -6,33 +6,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.ModeAdapter
-import com.example.smartlamp.adapter.RoomAdapter
-import com.example.smartlamp.adapter.RoomDetailAdapter
-import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.databinding.FragmentLightModeBinding
-import com.example.smartlamp.model.DailyForecast
-import com.example.smartlamp.model.DeviceModel
 import com.example.smartlamp.model.ModeModel
-import com.example.smartlamp.model.RoomModel
-import com.example.smartlamp.model.ScheduleModel
-import com.example.smartlamp.utils.RecyclerTouchListener
-import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.slider.Slider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import kotlin.math.round
 
 @AndroidEntryPoint
 class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{

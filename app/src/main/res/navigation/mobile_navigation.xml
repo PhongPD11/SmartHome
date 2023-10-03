@@ -85,6 +85,11 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_edit_profile"
+        android:name="com.example.smartlamp.fragment.EditProfileFragment" >
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_schedule_setting"
         android:name="com.example.smartlamp.fragment.ScheduleSettingFragment" >
 

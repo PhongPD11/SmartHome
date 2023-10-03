@@ -16,24 +16,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
-import com.example.smartlamp.adapter.RoomAdapter
+import com.example.smartlamp.adapter.FavoriteAdapter
 import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.DailyForecast
-import com.example.smartlamp.model.RoomModel
-import com.example.smartlamp.utils.Constants.BIG_RAIN
-import com.example.smartlamp.utils.Constants.NO_CLOUD
-import com.example.smartlamp.utils.Constants.SMALL_SUN
-import com.example.smartlamp.utils.RecyclerTouchListener
-import com.example.smartlamp.utils.Utils
+import com.example.smartlamp.model.BookShowModel
+import com.example.smartlamp.utils.Constants.LOGIN
+import com.example.smartlamp.utils.Constants.NAME
+import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.round
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
+class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
     private lateinit var binding: FragmentHomeBinding
 
     var data = MutableLiveData<List<DailyForecast>>()
@@ -43,13 +43,16 @@ class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
     private var welcome = ""
     private var signed = false
 
-    private val livingRoom = RoomModel(R.drawable.living_room, "Living Room")
-    private val bedroom = RoomModel(R.drawable.bed_room, "Bedroom")
-    private val kitchenRoom = RoomModel(R.drawable.kitchen, "Kitchen")
-    private val rooms = listOf(livingRoom, bedroom, kitchenRoom)
+    @Inject
+    lateinit var sharedPref: SharedPref
+
+    private val livingRoom = BookShowModel("", "Living Room", 3.0)
+    private val bedroom = BookShowModel("", "Bedroom", 4.2)
+    private val kitchenRoom = BookShowModel("", "Kitchen", 1.5)
+    private var favorites = ArrayList<BookShowModel>()
 
 
-    private lateinit var roomAdapter: RoomAdapter
+    private lateinit var roomAdapter: FavoriteAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -59,11 +62,21 @@ class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
     ): View {
         super.onCreate(savedInstanceState)
         binding = FragmentHomeBinding.inflate(layoutInflater)
-        signed = arguments?.getBoolean("signed") ?: false
+        sharedPref = SharedPref(context)
 
-        signed = Utils.checkAuthentication()
+        signed = sharedPref.getBoolean(LOGIN)
 
         lampViewModel.getLampData()
+
+        val name = sharedPref.getString(NAME)
+        if (!name.isNullOrEmpty()) {
+            binding.tvName.apply {
+                visibility = View.VISIBLE
+                text = name
+            }
+        } else {
+            binding.tvName.visibility = View.GONE
+        }
 
         setObserb()
         setUI()
@@ -80,47 +93,16 @@ class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
         binding.ivWeather.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
 
-        viewModel.weather.observe(viewLifecycleOwner) { weather ->
-            val dailyForecast = weather.dailyForecasts[0]
-            val temperature = dailyForecast.temperature
-
-            binding.tvStatus.visibility = View.VISIBLE
-            binding.tvTemp.visibility = View.VISIBLE
-            binding.tvPosition.visibility = View.VISIBLE
-            binding.ivWeather.visibility = View.VISIBLE
-            binding.progressBar.visibility = View.GONE
-
-            if (isNight()) {
-                val status = dailyForecast.night.icon
-                binding.tvStatus.text = status
-                if (dailyForecast.night.hasPrecipitation) {
-                    binding.ivWeather.setImageResource(R.drawable.night_rain)
-                    if (status == BIG_RAIN){
-                        binding.ivWeather.setImageResource(R.drawable.thunderstorm)
-                    }
-                } else {
-                    when (status) {
-                        BIG_RAIN -> binding.ivWeather.setImageResource(R.drawable.storm)
-                        NO_CLOUD -> binding.ivWeather.setImageResource(R.drawable.night)
-                        else -> binding.ivWeather.setImageResource(R.drawable.night_cloud)
-                    }
-                }
-            } else {
-                val status = dailyForecast.day.icon
-                binding.tvStatus.text = dailyForecast.day.icon
-                if (dailyForecast.night.hasPrecipitation) {
-                    binding.ivWeather.setImageResource(R.drawable.day_rain)
-                    if (status == BIG_RAIN){
-                        binding.ivWeather.setImageResource(R.drawable.thunderstorm)
-                    }
-                } else {
-                    when (status) {
-                        SMALL_SUN -> binding.ivWeather.setImageResource(R.drawable.partly_sunny)
-                        else -> binding.ivWeather.setImageResource(R.drawable.blazing_sunshine)
-                    }
+        viewModel.favorites.observe(viewLifecycleOwner) {
+            if (it.code == 200) {
+                val listBook = it.data
+                favorites.clear()
+                for (i in listBook.indices){
+                    val book = BookShowModel("",listBook[i].name, listBook[i].vote)
+                    favorites.add(book)
+                    roomAdapter.notifyDataSetChanged()
                 }
             }
-            binding.tvTemp.text = ConvertTemp(temperature.maximum.unit, temperature.maximum.value)
         }
     }
 
@@ -179,7 +161,7 @@ class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        roomAdapter = RoomAdapter(requireContext(), rooms, this)
+        roomAdapter = FavoriteAdapter(requireContext(), favorites, this)
         binding.rvRoom.apply {
             adapter = roomAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -187,14 +169,18 @@ class HomeFragment : Fragment(), RoomAdapter.RoomClickInterface {
         roomAdapter.notifyDataSetChanged()
     }
 
-    override fun onRoomClick(room: RoomModel) {
-        val name = room.room
-        val bundle = bundleOf("name" to name)
-        if (signed) {
-            findNavController().navigate(R.id.navigation_room, bundle)
-        } else {
-            showDialog(requireContext())
-        }
+//    override fun onRoomClick(room: BookShowModel) {
+//        val name = room.room
+//        val bundle = bundleOf("name" to name)
+//        if (signed) {
+//            findNavController().navigate(R.id.navigation_room, bundle)
+//        } else {
+//            showDialog(requireContext())
+//        }
+//    }
+
+    override fun onBookClick(room: BookShowModel) {
+        findNavController().navigate(R.id.navigation_room)
     }
 
 }

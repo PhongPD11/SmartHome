@@ -7,6 +7,7 @@ import com.example.smartlamp.database.ModeDao
 import com.example.smartlamp.database.ModeDatabase
 import com.example.smartlamp.database.UserDao
 import com.example.smartlamp.database.UserDatabase
+import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Urls.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -24,6 +25,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideSharedPref(@ApplicationContext context: Context) = SharedPref(context)
+
 
     @Provides
     @Singleton

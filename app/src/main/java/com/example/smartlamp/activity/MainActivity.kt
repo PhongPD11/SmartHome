@@ -15,6 +15,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
+import com.example.smartlamp.utils.SharedPref
+import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,6 +24,7 @@ import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener,
@@ -33,6 +36,8 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private var name = ""
     private val viewModel: LampViewModel by viewModels()
 
+    @Inject
+    lateinit var sharedPref: SharedPref
 
     private val auth = FirebaseAuth.getInstance()
     private var signed = false
@@ -46,12 +51,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
 
+        sharedPref = SharedPref(this)
+        signed = sharedPref.getBoolean(LOGIN)
+
         viewModel.startObservingKey()
-        val user = auth.currentUser
-        if (user!= null){
-            viewModel.fetchUserData(user.uid)
-            signed = true
-        }
 
         val graphInflater = navController.navInflater
         val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)

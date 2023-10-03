@@ -9,6 +9,8 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartlamp.R
 import com.example.smartlamp.model.WeatherModel
+import com.example.smartlamp.utils.Constants.FCM
+import com.example.smartlamp.utils.SharedPref
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
@@ -19,9 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @SuppressLint("CustomSplashScreen")
 class SplashscreenActivity : AppCompatActivity() {
     var weather = ArrayList<WeatherModel>()
+    lateinit var sharePref : SharedPref
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        sharePref = SharedPref(this)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -37,6 +40,7 @@ class SplashscreenActivity : AppCompatActivity() {
                     return@addOnCompleteListener
                 }
                 val token: String = task.getResult().getToken()
+                sharePref.putString(FCM, token)
                 println("FCM: $token")
             }
 
