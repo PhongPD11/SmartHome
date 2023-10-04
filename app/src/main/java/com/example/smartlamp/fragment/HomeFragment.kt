@@ -9,7 +9,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -19,17 +18,17 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.FavoriteAdapter
 import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
-import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.BookShowModel
+import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.NAME
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.example.smartlamp.viewmodel.LampViewModel
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.round
 
 @AndroidEntryPoint
@@ -52,7 +51,7 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
     private var favorites = ArrayList<BookShowModel>()
 
 
-    private lateinit var roomAdapter: FavoriteAdapter
+    private lateinit var favoriteAdapter: FavoriteAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -85,7 +84,7 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
         return binding.root
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setObserb() {
         binding.tvStatus.visibility = View.GONE
         binding.tvTemp.visibility = View.GONE
@@ -97,10 +96,13 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
             if (it.code == 200) {
                 val listBook = it.data
                 favorites.clear()
-                for (i in listBook.indices){
-                    val book = BookShowModel("",listBook[i].name, listBook[i].vote)
+                for (i in listBook.indices) {
+                    val book = BookShowModel("", listBook[i].name, listBook[i].vote)
+                    if (listBook[i].imageUrl != null) {
+                        book.image = listBook[i].imageUrl.toString()
+                    }
                     favorites.add(book)
-                    roomAdapter.notifyDataSetChanged()
+                    favoriteAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -161,12 +163,12 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        roomAdapter = FavoriteAdapter(requireContext(), favorites, this)
+        favoriteAdapter = FavoriteAdapter(requireContext(), favorites, this)
         binding.rvRoom.apply {
-            adapter = roomAdapter
+            adapter = favoriteAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
-        roomAdapter.notifyDataSetChanged()
+        favoriteAdapter.notifyDataSetChanged()
     }
 
 //    override fun onRoomClick(room: BookShowModel) {

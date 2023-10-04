@@ -11,6 +11,7 @@ data class BookModel(
         val amount : Int,
         val author : List<String>,
         val type : List<String>,
-        val vote : Double
+        val vote : Double,
+        val imageUrl : String?,
     )
 }

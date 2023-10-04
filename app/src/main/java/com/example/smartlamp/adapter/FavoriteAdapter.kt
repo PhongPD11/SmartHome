@@ -4,10 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smartlamp.databinding.ItemBookBinding
 import com.example.smartlamp.model.BookShowModel
 import com.example.smartlamp.utils.Utils
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
+
 
 class FavoriteAdapter(
     var context: Context,
@@ -35,6 +43,8 @@ class FavoriteAdapter(
     @SuppressLint("SetTextI18n", "ResourceAsColor", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = books[position]
+
+        Glide.with(context).load(item.image).into(holder.binding.ivBook)
 
         val rate = item.rate
         holder.binding.tvBook.text = item.name
