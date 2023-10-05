@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name" translatable="false">Smart Home</string>
-    <string name="consumption">Consumption</string>
+    <string name="app_name" translatable="false">Smart Library</string>
+    <string name="all_book">All Books</string>
+    <string name="notifications">Notifications</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
     <string name="profile_setting">Profile Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="favorite">Favorite</string>
+    <string name="book_recommendations">Book Recommendations</string>
+    <string name="top_rated">Top Rated</string>
     <string name="ho_chi_minh_city">Ho Chi Minh City</string>
     <string name="complete">Complete</string>
     <string name="schedule">Schedule</string>
@@ -70,4 +73,6 @@
     <string name="verification_guide">Enter your verification to complete registration!</string>
     <string name="hint_code">ex: 345678</string>
     <string name="save">Save</string>
+    <string name="favorite_empty">Your favorite list is currently empty.</string>
+    <string name="notification">Notification</string>
 </resources>

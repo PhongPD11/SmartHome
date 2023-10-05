@@ -4,11 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.smartlamp.model.ResponseProfileModel
 import com.example.smartlamp.model.SimpleApiResponse
+import com.example.smartlamp.model.UserResponseModel
 import com.example.smartlamp.repository.AccountRepository
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Urls.REGISTER
 import dagger.hilt.android.lifecycle.HiltViewModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,7 +28,7 @@ class AccountViewModel @Inject constructor(
     var isVerifySuccess = MutableLiveData<Boolean>()
     var isSuccess = false;
 
-    var updateRes = MutableLiveData<SimpleApiResponse>()
+    var updateRes = MutableLiveData<UserResponseModel>()
 
     fun loginApp (map :HashMap<String?,Any?>){
         accountRepo.loginApp(map).enqueue(object: Callback<ResponseProfileModel> {
@@ -81,16 +84,16 @@ class AccountViewModel @Inject constructor(
         })
     }
 
-    fun editProfile(map :HashMap<String?,Any?>){
-        accountRepo.editProfile(map).enqueue(object : Callback<SimpleApiResponse> {
+    fun editProfile(file: MultipartBody.Part?, model: RequestBody) {
+        accountRepo.editProfile(file, model).enqueue(object : Callback<UserResponseModel> {
             override fun onResponse(
-                call: Call<SimpleApiResponse>,
-                response: Response<SimpleApiResponse>
+                call: Call<UserResponseModel>,
+                response: Response<UserResponseModel>
             ) {
                 updateRes.value = response.body()
             }
 
-            override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
+            override fun onFailure(call: Call<UserResponseModel>, t: Throwable) {
                 t.printStackTrace()
             }
         })

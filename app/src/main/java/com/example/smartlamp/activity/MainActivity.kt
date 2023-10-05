@@ -1,14 +1,13 @@
 package com.example.smartlamp.activity
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.viewModels
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -17,12 +16,8 @@ import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Urls.LOGIN
-import com.example.smartlamp.utils.Utils
-import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -34,12 +29,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     lateinit var navView: BottomNavigationView
 
     private var name = ""
-    private val viewModel: LampViewModel by viewModels()
 
     @Inject
     lateinit var sharedPref: SharedPref
 
-    private val auth = FirebaseAuth.getInstance()
     private var signed = false
 
 
@@ -54,8 +47,6 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         sharedPref = SharedPref(this)
         signed = sharedPref.getBoolean(LOGIN)
 
-        viewModel.startObservingKey()
-
         val graphInflater = navController.navInflater
         val navGraph = graphInflater.inflate(R.navigation.mobile_navigation)
 
@@ -66,8 +57,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         navController.addOnDestinationChangedListener(this)
         navView.setOnItemSelectedListener(this)
 
-    }
+        val badge = navView.getOrCreateBadge(R.id.navigation_notifications)
+        badge.isVisible = true
 
+    }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.navigation_home -> {
@@ -75,7 +68,11 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 navController.navigate(R.id.navigation_home, bundle)
                 true
             }
-            R.id.navigation_statistic -> {
+            R.id.navigation_library -> {
+//                navController.navigate(R.id.navigation_statistic)
+                true
+            }
+            R.id.navigation_notifications -> {
 //                navController.navigate(R.id.navigation_statistic)
                 true
             }
@@ -100,7 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     ) {
         if (
             destination.id == R.id.navigation_home ||
-            destination.id == R.id.navigation_statistic ||
+            destination.id == R.id.navigation_library ||
             destination.id == R.id.navigation_user
         ) {
             binding.navView.visibility = View.VISIBLE

@@ -24,8 +24,6 @@ import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.NAME
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.HomeViewModel
-import com.example.smartlamp.viewmodel.LampViewModel
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -37,7 +35,6 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
 
     var data = MutableLiveData<List<DailyForecast>>()
     private val viewModel: HomeViewModel by activityViewModels()
-    private val lampViewModel: LampViewModel by activityViewModels()
 
     private var welcome = ""
     private var signed = false
@@ -64,8 +61,6 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
         sharedPref = SharedPref(context)
 
         signed = sharedPref.getBoolean(LOGIN)
-
-        lampViewModel.getLampData()
 
         val name = sharedPref.getString(NAME)
         if (!name.isNullOrEmpty()) {
@@ -100,6 +95,11 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
                     val book = BookShowModel("", listBook[i].name, listBook[i].vote)
                     if (listBook[i].imageUrl != null) {
                         book.image = listBook[i].imageUrl.toString()
+                    }
+                    if (favorites.isNotEmpty()){
+                        binding.tvEmpty.visibility = View.GONE
+                    } else {
+                        binding.tvEmpty.visibility = View.VISIBLE
                     }
                     favorites.add(book)
                     favoriteAdapter.notifyDataSetChanged()
@@ -164,7 +164,7 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
         favoriteAdapter = FavoriteAdapter(requireContext(), favorites, this)
-        binding.rvRoom.apply {
+        binding.rvFav.apply {
             adapter = favoriteAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }

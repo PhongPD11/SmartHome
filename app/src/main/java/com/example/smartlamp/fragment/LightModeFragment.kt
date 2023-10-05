@@ -14,7 +14,6 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.ModeAdapter
 import com.example.smartlamp.databinding.FragmentLightModeBinding
 import com.example.smartlamp.model.ModeModel
-import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.slider.Slider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -29,8 +28,6 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     private var flicker = -1
     private var brightness = -1F
     private var pos = -1
-
-    private val viewModel: LampViewModel by activityViewModels()
 
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val ledNodeRef: DatabaseReference = database.getReference("Led")
@@ -56,18 +53,6 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
             }
         })
 
-        viewModel.modes.observe(viewLifecycleOwner){
-            if (!it.isNullOrEmpty()){
-                modes.clear()
-                for (i in it.indices){
-                    val data = it[i]
-                    val mode = ModeModel(data.brightness, data.image, data.name, data.flickering, false)
-                    modes.add(mode)
-                }
-            }
-            setUI()
-        }
-
         binding.ivBack.setOnClickListener{
             findNavController().popBackStack()
         }
@@ -86,15 +71,6 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
             else
                 0
             ledNodeRef.child("flicker").setValue(flicker)
-        }
-
-        viewModel.getLampData().observe(viewLifecycleOwner){
-            if(it!= null) {
-                state = it.state
-                brightness = it.brightness
-                flicker = it.flicker
-                setUI()
-            }
         }
 
         setUI()

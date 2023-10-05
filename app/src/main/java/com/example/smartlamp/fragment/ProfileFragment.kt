@@ -13,13 +13,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.smartlamp.R
 import com.example.smartlamp.activity.MainActivity
 import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentProfileBinding
+import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.FULL_NAME
 import com.example.smartlamp.utils.SharedPref
-import com.example.smartlamp.viewmodel.LampViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -27,7 +29,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
-    private val viewModel: LampViewModel by activityViewModels()
 
     @Inject
     lateinit var sharedPref: SharedPref
@@ -43,6 +44,13 @@ class ProfileFragment : Fragment() {
 
         sharedPref = SharedPref(context)
         binding.tvName.text = sharedPref.getString(FULL_NAME)
+        val options: RequestOptions = RequestOptions()
+            .centerCrop()
+            .placeholder(R.drawable.ic_user)
+            .error(R.drawable.ic_user)
+
+        Glide.with(this).load(sharedPref.getString(Constants.IMAGE_URL)).apply(options).into(binding.ivAvatar)
+
 
         binding.cardLogout.setOnClickListener {
             showDialog(requireContext())

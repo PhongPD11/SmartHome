@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,7 +15,6 @@ import com.example.smartlamp.adapter.ScheduleAdapter
 import com.example.smartlamp.databinding.FragmentScheduleBinding
 import com.example.smartlamp.model.ScheduleModel
 import com.example.smartlamp.utils.Utils
-import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,8 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
     ScheduleAdapter.ScheduleClickInterface {
     lateinit var binding: FragmentScheduleBinding
-
-    private val viewModel: LampViewModel by activityViewModels()
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val ledNodeRef: DatabaseReference = database.getReference("Led")
 
@@ -40,23 +36,6 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentScheduleBinding.inflate(layoutInflater)
-
-        viewModel.getLampData().observe(viewLifecycleOwner) {
-            if (it != null) {
-                val list = ArrayList<ScheduleModel>()
-                val keys: Set<String> = it.schedule.keys
-                keyList = ArrayList(keys)
-                for (i in keyList.indices) {
-                    val time = it.schedule[keyList[i]]
-                    if (time != null) {
-                        list.add(ScheduleModel(time.time.hourOn, time.time.minOn, time.state, time.repeat))
-                    }
-                }
-                schedules.clear()
-                schedules.addAll(list)
-            }
-            setUI()
-        }
 
         binding.fabAdd.setOnClickListener {
             val bundle = bundleOf("add_schedule" to (keyList.size+1).toString())

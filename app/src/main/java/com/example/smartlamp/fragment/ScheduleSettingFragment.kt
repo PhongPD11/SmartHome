@@ -25,19 +25,15 @@ import com.example.smartlamp.model.CustomChooseModel
 import com.example.smartlamp.model.Schedule
 import com.example.smartlamp.model.Time
 import com.example.smartlamp.utils.Utils
-import com.example.smartlamp.viewmodel.LampViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.NonDisposableHandle.parent
 
 @AndroidEntryPoint
 class ScheduleSettingFragment : Fragment() {
     lateinit var binding: FragmentScheduleSettingBinding
-
-    private val viewModel: LampViewModel by activityViewModels()
 
     private lateinit var customChooseAdapter: CustomChooseAdapter
 
@@ -73,26 +69,6 @@ class ScheduleSettingFragment : Fragment() {
         if (key != ""){
             binding.tvTime.text = arguments?.getString("time")!!
             binding.swDevice.isChecked = arguments?.getBoolean("sw_device")!!
-            viewModel.getLampData().observe(viewLifecycleOwner) {
-                if (it != null) {
-                    repeat = it.schedule[key]!!.repeat
-                    val time = it.schedule[key]?.time
-                    if (time != null) {
-                        hourOn = time.hourOn
-                        hourOff = time.hourOff
-                        minOn = time.minOn
-                        minOff = time.minOff
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            binding.timePicker.hour = hourOn
-                            binding.timePicker.minute = minOn
-                        }
-                        updateTimeOff()
-                    }
-                    updateDays(days, repeat)
-                    updateRepeat(repeatDisplay)
-                }
-            }
         } else {
             hourOn = 7
             hourOff = 9

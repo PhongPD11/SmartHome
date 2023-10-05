@@ -1,16 +1,15 @@
 package com.example.smartlamp.model
 
-data class UserModel(
-    var firstName: String = "",
-    var lastName: String = "",
+data class UserResponseModel(
+    val code: Int,
+    val data: UserEditModel,
+    val message: String
 )
 
-data class UserSaveModel(
-    var email: String,
-    var password: String,
-    var firstName: String = "",
-    var lastName: String = "",
-    var key: Int,
-    var uid: String = "",
-    var pin: String,
+data class UserEditModel(
+    var classId: Int,
+    var fullName: String = "",
+    var major: String = "",
+    var uid: Int,
+    var imageUrl: String = ""
 )
