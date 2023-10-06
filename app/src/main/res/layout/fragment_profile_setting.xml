@@ -216,7 +216,7 @@
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:padding="2dp"
-                    android:src="@drawable/logout"
+                    android:src="@drawable/ic_logout"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

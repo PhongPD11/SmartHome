@@ -21,8 +21,8 @@ class FmService : FirebaseMessagingService() {
         try {
             if (remoteMessage.data.isNotEmpty()) {
                 val data = remoteMessage.data
-                val title = data.get("title")
-                var message = data.get("message")
+                val title = data["title"]
+                val message = data["message"]
 
                 sendNotification(title, message)
             }
@@ -51,7 +51,7 @@ class FmService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.blazing_sunshine)
+            .setSmallIcon(R.drawable.logo_32)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
 

@@ -16,7 +16,7 @@
                 android:id="@+id/ivMode"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                tools:src="@drawable/brightness"
+                tools:src="@drawable/logo_64"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 

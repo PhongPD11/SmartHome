@@ -78,13 +78,13 @@ class LightModeFragment: Fragment() , ModeAdapter.ModeClickInterface{
     }
 
     private fun controlLamp(state: Int){
-        if (state == 1){
-            binding.swDevice.isChecked = true
-            binding.ivLamp.setImageResource(R.drawable.lamp_on)
-        } else {
-            binding.ivLamp.setImageResource(R.drawable.lamp)
-            binding.swDevice.isChecked = false
-        }
+//        if (state == 1){
+//            binding.swDevice.isChecked = true
+//            binding.ivLamp.setImageResource(R.drawable.lamp_on)
+//        } else {
+//            binding.ivLamp.setImageResource(R.drawable.lamp)
+//            binding.swDevice.isChecked = false
+//        }
     }
     @SuppressLint("NotifyDataSetChanged")private fun onlyOneMode(position: Int) {
         for (i in modes.indices) {

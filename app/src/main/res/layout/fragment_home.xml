@@ -126,7 +126,6 @@
                         android:id="@+id/cvFavorite"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="250dp"
                         android:layout_marginTop="30dp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginHorizontal="3dp"
@@ -136,18 +135,40 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/consFavorite"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:minHeight="200dp">
+
+                            <ImageView
+                                android:id="@+id/ivFav"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginHorizontal="10dp"
+                                android:src="@drawable/ic_favourite"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tvFavoriteTitle"
+                                app:layout_constraintTop_toTopOf="@id/tvFavoriteTitle"
+                                app:layout_constraintBottom_toBottomOf="@id/tvFavoriteTitle" />
 
                             <TextView
                                 android:id="@+id/tvFavoriteTitle"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:paddingVertical="10dp"
-                                android:paddingHorizontal="20dp"
                                 android:text="@string/favorite"
                                 android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/ivFav"
                                 app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvEmpty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/favorite_empty"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lineFav"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
 
                             <View
                                 android:id="@+id/lineFav"
@@ -166,16 +187,6 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/lineFav" />
 
-                            <TextView
-                                android:id="@+id/tvEmpty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/favorite_empty"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/lineFav"
-                                app:layout_constraintBottom_toBottomOf="parent"/>
-
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
@@ -184,7 +195,6 @@
                         android:id="@+id/cvTop"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="250dp"
                         android:layout_marginTop="30dp"
                         android:layout_marginBottom="20dp"
                         android:paddingBottom="10dp"
@@ -194,18 +204,30 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/consTop"
+                            android:minHeight="200dp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
+                            <ImageView
+                                android:id="@+id/ivTop"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginHorizontal="10dp"
+                                android:src="@drawable/ic_top_rated"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tvTopTitle"
+                                app:layout_constraintTop_toTopOf="@id/tvTopTitle"
+                                app:layout_constraintBottom_toBottomOf="@id/tvTopTitle" />
+
                             <TextView
                                 android:id="@+id/tvTopTitle"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:paddingVertical="10dp"
-                                android:paddingHorizontal="20dp"
                                 android:text="@string/top_rated"
                                 android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/ivTop"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <View
@@ -243,7 +265,6 @@
                         android:id="@+id/cvSuggest"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="250dp"
                         android:layout_marginTop="30dp"
                         android:layout_marginBottom="30dp"
                         android:layout_marginHorizontal="3dp"
@@ -253,19 +274,32 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/consSuggest"
+                            android:minHeight="200dp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
+                            <ImageView
+                                android:id="@+id/ivRecommend"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginHorizontal="10dp"
+                                android:src="@drawable/ic_book_recommend"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tvSuggestTitle"
+                                app:layout_constraintTop_toTopOf="@id/tvSuggestTitle"
+                                app:layout_constraintBottom_toBottomOf="@id/tvSuggestTitle" />
+
                             <TextView
                                 android:id="@+id/tvSuggestTitle"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:paddingVertical="10dp"
-                                android:paddingHorizontal="20dp"
                                 android:text="@string/book_recommendations"
                                 android:textSize="20sp"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/ivRecommend"
                                 app:layout_constraintTop_toTopOf="parent" />
+
 
                             <View
                                 android:id="@+id/lineSuggest"

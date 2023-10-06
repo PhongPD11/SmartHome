@@ -42,9 +42,6 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
     @Inject
     lateinit var sharedPref: SharedPref
 
-    private val livingRoom = BookShowModel("", "Living Room", 3.0)
-    private val bedroom = BookShowModel("", "Bedroom", 4.2)
-    private val kitchenRoom = BookShowModel("", "Kitchen", 1.5)
     private var favorites = ArrayList<BookShowModel>()
 
 

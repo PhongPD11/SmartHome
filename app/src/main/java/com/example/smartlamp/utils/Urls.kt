@@ -19,6 +19,12 @@ object Urls {
     const val GET_BOOK = "library/book"
     const val GET_BOOKS = "library/books"
 
+    //Notification
+
+    const val NOTIFICATION = "notification"
+    const val NOTIFICATION_DELETE = "notification/delete"
+    const val READ_NOTIFICATION = "notification/read"
+
 }
 
 

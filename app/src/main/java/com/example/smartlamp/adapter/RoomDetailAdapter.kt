@@ -42,25 +42,25 @@ class RoomDetailAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = devices[position]
         val bind = holder.binding
-
-        if (item.state == 1){
-            bind.swDevice.isChecked = true
-            bind.ivDevice.setImageResource(R.drawable.lamp_on)
-        } else {
-            bind.swDevice.isChecked = false
-            bind.ivDevice.setImageResource(R.drawable.lamp)
-        }
-
-        bind.tvDevice.text = "Lamp"
-
-        bind.swDevice.setOnCheckedChangeListener { _, isChecked ->
-            onSwitchClickInterface.onSwitchClick(position, isChecked)
-            if (isChecked){
-                bind.ivDevice.setImageResource(R.drawable.lamp_on)
-            } else {
-                bind.ivDevice.setImageResource(R.drawable.lamp)
-            }
-        }
+//
+//        if (item.state == 1){
+//            bind.swDevice.isChecked = true
+//            bind.ivDevice.setImageResource(R.drawable.lamp_on)
+//        } else {
+//            bind.swDevice.isChecked = false
+//            bind.ivDevice.setImageResource(R.drawable.lamp)
+//        }
+//
+//        bind.tvDevice.text = "Lamp"
+//
+//        bind.swDevice.setOnCheckedChangeListener { _, isChecked ->
+//            onSwitchClickInterface.onSwitchClick(position, isChecked)
+//            if (isChecked){
+//                bind.ivDevice.setImageResource(R.drawable.lamp_on)
+//            } else {
+//                bind.ivDevice.setImageResource(R.drawable.lamp)
+//            }
+//        }
 
         holder.itemView.setOnClickListener {
             onDeviceClickInterface.onDeviceClick(item)
