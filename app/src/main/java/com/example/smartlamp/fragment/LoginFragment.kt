@@ -20,6 +20,7 @@ import com.example.smartlamp.utils.Constants.CLASS_ID
 import com.example.smartlamp.utils.Constants.EMAIL
 import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.FULL_NAME
+import com.example.smartlamp.utils.Constants.IMAGE_URL
 import com.example.smartlamp.utils.Constants.LAST_NAME
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.MAJOR
@@ -93,6 +94,9 @@ class LoginFragment : Fragment() {
                 sharedPref.putInt(CLASS_ID, data.classId)
                 sharedPref.putString(MAJOR, data.major)
                 sharedPref.putInt(UID, data.uid)
+                if (!data.imageUrl.isNullOrEmpty()){
+                    sharedPref.putString(IMAGE_URL, data.imageUrl)
+                }
                 sharedPref.putString(USERNAME, username)
                 sharedPref.putString(PASSWORD, pass)
                 val intent = Intent(requireContext(), MainActivity::class.java)

@@ -11,6 +11,7 @@ data class ResponseProfileModel (
         val email: String,
         val classId: Int,
         val major: String,
-        val token: String
+        val token: String,
+        val imageUrl: String?=""
     )
 }

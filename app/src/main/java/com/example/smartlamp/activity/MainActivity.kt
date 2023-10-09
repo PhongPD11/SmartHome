@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -64,6 +65,8 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         navController.addOnDestinationChangedListener(this)
         navView.setOnItemSelectedListener(this)
 
+        navView.menu.findItem(R.id.navigation_notifications).isVisible = signed
+
         viewModel.notifications.observe(this, Observer {
             val badge = navView.getOrCreateBadge(R.id.navigation_notifications)
             if (it.isNullOrEmpty()) {
@@ -93,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 true
             }
             R.id.navigation_notifications -> {
-//                navController.navigate(R.id.navigation_statistic)
+                navController.navigate(R.id.navigation_notifications)
                 true
             }
             R.id.navigation_user -> {

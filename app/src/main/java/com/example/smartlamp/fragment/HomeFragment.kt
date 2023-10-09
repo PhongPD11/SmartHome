@@ -20,6 +20,7 @@ import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.BookShowModel
 import com.example.smartlamp.model.DailyForecast
+import com.example.smartlamp.model.Quote
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.NAME
 import com.example.smartlamp.utils.SharedPref
@@ -38,6 +39,12 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
 
     private var welcome = ""
     private var signed = false
+
+    private val quote = Quote("“In principle and reality, libraries are life-enhancing palaces of wonder.”", "―Gail Honeyman")
+    private val quote2 = Quote("“I am an omnivorous reader with a strangely retentive memory for trifles.”", "―Arthur Conan Doyle")
+    private val quote3 = Quote("“In the end, we’ll all become stories.”", "―Margaret Atwood")
+    private val quote4 = Quote("“If you only read the books that everyone else is reading, you can only think what everyone else is thinking.”", "―Haruki Murakami")
+    private val listQuote = listOf<Quote>(quote, quote2, quote3, quote4)
 
     @Inject
     lateinit var sharedPref: SharedPref
@@ -59,6 +66,10 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
 
         signed = sharedPref.getBoolean(LOGIN)
 
+        if (signed) {
+            binding.cvFavorite.visibility = View.VISIBLE
+        }
+
         val name = sharedPref.getString(NAME)
         if (!name.isNullOrEmpty()) {
             binding.tvName.apply {
@@ -69,6 +80,8 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
             binding.tvName.visibility = View.GONE
         }
 
+        setQuote();
+
         setObserb()
         setUI()
         isNight()
@@ -78,12 +91,6 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setObserb() {
-        binding.tvStatus.visibility = View.GONE
-        binding.tvTemp.visibility = View.GONE
-        binding.tvPosition.visibility = View.GONE
-        binding.ivWeather.visibility = View.GONE
-        binding.progressBar.visibility = View.VISIBLE
-
         viewModel.favorites.observe(viewLifecycleOwner) {
             if (it.code == 200) {
                 val listBook = it.data
@@ -103,6 +110,12 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
                 }
             }
         }
+    }
+
+    private fun setQuote(){
+        val random = (listQuote.indices).random()
+        binding.tvQuote.text = listQuote[random].quote
+        binding.tvAuth.text = listQuote[random].author
     }
 
     @SuppressLint("SetTextI18n")
@@ -127,14 +140,6 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
             findNavController().navigate(R.id.navigation_auth)
         }
         dialog.show()
-    }
-
-    private fun ConvertTemp(type: String, value: Double): String {
-        var temp = value
-        if (type == "F") {
-            temp = round((value - 32) * 5 / 9 * 100) / 100
-        }
-        return "$temp °C"
     }
 
     private fun isNight(): Boolean {

@@ -2,15 +2,19 @@ package com.example.smartlamp.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemNotificationBinding
+import com.example.smartlamp.model.NotificationModel
+import io.tux.wallet.testnet.utils.ConvertTime
 
 class NotificationAdapter(
     var context: Context,
-//    var notifications: ArrayList<MainNotificationModel.Notifications.notificationData>,
+    var notifications: ArrayList<NotificationModel.Data>,
 ) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
     inner class ViewHolder(var binding: ItemNotificationBinding) :
@@ -26,29 +30,14 @@ class NotificationAdapter(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n", "ResourceAsColor", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val item = notifications[position]
-//        val bind = holder.binding
-//        bind.tvTitle.text = item.title
-//        bind.tvContent.text = item.content
-//        bind.tvTime.text = ConvertTime.formatDate(item.time, "dd MMM yyyy - HH:mm:ss")
-//
-//        var imgType = bind.ivTypeMsg
-//
-//        if (item.read == "UNREAD") {
-//            bind.ivUnread.visibility = View.VISIBLE
-//        } else {
-//            bind.ivUnread.visibility = View.GONE
-//        }
-//
-//        if (item.typeMsg == "Present") {
-//            imgType.setImageResource(R.drawable.ic_gift)
-//        } else {
-//            imgType.setImageResource(R.drawable.ic_notification)
-//        }
-
-
+        val item = notifications[position]
+        val bind = holder.binding
+        bind.tvTitle.text = item.title
+        bind.tvContent.text = item.content
+        bind.tvTime.text = ConvertTime.formatDate(item.createAt, "dd MMM yyyy - HH:mm:ss")
     }
 
 
@@ -61,7 +50,7 @@ class NotificationAdapter(
 
 
     override fun getItemCount(): Int {
-        return 1
+        return notifications.size
     }
 
 }

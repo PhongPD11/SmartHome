@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.smartlamp.model.BookModel
 import com.example.smartlamp.model.NotificationModel
+import com.example.smartlamp.model.SimpleApiResponse
 import com.example.smartlamp.repository.BookRepository
 import com.example.smartlamp.repository.NotificationRepository
 import com.example.smartlamp.utils.Constants.UID
@@ -55,5 +56,6 @@ class HomeViewModel @Inject constructor(
                 }
             })
     }
+
 
 }

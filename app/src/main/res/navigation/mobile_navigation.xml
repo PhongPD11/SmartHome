@@ -25,9 +25,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_consumption"
-        android:name="com.example.smartlamp.fragment.ConsumptionFragment"
-        android:label="Consumption" />
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.smartlamp.fragment.NotificationsFragment"
+        android:label="Notifications" />
 
     <fragment
         android:id="@+id/navigation_profile"

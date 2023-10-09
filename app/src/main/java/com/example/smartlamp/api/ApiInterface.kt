@@ -4,10 +4,12 @@ import com.example.smartlamp.model.*
 import com.example.smartlamp.utils.Constants.ACTIVE_CODE
 import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.EMAIL
+import com.example.smartlamp.utils.Constants.ID
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.Urls.FAVORITES
 import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Urls.NOTIFICATION
+import com.example.smartlamp.utils.Urls.NOTIFICATION_DELETE
 import com.example.smartlamp.utils.Urls.PROFILE
 import com.example.smartlamp.utils.Urls.REGISTER
 import com.example.smartlamp.utils.Urls.VERIFY
@@ -58,6 +60,11 @@ ApiInterface {
     fun getNotification(
         @Query(UID) uid : Int
     ): Call<NotificationModel>
+
+    @DELETE(NOTIFICATION_DELETE)
+    fun deleteNotification(
+        @Query(ID) id : Int
+    ): Call<SimpleApiResponse>
 }
 
 

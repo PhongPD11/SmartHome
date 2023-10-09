@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.method.ScrollingMovementMethod
 import android.view.*
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -19,11 +21,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.NotificationAdapter
+import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.FragmentNotificationsBinding
 import com.example.smartlamp.model.NotificationModel
+import com.example.smartlamp.model.SimpleApiResponse
 import com.example.smartlamp.utils.RecyclerTouchListener
+import com.example.smartlamp.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NotificationsFragment : Fragment(){
@@ -31,6 +40,12 @@ class NotificationsFragment : Fragment(){
 //    lateinit var bindingDialog: DialogNotificationBinding
 //    lateinit var bindingDialogDeleteAll: DialogDeleteBinding
 //    val viewModel: NotificationViewModel by activityViewModels()
+
+    private val viewModel: HomeViewModel by activityViewModels()
+
+    @Inject
+    lateinit var apiInterface: ApiInterface
+
     private lateinit var notificationAdapter: NotificationAdapter
     var notificationsData = ArrayList<NotificationModel.Data>()
     private var deleteButtonVisible = false
@@ -38,6 +53,7 @@ class NotificationsFragment : Fragment(){
     private var lastSwipe = -1
     private var moving = false
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -62,6 +78,18 @@ class NotificationsFragment : Fragment(){
                     }
                 })
         )
+
+        viewModel.notifications.observe(viewLifecycleOwner){
+            if (!it.isNullOrEmpty()){
+                binding.tvNotExistNotify.visibility = View.GONE
+                notificationsData.addAll(it)
+                notificationAdapter.notifyDataSetChanged()
+            } else {
+                binding.tvNotExistNotify.visibility = View.VISIBLE
+            }
+        }
+
+        setUI()
 
         return binding.root
     }
@@ -118,7 +146,7 @@ class NotificationsFragment : Fragment(){
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        notificationAdapter = NotificationAdapter(requireContext())
+        notificationAdapter = NotificationAdapter(requireContext(), notificationsData)
         binding.rvNotification.apply {
             adapter = notificationAdapter
             layoutManager = LinearLayoutManager(context)
@@ -184,8 +212,10 @@ class NotificationsFragment : Fragment(){
                         moving = true
                     }
 
-                    if (dX == 0.0f)
+                    if (dX == 0.0f){
                         moving = false
+                        deleteButtonVisible = false
+                    }
                     if (deleteButtonVisible)
                         clickDeleteButtonListener(recyclerView, viewHolder, posSwiped)
                     super.onChildDraw(
@@ -219,7 +249,7 @@ class NotificationsFragment : Fragment(){
                     && event.x > item.x + item.width && !moving
                 ) {
                     if (deleteButtonVisible) {
-//                        deleteItem(posSwiped)
+                        deleteItem(posSwiped)
                         deleteButtonVisible = false
                     }
                 }
@@ -228,13 +258,26 @@ class NotificationsFragment : Fragment(){
         }
     }
 
-//    private fun deleteItem(position: Int) {
-//        if (position < notificationsData.size) {
-//            viewModel.deleteNotification(notificationsData[position].id)
-//            notificationsData.removeAt(position)
-//            notificationAdapter.notifyDataSetChanged()
-//        }
-//    }
+    @SuppressLint("NotifyDataSetChanged")
+    private fun deleteItem(position: Int) {
+        if (position < notificationsData.size) {
+            apiInterface.deleteNotification(notificationsData[position].id).enqueue(object :
+                Callback<SimpleApiResponse> {
+                override fun onResponse(
+                    call: Call<SimpleApiResponse>,
+                    response: Response<SimpleApiResponse>
+                ) {
+                    if (response.body()?.data == null){
+                        Toast.makeText(requireContext(), response.body()?.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
+                }
+            })
+            notificationsData.removeAt(position)
+            notificationAdapter.notifyDataSetChanged()
+        }
+    }
 
 
 }

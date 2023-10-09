@@ -50,73 +50,54 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvWeather"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:layout_marginHorizontal="3dp"
                         app:cardCornerRadius="10dp"
                         app:layout_constraintTop_toBottomOf="@id/tvName">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:padding="20dp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <ProgressBar
-                                android:visibility="gone"
-                                android:id="@+id/progressBar"
+<!--                            <ImageView-->
+<!--                                android:id="@+id/ivFrame"-->
+<!--                                android:layout_width="fill_parent"-->
+<!--                                android:layout_height="fill_parent"-->
+<!--                                android:src="@drawable/ic_frame"-->
+<!--                                android:scaleType="fitXY"-->
+<!--                                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                                app:layout_constraintTop_toTopOf="parent"-->
+<!--                                app:layout_constraintStart_toStartOf="parent"-->
+<!--                                app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+                            <TextView
+                                android:id="@+id/tvQuote"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="20dp"
+                                android:layout_marginVertical="30dp"
+                                android:textSize="20sp"
+                                android:textColor="@color/brown_lv3"
+                                tools:text="“In principle and reality, libraries are life-enhancing palaces of wonder.”"
+                                android:textAlignment="center"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:indeterminate="true"
-                                android:indeterminateTintMode="src_atop"
-                                android:indeterminateTint="@color/main_color" />
-
-                            <androidx.constraintlayout.widget.Guideline
-                                android:id="@+id/col45"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.45"/>
-
-                            <ImageView
-                                android:id="@+id/ivWeather"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_marginStart="10dp"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"/>
 
                             <TextView
-                                android:id="@+id/tvPosition"
+                                android:id="@+id/tvAuth"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="@string/ho_chi_minh_city"
+                                android:layout_marginHorizontal="40dp"
+                                android:textSize="12sp"
+                                android:textColor="@color/brown_lv2"
+                                tools:text="- alo 123"
+                                android:textAlignment="viewEnd"
+                                app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@id/col45"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:drawableLeftCompat="@drawable/ic_position"/>
-
-                            <TextView
-                                android:id="@+id/tvTemp"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:textSize="40sp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@id/col45"
-                                app:layout_constraintTop_toBottomOf="@id/tvPosition"/>
-
-                            <TextView
-                                android:id="@+id/tvStatus"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintTop_toBottomOf="@id/tvTemp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@id/col45"/>
-
+                                app:layout_constraintTop_toBottomOf="@id/tvQuote"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -127,6 +108,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
+                        android:visibility="gone"
                         android:layout_marginBottom="10dp"
                         android:layout_marginHorizontal="3dp"
                         app:cardCornerRadius="10dp"

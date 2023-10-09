@@ -31,6 +31,7 @@ object Constants {
     const val CLASS_ID = "classId"
     const val MAJOR = "major"
     const val UID = "uid"
+    const val ID = "id"
     const val IMAGE_URL = "imageUrl"
 
     //book
