@@ -10,8 +10,11 @@ data class BookModel(
         val name : String,
         val amount : Int,
         val author : List<String>,
-        val type : List<String>,
+//        val type : List<String>,
+        val type : String,
         val vote : Double,
         val imageUrl : String?,
+        val major:String,
+        val language: String
     )
 }

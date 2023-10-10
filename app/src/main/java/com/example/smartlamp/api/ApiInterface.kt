@@ -5,7 +5,10 @@ import com.example.smartlamp.utils.Constants.ACTIVE_CODE
 import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.EMAIL
 import com.example.smartlamp.utils.Constants.ID
+import com.example.smartlamp.utils.Constants.IS_FAVORITE
 import com.example.smartlamp.utils.Constants.UID
+import com.example.smartlamp.utils.Urls
+import com.example.smartlamp.utils.Urls.FAVORITE
 import com.example.smartlamp.utils.Urls.FAVORITES
 import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Urls.NOTIFICATION
@@ -55,6 +58,13 @@ ApiInterface {
     fun getFavorites(
         @Query(UID) uid : Int
     ): Call<BookModel>
+
+    @GET(FAVORITE)
+    fun makeFavorite(
+        @Query(UID) uid : Int,
+        @Query(BOOK_ID) bookId : Int,
+        @Query(IS_FAVORITE) isFavorite : Boolean
+    ): Call<SimpleApiResponse>
 
     @GET(NOTIFICATION)
     fun getNotification(

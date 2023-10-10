@@ -46,6 +46,22 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_book_detail"
+        android:name="com.example.smartlamp.fragment.BookDetailsFragment" >
+
+        <argument
+            android:name="position"
+            app:argType="integer"
+            android:defaultValue="0" />
+
+        <argument
+            android:name="isFavorite"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_light_mode"
         android:name="com.example.smartlamp.fragment.LightModeFragment" >
 

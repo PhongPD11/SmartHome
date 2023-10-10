@@ -1,5 +1,7 @@
 package com.example.smartlamp.model
 
+import org.intellij.lang.annotations.Language
+
 data class NotificationModel(
     val code: Int,
     val data: List<Data>?,
@@ -11,6 +13,6 @@ data class NotificationModel(
         val createAt: String,
         val title: String,
         val content: String,
-        val isRead: Boolean
+        val isRead: Boolean,
     )
 }

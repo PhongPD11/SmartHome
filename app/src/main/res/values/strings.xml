@@ -76,4 +76,13 @@
     <string name="favorite_empty">Your favorite list is currently empty.</string>
     <string name="notification">Notification</string>
     <string name="notification_empty">Your notification is empty</string>
+    <string name="details">Details</string>
+    <string name="rate_this">Rate this:</string>
+    <string name="authors">Authors</string>
+    <string name="tag">Tag:</string>
+    <string name="bookLb">Book:</string>
+    <string name="bookIdLb">Book ID:</string>
+    <string name="typeLb">Type:</string>
+    <string name="majorLb">Major:</string>
+    <string name="authorsLb">Authors:</string>
 </resources>

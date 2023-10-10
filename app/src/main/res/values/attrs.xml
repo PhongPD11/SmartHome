@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextViewTwoLines">
+        <attr name="titleLabel" format="reference|string"/>
+        <attr name="subTitleLabel" format="reference|string"/>
+        <attr name="subtitleTextColor" format="color"/>
+        <attr name="titleTextSize" format="dimension"/>
+        <attr name="subTitleTextSize" format="dimension"/>
+
+        <attr name="titleStyle" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="bold" value="1"/>
+            <enum name="italic" value="2"/>
+
+        </attr>
+        <attr name="subTitleStyle" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="bold" value="1"/>
+            <enum name="italic" value="2"/>
+        </attr>
+
+
+    </declare-styleable>
+</resources>

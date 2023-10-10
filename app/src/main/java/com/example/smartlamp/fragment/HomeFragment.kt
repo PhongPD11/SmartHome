@@ -21,14 +21,16 @@ import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.BookShowModel
 import com.example.smartlamp.model.DailyForecast
 import com.example.smartlamp.model.Quote
+import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.utils.Constants.IS_FAVORITE
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.NAME
+import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.round
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
@@ -40,10 +42,19 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
     private var welcome = ""
     private var signed = false
 
-    private val quote = Quote("“In principle and reality, libraries are life-enhancing palaces of wonder.”", "―Gail Honeyman")
-    private val quote2 = Quote("“I am an omnivorous reader with a strangely retentive memory for trifles.”", "―Arthur Conan Doyle")
+    private val quote = Quote(
+        "“In principle and reality, libraries are life-enhancing palaces of wonder.”",
+        "―Gail Honeyman"
+    )
+    private val quote2 = Quote(
+        "“I am an omnivorous reader with a strangely retentive memory for trifles.”",
+        "―Arthur Conan Doyle"
+    )
     private val quote3 = Quote("“In the end, we’ll all become stories.”", "―Margaret Atwood")
-    private val quote4 = Quote("“If you only read the books that everyone else is reading, you can only think what everyone else is thinking.”", "―Haruki Murakami")
+    private val quote4 = Quote(
+        "“If you only read the books that everyone else is reading, you can only think what everyone else is thinking.”",
+        "―Haruki Murakami"
+    )
     private val listQuote = listOf<Quote>(quote, quote2, quote3, quote4)
 
     @Inject
@@ -80,7 +91,22 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
             binding.tvName.visibility = View.GONE
         }
 
-        setQuote();
+        binding.rvFav.addOnItemTouchListener(
+            RecyclerTouchListener(activity,
+                binding.rvFav,
+                object : RecyclerTouchListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val args = Bundle()
+                        args.putSerializable(Constants.POSITION, position)
+                        args.putSerializable(IS_FAVORITE, true)
+                        findNavController().navigate(R.id.navigation_book_detail, args)
+                    }
+
+                    override fun onLongItemClick(view: View?, position: Int) {}
+                })
+        )
+
+        setQuote()
 
         setObserb()
         setUI()
@@ -96,11 +122,12 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
                 val listBook = it.data
                 favorites.clear()
                 for (i in listBook.indices) {
-                    val book = BookShowModel("", listBook[i].name, listBook[i].vote)
+                    val book =
+                        BookShowModel("", listBook[i].name, listBook[i].vote, listBook[i].bookId)
                     if (listBook[i].imageUrl != null) {
                         book.image = listBook[i].imageUrl.toString()
                     }
-                    if (favorites.isNotEmpty()){
+                    if (favorites.isNotEmpty()) {
                         binding.tvEmpty.visibility = View.GONE
                     } else {
                         binding.tvEmpty.visibility = View.VISIBLE
@@ -112,7 +139,7 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
         }
     }
 
-    private fun setQuote(){
+    private fun setQuote() {
         val random = (listQuote.indices).random()
         binding.tvQuote.text = listQuote[random].quote
         binding.tvAuth.text = listQuote[random].author
