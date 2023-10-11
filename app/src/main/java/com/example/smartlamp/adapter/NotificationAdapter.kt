@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemNotificationBinding
 import com.example.smartlamp.model.NotificationModel
+import com.example.smartlamp.model.NotificationType
 import io.tux.wallet.testnet.utils.ConvertTime
 
 class NotificationAdapter(
@@ -38,6 +39,24 @@ class NotificationAdapter(
         bind.tvTitle.text = item.title
         bind.tvContent.text = item.content
         bind.tvTime.text = ConvertTime.formatDate(item.createAt, "dd MMM yyyy - HH:mm:ss")
+        when (item.type) {
+            NotificationType.ALERT.status -> {
+                bind.ivType.setImageResource(NotificationType.ALERT.imageResource)
+            }
+            NotificationType.WARNING.status -> {
+                bind.ivType.setImageResource(NotificationType.WARNING.imageResource)
+            }
+            NotificationType.VOLUNTEER.status -> {
+                bind.ivType.setImageResource(NotificationType.VOLUNTEER.imageResource)
+            }
+            NotificationType.CONGRATS.status -> {
+                bind.ivType.setImageResource(NotificationType.CONGRATS.imageResource)
+            }
+        }
+        if (item.isRead) {
+            bind.constNotification.alpha = 0.8F
+            bind.ivUnread.visibility = View.GONE
+        }
     }
 
 

@@ -18,10 +18,8 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.FavoriteAdapter
 import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
-import com.example.smartlamp.model.BookShowModel
-import com.example.smartlamp.model.DailyForecast
-import com.example.smartlamp.model.Quote
-import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.model.*
+import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.NAME
@@ -33,7 +31,7 @@ import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
+class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     var data = MutableLiveData<List<DailyForecast>>()
@@ -61,7 +59,9 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
     lateinit var sharedPref: SharedPref
 
     private var favorites = ArrayList<BookShowModel>()
+    val favoriteList = ArrayList<BookData>()
 
+    var selectedBook: BookData? = null
 
     private lateinit var favoriteAdapter: FavoriteAdapter
 
@@ -97,8 +97,9 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
                 object : RecyclerTouchListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
                         val args = Bundle()
-                        args.putSerializable(Constants.POSITION, position)
                         args.putSerializable(IS_FAVORITE, true)
+                        selectedBook = favoriteList[position]
+                        args.putSerializable(FAVORITE, selectedBook)
                         findNavController().navigate(R.id.navigation_book_detail, args)
                     }
 
@@ -121,19 +122,21 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
             if (it.code == 200) {
                 val listBook = it.data
                 favorites.clear()
+                favoriteList.clear()
+                favoriteList.addAll(listBook)
                 for (i in listBook.indices) {
                     val book =
-                        BookShowModel("", listBook[i].name, listBook[i].vote, listBook[i].bookId)
+                        BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
                     if (listBook[i].imageUrl != null) {
                         book.image = listBook[i].imageUrl.toString()
                     }
-                    if (favorites.isNotEmpty()) {
-                        binding.tvEmpty.visibility = View.GONE
-                    } else {
-                        binding.tvEmpty.visibility = View.VISIBLE
-                    }
                     favorites.add(book)
                     favoriteAdapter.notifyDataSetChanged()
+                }
+                if (favorites.isEmpty()) {
+                    binding.tvEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.tvEmpty.visibility = View.GONE
                 }
             }
         }
@@ -192,7 +195,7 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        favoriteAdapter = FavoriteAdapter(requireContext(), favorites, this)
+        favoriteAdapter = FavoriteAdapter(requireContext(), favorites)
         binding.rvFav.apply {
             adapter = favoriteAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -200,18 +203,5 @@ class HomeFragment : Fragment(), FavoriteAdapter.BookClickInterface {
         favoriteAdapter.notifyDataSetChanged()
     }
 
-//    override fun onRoomClick(room: BookShowModel) {
-//        val name = room.room
-//        val bundle = bundleOf("name" to name)
-//        if (signed) {
-//            findNavController().navigate(R.id.navigation_room, bundle)
-//        } else {
-//            showDialog(requireContext())
-//        }
-//    }
-
-    override fun onBookClick(room: BookShowModel) {
-        findNavController().navigate(R.id.navigation_room)
-    }
 
 }

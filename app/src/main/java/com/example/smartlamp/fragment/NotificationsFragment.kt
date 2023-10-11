@@ -25,7 +25,9 @@ import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.FragmentNotificationsBinding
 import com.example.smartlamp.model.NotificationModel
 import com.example.smartlamp.model.SimpleApiResponse
+import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.RecyclerTouchListener
+import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +46,9 @@ class NotificationsFragment : Fragment(){
     private val viewModel: HomeViewModel by activityViewModels()
 
     @Inject
+    lateinit var sharedPref: SharedPref
+
+    @Inject
     lateinit var apiInterface: ApiInterface
 
     private lateinit var notificationAdapter: NotificationAdapter
@@ -59,8 +64,7 @@ class NotificationsFragment : Fragment(){
     ): View? {
         binding = FragmentNotificationsBinding.inflate(layoutInflater)
 
-//        showDialogDeleteAll(context!!)
-
+        sharedPref = SharedPref(context)
 
         binding.swRefresh.setOnRefreshListener {
             binding.swRefresh.isRefreshing = false
@@ -269,6 +273,8 @@ class NotificationsFragment : Fragment(){
                 ) {
                     if (response.body()?.data == null){
                         Toast.makeText(requireContext(), response.body()?.message, Toast.LENGTH_SHORT).show()
+                    } else {
+                        viewModel.getNotify(sharedPref.getInt(UID))
                     }
                 }
                 override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {

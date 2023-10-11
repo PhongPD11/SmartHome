@@ -18,6 +18,8 @@ object Urls {
     const val FAVORITES = "library/favorites"
     const val GET_BOOK = "library/book"
     const val GET_BOOKS = "library/books"
+    const val GET_USER_BOOK = "library/userbook"
+    const val USER_RATE_BOOK = "library/rate"
 
     //Notification
 

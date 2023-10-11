@@ -7,5 +7,6 @@ class BookRepository@Inject constructor(
     private val apiInterface: ApiInterface,
 ){
     fun getFavorites(uid: Int) = apiInterface.getFavorites(uid)
-
+    fun getUserBook(uid: Int) = apiInterface.getUserBook(uid)
+    fun getBooks() = apiInterface.getBooks()
 }

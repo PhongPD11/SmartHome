@@ -16,12 +16,13 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.AuthorBookAdapter
 import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.FragmentBookDetailsBinding
+import com.example.smartlamp.model.BookData
 import com.example.smartlamp.model.SimpleApiResponse
-import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
-import com.example.smartlamp.utils.Constants.POSITION
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.SharedPref
+import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.tux.wallet.testnet.utils.OnItemSingleClickListener
@@ -50,6 +51,8 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
     private val authors = ArrayList<String>()
 
+    var selectedBook: BookData? = null
+
     private val viewModel: HomeViewModel by activityViewModels()
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
@@ -63,53 +66,75 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         val singleClickListener = SingleClickListener(this)
         sharedPref = SharedPref(context)
 
-        val position = arguments?.get(POSITION)
         isFavorite = arguments?.getBoolean(IS_FAVORITE) == true
-
+        selectedBook = arguments?.get(FAVORITE) as BookData?
         setIconFavorite(isFavorite)
-
-        binding.tvName.text = sharedPref.getString(Constants.FULL_NAME)
 
         val options: RequestOptions = RequestOptions()
             .centerCrop()
             .placeholder(R.drawable.ic_book_dummy)
             .error(R.drawable.ic_book_dummy)
 
+        setAuthors()
+        setBook(selectedBook!!, options)
+
+        val userRate = Utils.checkUserRated(bookId, viewModel.userBookList)
+        setUserRate(userRate)
+
+        binding.icStar1.setOnClickListener(singleClickListener)
+        binding.icStar2.setOnClickListener(singleClickListener)
+        binding.icStar3.setOnClickListener(singleClickListener)
+        binding.icStar4.setOnClickListener(singleClickListener)
+        binding.icStar5.setOnClickListener(singleClickListener)
+
         binding.ivBack.setOnClickListener(singleClickListener)
         binding.ivFavorite.setOnClickListener(singleClickListener)
-
-        setAuthors();
-
-        viewModel.favorites.observe(viewLifecycleOwner) {
-            if (!it.data.isNullOrEmpty() && position != null) {
-                val book = it.data[position as Int]
-                binding.tvName.text = book.name
-                binding.tvBook.text = book.name
-                binding.tvBookId.text = book.bookId.toString()
-                bookId = book.bookId
-                binding.tvBookMajor.text = book.major
-                binding.tvBookType.text = book.type
-                binding.tvRated.text = book.vote.toString()
-                authors.clear()
-                var author = ""
-                for (i in book.author.indices) {
-                    authors.add(book.author[i])
-                    if (i < (book.author.size - 1)){
-                        author += book.author[i] + ", "
-                    } else {
-                        author += book.author[i]
-                    }
-                }
-                binding.tvAuth.text = author
-                authorAdapter.notifyDataSetChanged()
-                Glide.with(this).load(book.imageUrl).apply(options).into(binding.ivBook)
-            }
-        }
 
         return binding.root
     }
 
-    private fun setIconFavorite(isFavorite : Boolean){
+    private fun setUserRate(userRate: Int){
+        if (userRate > 0) {
+            Utils.userRating(
+                userRate,
+                binding.icStar1,
+                binding.icStar2,
+                binding.icStar3,
+                binding.icStar4,
+                binding.icStar5
+            )
+        }
+    }
+
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+    private fun setBook(book: BookData, options: RequestOptions) {
+        binding.tvName.text = book.name
+        binding.tvBook.text = book.name
+        binding.tvBookId.text = book.bookId.toString()
+        bookId = book.bookId
+        binding.tvBookMajor.text = book.major
+        binding.tvBookType.text = book.type
+        if (book.rated != 0.0) {
+            binding.tvRated.text = "${book.rated} (${book.userRate})"
+        } else {
+            binding.tvRated.visibility = View.GONE
+        }
+        authors.clear()
+        var author = ""
+        for (i in book.author.indices) {
+            authors.add(book.author[i])
+            if (i < (book.author.size - 1)) {
+                author += book.author[i] + ", "
+            } else {
+                author += book.author[i]
+            }
+        }
+        binding.tvAuth.text = author
+        authorAdapter.notifyDataSetChanged()
+        Glide.with(this).load(book.imageUrl).apply(options).into(binding.ivBook)
+    }
+
+    private fun setIconFavorite(isFavorite: Boolean) {
         if (isFavorite) {
             binding.ivFavorite.setImageResource(R.drawable.ic_heart)
         } else {
@@ -118,7 +143,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setAuthors(){
+    private fun setAuthors() {
         authorAdapter = AuthorBookAdapter(requireContext(), authors)
         binding.rvAuth.apply {
             adapter = authorAdapter
@@ -128,26 +153,67 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         authorAdapter.notifyDataSetChanged()
     }
 
+    private fun rating(star: Int) {
+        val uid = sharedPref.getInt(UID)
+        apiInterface.userRateBook(uid, bookId, star).enqueue(object : Callback<SimpleApiResponse> {
+            override fun onResponse(
+                call: Call<SimpleApiResponse>,
+                response: Response<SimpleApiResponse>
+            ) {
+                if (response.body()?.data != null) {
+                    setUserRate(star)
+                    viewModel.getUserBook(uid)
+                    viewModel.getBooks()
+                    viewModel.getFavorites(uid)
+                }
+            }
+
+            override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun makeFavorite() {
+        isFavorite = !isFavorite
+        val uid = sharedPref.getInt(UID)
+        apiInterface.makeFavorite(uid, bookId, isFavorite).enqueue(object :
+            Callback<SimpleApiResponse> {
+            override fun onResponse(
+                call: Call<SimpleApiResponse>,
+                response: Response<SimpleApiResponse>
+            ) {
+                if (response.body()?.data == null) {
+                    isFavorite = !isFavorite
+                }
+                viewModel.getFavorites(uid)
+                setIconFavorite(isFavorite)
+            }
+
+            override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {}
+        })
+    }
+
     override fun onItemClick(view: View) {
-        when(view.id) {
+        when (view.id) {
             R.id.iv_back -> findNavController().popBackStack()
             R.id.ivFavorite -> {
-                isFavorite = !isFavorite
-                val uid = sharedPref.getInt(UID)
-                apiInterface.makeFavorite(uid, bookId, isFavorite).enqueue(object :
-                    Callback<SimpleApiResponse> {
-                    override fun onResponse(
-                        call: Call<SimpleApiResponse>,
-                        response: Response<SimpleApiResponse>
-                    ) {
-                        if (response.body()?.data == null){
-                            isFavorite = !isFavorite
-                        }
-                        setIconFavorite(isFavorite)
-                    }
-
-                    override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {}
-                })
+                makeFavorite()
+            }
+            R.id.ic_star1 -> {
+                rating(1)
+            }
+            R.id.ic_star2 -> {
+                rating(2)
+            }
+            R.id.ic_star3 -> {
+                rating(3)
+            }
+            R.id.ic_star4 -> {
+                rating(4)
+            }
+            R.id.ic_star5 -> {
+                rating(5)
             }
         }
     }

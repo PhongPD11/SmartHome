@@ -6,15 +6,19 @@ import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.EMAIL
 import com.example.smartlamp.utils.Constants.ID
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
+import com.example.smartlamp.utils.Constants.Star
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.Urls
 import com.example.smartlamp.utils.Urls.FAVORITE
 import com.example.smartlamp.utils.Urls.FAVORITES
+import com.example.smartlamp.utils.Urls.GET_BOOKS
+import com.example.smartlamp.utils.Urls.GET_USER_BOOK
 import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Urls.NOTIFICATION
 import com.example.smartlamp.utils.Urls.NOTIFICATION_DELETE
 import com.example.smartlamp.utils.Urls.PROFILE
 import com.example.smartlamp.utils.Urls.REGISTER
+import com.example.smartlamp.utils.Urls.USER_RATE_BOOK
 import com.example.smartlamp.utils.Urls.VERIFY
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -54,6 +58,21 @@ ApiInterface {
     ): Call<UserResponseModel>
 
     //Book
+    @GET(GET_BOOKS)
+    fun getBooks(): Call<BookModel>
+
+    @GET(GET_USER_BOOK)
+    fun getUserBook(
+        @Query(UID) uid: Int
+    ): Call<UserBook>
+
+    @GET(USER_RATE_BOOK)
+    fun userRateBook(
+        @Query(UID) uid: Int,
+        @Query(BOOK_ID) bookId: Int,
+        @Query(Star) star: Int,
+    ): Call<SimpleApiResponse>
+
     @GET(FAVORITES)
     fun getFavorites(
         @Query(UID) uid : Int

@@ -14,5 +14,6 @@ data class NotificationModel(
         val title: String,
         val content: String,
         val isRead: Boolean,
+        val type: String,
     )
 }

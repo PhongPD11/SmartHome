@@ -37,6 +37,7 @@ object Constants {
     const val IS_FAVORITE = "isFavorite"
     const val IS_DELIVERY = "isDelivery"
     const val FAVORITE = "favorite"
+    const val Star = "star"
 
 
 }

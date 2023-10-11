@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 badge.isVisible = false
             } else {
                 for (i in it.indices){
-                   if(it[i].isRead) {
+                   if(!it[i].isRead) {
                        unreadCount++
                    }
                 }
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 true
             }
             R.id.navigation_library -> {
-//                navController.navigate(R.id.navigation_statistic)
+                navController.navigate(R.id.navigation_library)
                 true
             }
             R.id.navigation_notifications -> {

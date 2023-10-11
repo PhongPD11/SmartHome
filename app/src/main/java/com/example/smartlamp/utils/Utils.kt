@@ -2,6 +2,8 @@ package com.example.smartlamp.utils
 
 import android.widget.ImageView
 import com.example.smartlamp.R
+import com.example.smartlamp.model.BookData
+import com.example.smartlamp.model.UserBookData
 
 class Utils {
     companion object {
@@ -56,7 +58,7 @@ class Utils {
             var haveHalfStar = (rate - filledStars >= 0.5)
 
             for (i in stars.indices) {
-                if (i+1 <= filledStars) {
+                if (i + 1 <= filledStars) {
                     stars[i].setImageResource(starDrawables[0])
                     println("Star: $i Full star")
                 } else {
@@ -67,6 +69,27 @@ class Utils {
                     break
                 }
             }
+        }
+
+        fun userRating(rate: Int, vararg stars: ImageView) {
+            for (i in stars.indices) {
+                if (i + 1 <= rate) {
+                    stars[i].setImageResource(R.drawable.ic_star)
+                } else {
+                    stars[i].setImageResource(R.drawable.ic_star_empty)
+                }
+            }
+        }
+
+        fun checkUserRated(bookId: Int ,useBookList : ArrayList<UserBookData>):Int{
+            val userBook = useBookList.find { it.bookId == bookId }
+            return if (userBook != null) {
+                userBook.rate ?: 0
+            } else 0
+        }
+
+        fun isFavoriteBook(book: BookData, listFav: ArrayList<BookData>): Boolean {
+            return listFav.contains(book)
         }
     }
 }

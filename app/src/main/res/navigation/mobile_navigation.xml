@@ -35,30 +35,17 @@
         android:label="User" />
 
     <fragment
-        android:id="@+id/navigation_room"
-        android:name="com.example.smartlamp.fragment.RoomFragment" >
-
-        <argument
-            android:name="name"
-            app:argType="string"
-            android:defaultValue="" />
+        android:id="@+id/navigation_library"
+        android:name="com.example.smartlamp.fragment.AllBookFragment" >
 
     </fragment>
 
     <fragment
         android:id="@+id/navigation_book_detail"
         android:name="com.example.smartlamp.fragment.BookDetailsFragment" >
-
-        <argument
-            android:name="position"
-            app:argType="integer"
-            android:defaultValue="0" />
-
         <argument
             android:name="isFavorite"
-            app:argType="boolean"
-            android:defaultValue="false" />
-
+            app:argType="boolean" />
     </fragment>
 
     <fragment

@@ -9,7 +9,7 @@
     <item
         android:id="@+id/navigation_library"
         android:icon="@drawable/ic_library"
-        android:title="@string/all_book" />
+        android:title="@string/library" />
     <item
         android:id="@+id/navigation_notifications"
         android:title="@string/notifications"

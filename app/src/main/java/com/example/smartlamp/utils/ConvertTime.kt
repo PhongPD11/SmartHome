@@ -10,7 +10,7 @@ import java.util.*
 
 object ConvertTime {
     @RequiresApi(Build.VERSION_CODES.O)
-    fun String.toDate(dateFormat: String = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timeZone: TimeZone = TimeZone.getTimeZone("UTC")): LocalDateTime? {
+    fun String.toDate(dateFormat: String = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS?", timeZone: TimeZone = TimeZone.getTimeZone("UTC")): LocalDateTime? {
         return try {
             LocalDateTime.parse(this, DateTimeFormatter.ofPattern(dateFormat).withZone(timeZone.toZoneId()))
         } catch (e: Exception) {

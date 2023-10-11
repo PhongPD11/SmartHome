@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">Smart Library</string>
-    <string name="all_book">All Books</string>
     <string name="notifications">Notifications</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
@@ -76,6 +75,7 @@
     <string name="favorite_empty">Your favorite list is currently empty.</string>
     <string name="notification">Notification</string>
     <string name="notification_empty">Your notification is empty</string>
+    <string name="book_empty">Books is empty</string>
     <string name="details">Details</string>
     <string name="rate_this">Rate this:</string>
     <string name="authors">Authors</string>
@@ -85,4 +85,5 @@
     <string name="typeLb">Type:</string>
     <string name="majorLb">Major:</string>
     <string name="authorsLb">Authors:</string>
+    <string name="library">Library</string>
 </resources>
