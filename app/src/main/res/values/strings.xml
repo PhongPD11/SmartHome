@@ -86,4 +86,7 @@
     <string name="majorLb">Major:</string>
     <string name="authorsLb">Authors:</string>
     <string name="library">Library</string>
+    <string name="textbooks">Textbooks</string>
+    <string name="reference_books">Reference Books</string>
+    <string name="journal_articles">Journal Articles</string>
 </resources>

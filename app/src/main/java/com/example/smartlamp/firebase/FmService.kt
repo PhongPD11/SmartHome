@@ -1,6 +1,5 @@
 package com.example.smartlamp.firebase
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,10 +8,12 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.smartlamp.R
 import com.example.smartlamp.activity.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+
 
 class FmService : FirebaseMessagingService() {
 
@@ -25,10 +26,17 @@ class FmService : FirebaseMessagingService() {
                 val message = data["message"]
 
                 sendNotification(title, message)
+                sendBroadcastToActivity()
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             println(e.message)
         }
+    }
+
+    private fun sendBroadcastToActivity() {
+        val intent = Intent("custom-event")
+        intent.putExtra("isReload", true)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

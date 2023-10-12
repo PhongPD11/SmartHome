@@ -18,10 +18,12 @@ import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Utils.Companion.isFavoriteBook
 import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.tux.wallet.testnet.utils.OnItemSingleClickListener
+import io.tux.wallet.testnet.utils.SingleClickListener
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AllBookFragment : Fragment() {
+class AllBookFragment : Fragment(), OnItemSingleClickListener {
     lateinit var binding: FragmentAllBookBinding
 
     private val viewModel: HomeViewModel by activityViewModels()
@@ -34,6 +36,8 @@ class AllBookFragment : Fragment() {
 
     val books = ArrayList<BookData>()
 
+    var isShowMenu = false
+
     var selectedBook: BookData? = null
 
     private lateinit var bookAdapter: BookAdapter
@@ -43,9 +47,10 @@ class AllBookFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAllBookBinding.inflate(layoutInflater)
-
+        val singleClick = SingleClickListener(this)
         sharedPref = SharedPref(context)
 
+        isShowMenu = false
         binding.rvBook.addOnItemTouchListener(
             RecyclerTouchListener(activity,
                 binding.rvBook,
@@ -64,6 +69,10 @@ class AllBookFragment : Fragment() {
 
         setObserb();
         setUI()
+
+        binding.ivFilter.setOnClickListener(singleClick)
+        binding.ivSearch.setOnClickListener(singleClick)
+        binding.ivMenu.setOnClickListener(singleClick)
 
         return binding.root
     }
@@ -93,6 +102,27 @@ class AllBookFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         bookAdapter.notifyDataSetChanged()
+    }
+
+    override fun onItemClick(view: View) {
+        when(view.id) {
+            R.id.iv_menu -> {
+                isShowMenu = !isShowMenu
+                if (isShowMenu) {
+                    binding.consMenu.visibility = View.VISIBLE
+                    binding.rvBook.visibility = View.GONE
+                } else {
+                    binding.consMenu.visibility = View.GONE
+                    binding.rvBook.visibility = View.VISIBLE
+                }
+            }
+            R.id.iv_search -> {
+
+            }
+            R.id.iv_filter -> {
+
+            }
+        }
     }
 
 }

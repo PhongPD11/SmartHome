@@ -25,6 +25,7 @@
                 android:padding="5dp"
                 android:textSize="20sp"
                 android:text="@string/profile_setting"
+                android:textColor="@color/brown_lv3"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -51,6 +52,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:indeterminateTint="@color/brown_lv2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/sw_refresh"

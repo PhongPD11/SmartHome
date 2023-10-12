@@ -26,6 +26,7 @@ object Urls {
     const val NOTIFICATION = "notification"
     const val NOTIFICATION_DELETE = "notification/delete"
     const val READ_NOTIFICATION = "notification/read"
+    const val SEND_FCM = "notification/fcm"
 
 }
 

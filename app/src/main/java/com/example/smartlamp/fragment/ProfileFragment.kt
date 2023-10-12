@@ -56,10 +56,6 @@ class ProfileFragment : Fragment() {
             showDialog(requireContext())
         }
 
-        binding.ivBack.setOnClickListener{
-            findNavController().popBackStack()
-        }
-
         binding.cardProfile.setOnClickListener {
             findNavController().navigate(R.id.navigation_profile_setting)
         }

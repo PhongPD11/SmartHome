@@ -4,8 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.RoomFragment">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -17,28 +16,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp"
-                android:padding="15dp"
-                android:src="@drawable/ic_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
                 android:padding="5dp"
-                android:textSize="20sp"
                 android:text="@string/profile"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/iv_back"
-                app:layout_constraintLeft_toRightOf="@id/iv_back"
-                app:layout_constraintTop_toTopOf="@id/iv_back" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -15,18 +15,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/iv_menu"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_menu"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="15dp"
+                android:gravity="center_vertical"
                 android:padding="5dp"
-                android:textSize="20sp"
                 android:text="@string/library"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_menu"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_search"
+                app:layout_constraintEnd_toStartOf="@id/iv_filter"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_filter"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="15dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_filter"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -42,27 +73,110 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvEmpty"
+            style="@style/headingTextBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/book_empty"
-            style="@style/headingTextBold"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.core.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_book"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_book_horizon" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_book"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:listitem="@layout/item_book_horizon"/>
+        </androidx.core.widget.NestedScrollView>
 
-            </androidx.core.widget.NestedScrollView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consMenu"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:padding="10dp"
+            android:background="@color/main_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/consType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/typeLb"
+                    android:textColor="#F1EBEB"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvTextBooks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/textbooks"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="italic"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvType"
+                    app:drawableStartCompat="@drawable/ic_more"
+                    app:drawableTint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvReferenceBooks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reference_books"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="italic"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvTextBooks"
+                    app:drawableStartCompat="@drawable/ic_more"
+                    app:drawableTint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvJournalArticles"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/journal_articles"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="italic"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvReferenceBooks"
+                    app:drawableStartCompat="@drawable/ic_more"
+                    app:drawableTint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemNotificationBinding
 import com.example.smartlamp.model.NotificationModel
 import com.example.smartlamp.model.NotificationType
-import io.tux.wallet.testnet.utils.ConvertTime
+import com.example.smartlamp.utils.ConvertTime
 
 class NotificationAdapter(
     var context: Context,
@@ -31,14 +31,15 @@ class NotificationAdapter(
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
+
     @SuppressLint("SetTextI18n", "ResourceAsColor", "UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = notifications[position]
         val bind = holder.binding
         bind.tvTitle.text = item.title
         bind.tvContent.text = item.content
-        bind.tvTime.text = ConvertTime.formatDate(item.createAt, "dd MMM yyyy - HH:mm:ss")
+        bind.tvTime.text = ConvertTime.formatDate(item.createAt, "dd MMM yyyy - HH:mm")
         when (item.type) {
             NotificationType.ALERT.status -> {
                 bind.ivType.setImageResource(NotificationType.ALERT.imageResource)
@@ -59,7 +60,6 @@ class NotificationAdapter(
         }
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
     fun deleteItem(position: Int) {
 //        notifications.removeAt(position)
@@ -67,6 +67,9 @@ class NotificationAdapter(
 //        notifyDataSetChanged()
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 
     override fun getItemCount(): Int {
         return notifications.size

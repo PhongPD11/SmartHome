@@ -4,6 +4,7 @@ import com.example.smartlamp.model.*
 import com.example.smartlamp.utils.Constants.ACTIVE_CODE
 import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.EMAIL
+import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.ID
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
 import com.example.smartlamp.utils.Constants.Star
@@ -17,7 +18,9 @@ import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Urls.NOTIFICATION
 import com.example.smartlamp.utils.Urls.NOTIFICATION_DELETE
 import com.example.smartlamp.utils.Urls.PROFILE
+import com.example.smartlamp.utils.Urls.READ_NOTIFICATION
 import com.example.smartlamp.utils.Urls.REGISTER
+import com.example.smartlamp.utils.Urls.SEND_FCM
 import com.example.smartlamp.utils.Urls.USER_RATE_BOOK
 import com.example.smartlamp.utils.Urls.VERIFY
 import okhttp3.MultipartBody
@@ -89,6 +92,17 @@ ApiInterface {
     fun getNotification(
         @Query(UID) uid : Int
     ): Call<NotificationModel>
+
+    @POST(SEND_FCM)
+    fun sendFCM(
+        @Query(UID) uid : Int,
+        @Query(FCM) fcm : String,
+    ): Call<SimpleApiResponse>
+
+    @POST(READ_NOTIFICATION)
+    fun readNotification(
+        @Query(ID) id : Int
+    ): Call<SimpleApiResponse>
 
     @DELETE(NOTIFICATION_DELETE)
     fun deleteNotification(

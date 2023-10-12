@@ -7,4 +7,5 @@ class NotificationRepository@Inject constructor(
     private val apiInterface: ApiInterface,
 ){
     fun getNotify(uid: Int) = apiInterface.getNotification(uid)
+//    fun readNotification(id: Int) = apiInterface.readNotification(id)
 }
