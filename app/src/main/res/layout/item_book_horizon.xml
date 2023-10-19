@@ -36,6 +36,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:textColor="@color/brown_lv2"
                 tools:text="Harry Porter and Philosopher's Stone"
                 android:textStyle="bold"
                 android:textSize="18sp"

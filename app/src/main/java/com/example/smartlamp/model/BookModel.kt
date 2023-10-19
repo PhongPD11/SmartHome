@@ -8,7 +8,7 @@ data class BookModel(
     val message: String
 )
     data class BookData(
-        val bookId: Int,
+        val bookId: Long,
         val name: String,
         val amount: Int,
         val author: List<String>,
@@ -17,19 +17,9 @@ data class BookModel(
         val userRate: Int?,
         val imageUrl: String?,
         val major: String,
-        val language: String
+        val language: String,
+        val ddc: String,
+        val status: String,
+        val borrowingPeriod: Int,
+        val bookLocation: String
     ): Serializable
-//    {
-//        override fun toString(): String {
-//            return "BookData(bookId=$bookId, " +
-//                    "name='$name', " +
-//                    "amount=$amount, " +
-//                    "author='$author', " +
-//                    "type='$type', " +
-//                    "rated=$rated, " +
-//                    " userRate=$userRate, " +
-//                    "imageUrl='$imageUrl', " +
-//                    "major=$major, " +
-//                    "language=$language)"
-//        }
-//    }

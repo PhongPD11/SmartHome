@@ -1,7 +1,12 @@
 package com.example.smartlamp.utils
 
+import android.app.Dialog
+import android.content.Context
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.ImageView
 import com.example.smartlamp.R
+import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.model.BookData
 import com.example.smartlamp.model.UserBookData
 
@@ -55,7 +60,7 @@ class Utils {
                 R.drawable.ic_star_empty
             )
             val filledStars = rate.toInt()
-            var haveHalfStar = (rate - filledStars >= 0.5)
+            val haveHalfStar = (rate - filledStars >= 0.5)
 
             for (i in stars.indices) {
                 if (i + 1 <= filledStars) {
@@ -81,7 +86,7 @@ class Utils {
             }
         }
 
-        fun checkUserRated(bookId: Int ,useBookList : ArrayList<UserBookData>):Int{
+        fun checkUserRated(bookId: Long, useBookList: ArrayList<UserBookData>): Int {
             val userBook = useBookList.find { it.bookId == bookId }
             return if (userBook != null) {
                 userBook.rate ?: 0
@@ -90,6 +95,26 @@ class Utils {
 
         fun isFavoriteBook(book: BookData, listFav: ArrayList<BookData>): Boolean {
             return listFav.contains(book)
+        }
+
+
+        fun showSimpleDialog(context: Context, title: String, subTitle: String) {
+            val dialog = Dialog(context, R.style.CustomDialogTheme)
+            val bindingDialog: DialogSuccessBinding = DialogSuccessBinding.inflate(LayoutInflater.from(context))
+            dialog.setContentView(bindingDialog.root)
+//        binding.progressBar.visibility = View.GONE
+            val window = dialog.window
+            val params = window?.attributes
+
+            params?.gravity = Gravity.CENTER
+            window?.attributes = params
+
+            bindingDialog.tvTitle.text = context.resources.getString(R.string.register_success)
+
+            bindingDialog.btnYes.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
     }
 }

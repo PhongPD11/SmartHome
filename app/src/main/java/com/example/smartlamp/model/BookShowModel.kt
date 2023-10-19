@@ -4,5 +4,5 @@ data class BookShowModel(
     var image: String,
     val name: String,
     val rate: Double,
-    val bookId: Int
+    val bookId: Long
 )

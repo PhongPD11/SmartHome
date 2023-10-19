@@ -33,13 +33,13 @@ class TextViewParallelLines(context: Context, attrs: AttributeSet) :
         var typedArray: TypedArray? = null
         try {
             val defaultTextSize = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, 13F, resources.displayMetrics
+                TypedValue.COMPLEX_UNIT_SP, 14F, resources.displayMetrics
             ).toInt()
 
             typedArray = context.obtainStyledAttributes(attrs, R.styleable.TextViewTwoLines)
             binding?.title?.text = typedArray.getString(R.styleable.TextViewTwoLines_titleLabel)
             binding?.subTitle?.text =
-                typedArray.getString(R.styleable.TextViewTwoLines_subTitleLabel)
+                typedArray.getString(R.styleable.TextViewTwoLines_subTitle)
 
             val titleTextSize = typedArray.getDimensionPixelSize(
                 R.styleable.TextViewTwoLines_titleTextSize,

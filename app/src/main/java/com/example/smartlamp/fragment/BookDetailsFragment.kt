@@ -1,25 +1,40 @@
 package com.example.smartlamp.fragment
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.AuthorBookAdapter
 import com.example.smartlamp.api.ApiInterface
+import com.example.smartlamp.databinding.DialogConfirmRegisterBinding
+import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.databinding.FragmentBookDetailsBinding
 import com.example.smartlamp.model.BookData
 import com.example.smartlamp.model.SimpleApiResponse
+import com.example.smartlamp.model.UserBook
+import com.example.smartlamp.model.UserBookData
+import com.example.smartlamp.utils.Constants.ADDRESS
+import com.example.smartlamp.utils.Constants.BOOK_ID
+import com.example.smartlamp.utils.Constants.BORROWING
+import com.example.smartlamp.utils.Constants.BORROW_EXPIRED
+import com.example.smartlamp.utils.Constants.BORROW_RETURNED
 import com.example.smartlamp.utils.Constants.FAVORITE
+import com.example.smartlamp.utils.Constants.IS_DELIVERY
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
+import com.example.smartlamp.utils.Constants.REGISTER_BORROW
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Utils
@@ -27,6 +42,7 @@ import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.tux.wallet.testnet.utils.OnItemSingleClickListener
 import io.tux.wallet.testnet.utils.SingleClickListener
+import io.tux.wallet.testnet.utils.SingleClickListener.Companion.setSingleClickListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,9 +61,12 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
     private lateinit var authorAdapter: AuthorBookAdapter
 
+    private var address = ""
+    private var isDelivery = false
     private var isFavorite = false
+    private var status = ""
 
-    private var bookId = 0
+    private var bookId = 0L
 
     private val authors = ArrayList<String>()
 
@@ -80,20 +99,52 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
         val userRate = Utils.checkUserRated(bookId, viewModel.userBookList)
         setUserRate(userRate)
+        statusCheck(bookId, viewModel.userBookList)
 
-        binding.icStar1.setOnClickListener(singleClickListener)
-        binding.icStar2.setOnClickListener(singleClickListener)
-        binding.icStar3.setOnClickListener(singleClickListener)
-        binding.icStar4.setOnClickListener(singleClickListener)
-        binding.icStar5.setOnClickListener(singleClickListener)
+        binding.icStar1.setSingleClickListener(singleClickListener)
+        binding.icStar2.setSingleClickListener(singleClickListener)
+        binding.icStar3.setSingleClickListener(singleClickListener)
+        binding.icStar4.setSingleClickListener(singleClickListener)
+        binding.icStar5.setSingleClickListener(singleClickListener)
 
-        binding.ivBack.setOnClickListener(singleClickListener)
-        binding.ivFavorite.setOnClickListener(singleClickListener)
+        binding.btnRegister.setSingleClickListener(singleClickListener)
+
+        binding.ivBack.setSingleClickListener(singleClickListener)
+        binding.ivFavorite.setSingleClickListener(singleClickListener)
 
         return binding.root
     }
 
-    private fun setUserRate(userRate: Int){
+    @SuppressLint("ResourceAsColor")
+    private fun statusCheck(bookId: Long, useBookList : ArrayList<UserBookData>){
+        val userBook = useBookList.find { it.bookId == bookId }
+        if (userBook?.status != null) {
+            when (userBook.status) {
+                REGISTER_BORROW -> {
+                    binding.btnRegister.apply {
+                        isEnabled = false
+                        text = resources.getString(R.string.registered)
+                    }
+                }
+                BORROWING -> {
+                    binding.btnRegister.apply {
+                        isEnabled = false
+                        text = resources.getString(R.string.borrowing)
+                    }
+                }
+                BORROW_RETURNED -> {}
+                BORROW_EXPIRED -> {
+                    binding.btnRegister.apply {
+                        isEnabled = false
+                        text = resources.getString(R.string.borrow_expired)
+                        setBackgroundColor(R.color.red)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setUserRate(userRate: Int) {
         if (userRate > 0) {
             Utils.userRating(
                 userRate,
@@ -109,11 +160,14 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setBook(book: BookData, options: RequestOptions) {
         binding.tvName.text = book.name
-        binding.tvBook.text = book.name
-        binding.tvBookId.text = book.bookId.toString()
+        binding.tvBook.setText(book.name)
+        binding.tvBookId.setText(book.bookId.toString())
         bookId = book.bookId
-        binding.tvBookMajor.text = book.major
-        binding.tvBookType.text = book.type
+        binding.tvBookMajor.setText(book.major)
+        binding.tvBookType.setText(book.type)
+        binding.tvBookDDC.setText(book.ddc)
+        binding.tvBookLanguage.setText(book.language)
+        binding.tvBookLocation.setText(book.bookLocation)
         if (book.rated != 0.0) {
             binding.tvRated.text = "${book.rated} (${book.userRate})"
         } else {
@@ -123,10 +177,10 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         var author = ""
         for (i in book.author.indices) {
             authors.add(book.author[i])
-            if (i < (book.author.size - 1)) {
-                author += book.author[i] + ", "
+            author += if (i < (book.author.size - 1)) {
+                book.author[i] + ", "
             } else {
-                author += book.author[i]
+                book.author[i]
             }
         }
         binding.tvAuth.text = author
@@ -147,10 +201,81 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         authorAdapter = AuthorBookAdapter(requireContext(), authors)
         binding.rvAuth.apply {
             adapter = authorAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            layoutManager = GridLayoutManager(context, 4)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         authorAdapter.notifyDataSetChanged()
+    }
+
+    private fun showDialogSendSuccess(context: Context) {
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        val bindingDialog: DialogSuccessBinding = DialogSuccessBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+//        binding.progressBar.visibility = View.GONE
+        val window = dialog.window
+        val params = window?.attributes
+
+        params?.gravity = Gravity.CENTER
+        window?.attributes = params
+
+        bindingDialog.tvTitle.text = getString(R.string.register_success)
+
+        bindingDialog.btnYes.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showDialogConfirm(context: Context) {
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        val bindingDialog: DialogConfirmRegisterBinding =
+            DialogConfirmRegisterBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+        val window = dialog.window
+        val params = window?.attributes
+
+        params?.gravity = Gravity.CENTER
+        window?.attributes = params
+
+        bindingDialog.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                bindingDialog.consAddress.visibility = View.VISIBLE
+                isDelivery = true
+            } else {
+                bindingDialog.consAddress.visibility = View.GONE
+                isDelivery = false
+            }
+        }
+
+        bindingDialog.btnYes.setOnClickListener {
+            if (isDelivery) {
+                address = bindingDialog.etAddress.text.toString()
+                if (address.isNullOrEmpty()) {
+                    bindingDialog.tvError.visibility = View.VISIBLE
+                } else {
+                    bindingDialog.tvError.visibility = View.GONE
+                    dialog.dismiss()
+                    registerBook(
+                        hashMapOf(
+                            UID to sharedPref.getInt(UID),
+                            BOOK_ID to bookId,
+                            ADDRESS to address,
+                            IS_DELIVERY to isDelivery
+                        )
+                    )
+                }
+            } else {
+                dialog.dismiss()
+                registerBook(
+                    hashMapOf(
+                        UID to sharedPref.getInt(UID),
+                        BOOK_ID to bookId,
+                        ADDRESS to address,
+                        IS_DELIVERY to isDelivery
+                    )
+                )
+            }
+        }
+        dialog.show()
     }
 
     private fun rating(star: Int) {
@@ -194,6 +319,22 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         })
     }
 
+    private fun registerBook(map: HashMap<String?, Any?>) {
+        apiInterface.registerBook(map).enqueue(object : Callback<UserBook> {
+            override fun onResponse(call: Call<UserBook>, response: Response<UserBook>) {
+                if (response.body()?.data != null && response.body()!!.code == 200) {
+                    Utils.showSimpleDialog(context!!, getString(R.string.register_success), getString(R.string.register_success))
+                    viewModel.getUserBook(sharedPref.getInt(UID))
+                } else {
+                    Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<UserBook>, t: Throwable) {
+                t.printStackTrace()
+            }
+        })
+    }
+
     override fun onItemClick(view: View) {
         when (view.id) {
             R.id.iv_back -> findNavController().popBackStack()
@@ -214,6 +355,9 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
             }
             R.id.ic_star5 -> {
                 rating(5)
+            }
+            R.id.btnRegister -> {
+                showDialogConfirm(requireContext())
             }
         }
     }

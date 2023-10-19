@@ -89,4 +89,19 @@
     <string name="textbooks">Textbooks</string>
     <string name="reference_books">Reference Books</string>
     <string name="journal_articles">Journal Articles</string>
+    <string name="ddc_lb">DDC:</string>
+    <string name="location_lb">Location:</string>
+    <string name="languageLb">Language:</string>
+    <string name="book_borrowing_registration">Book Borrowing Registration</string>
+    <string name="register_book_guide">If you want to receive the book at home, please select the \'Delivery\' option and enter your address. If you wish to pick it up directly at the library, then press \'Done\'.</string>
+    <string name="deliveryLb">Delivery:</string>
+    <string name="address_hint">1 Vo Van Ngan, Thu Duc, TP HCM</string>
+    <string name="addressLb">Address:</string>
+    <string name="enter_address">Enter address.</string>
+
+    //Book
+    <string name="registered">Registered</string>
+    <string name="borrowing">Borrowing</string>
+    <string name="borrow_expired">You must return this book to library!</string>
+
 </resources>

@@ -3,7 +3,7 @@ package com.example.smartlamp.utils
 
 
 object Urls {
-    const val BASE_URL = "http://192.168.1.22:8080/"
+    const val BASE_URL = "http://192.168.1.4:8080/"
 
     //account
 
@@ -20,6 +20,7 @@ object Urls {
     const val GET_BOOKS = "library/books"
     const val GET_USER_BOOK = "library/userbook"
     const val USER_RATE_BOOK = "library/rate"
+    const val REGISTER_BOOK = "library/borrow/register"
 
     //Notification
 

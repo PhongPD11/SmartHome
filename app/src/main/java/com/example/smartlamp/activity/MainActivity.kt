@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 true
             }
             R.id.navigation_library -> {
+                viewModel.getBooks()
                 navController.navigate(R.id.navigation_library)
                 true
             }
@@ -143,9 +144,13 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         if (
             destination.id == R.id.navigation_home ||
             destination.id == R.id.navigation_library ||
-            destination.id == R.id.navigation_user
+            destination.id == R.id.navigation_user ||
+            destination.id == R.id.navigation_profile ||
+            destination.id == R.id.navigation_notifications
         ) {
             binding.navView.visibility = View.VISIBLE
+        } else {
+            binding.navView.visibility = View.GONE
         }
     }
 

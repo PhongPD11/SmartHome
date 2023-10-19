@@ -1,7 +1,7 @@
 package com.example.smartlamp.model
 
-data class UserBook(
+data class UserBooks(
     val code: Int,
-    val data: UserBookData,
+    val data: ArrayList<UserBookData>,
     val message: String
 )

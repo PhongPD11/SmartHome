@@ -38,6 +38,12 @@ object Constants {
     const val IS_DELIVERY = "isDelivery"
     const val FAVORITE = "favorite"
     const val Star = "star"
+    const val REGISTER_BORROW = "registerBorrow"
+    const val BORROWING = "borrowing"
+    const val BORROW_RETURNED = "borrowReturned"
+    const val BORROW_EXPIRED = "borrowExpired"
+    const val BORROW_REGISTER_EXPIRED = "borrowRegisterExpired"
+    const val DELIVERING = "delivering"
 
 
 }

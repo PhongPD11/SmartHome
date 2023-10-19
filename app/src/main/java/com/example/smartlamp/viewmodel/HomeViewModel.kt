@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
     val favorites = MutableLiveData<BookModel>()
     var favoriteList = ArrayList<BookData>()
 
-    val userBook = MutableLiveData<UserBook>()
+    val userBook = MutableLiveData<UserBooks>()
     var userBookList = ArrayList<UserBookData>()
 
     val books = MutableLiveData<BookModel>()
@@ -52,15 +52,15 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getUserBook(uid: Int) {
-        bookRepository.getUserBook(uid).enqueue(object: Callback<UserBook> {
-            override fun onResponse(call: Call<UserBook>, response: Response<UserBook>) {
+        bookRepository.getUserBooks(uid).enqueue(object: Callback<UserBooks> {
+            override fun onResponse(call: Call<UserBooks>, response: Response<UserBooks>) {
                 userBook.value = response.body()
                 favoriteList.clear()
                 if (response.body()?.data != null) {
                     userBookList = response.body()?.data!!
                 }
             }
-            override fun onFailure(call: Call<UserBook>, t: Throwable) {
+            override fun onFailure(call: Call<UserBooks>, t: Throwable) {
                 t.printStackTrace()
             }
         })

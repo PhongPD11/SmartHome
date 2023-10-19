@@ -20,6 +20,7 @@ import com.example.smartlamp.utils.Urls.NOTIFICATION_DELETE
 import com.example.smartlamp.utils.Urls.PROFILE
 import com.example.smartlamp.utils.Urls.READ_NOTIFICATION
 import com.example.smartlamp.utils.Urls.REGISTER
+import com.example.smartlamp.utils.Urls.REGISTER_BOOK
 import com.example.smartlamp.utils.Urls.SEND_FCM
 import com.example.smartlamp.utils.Urls.USER_RATE_BOOK
 import com.example.smartlamp.utils.Urls.VERIFY
@@ -65,14 +66,19 @@ ApiInterface {
     fun getBooks(): Call<BookModel>
 
     @GET(GET_USER_BOOK)
-    fun getUserBook(
+    fun getUserBooks(
         @Query(UID) uid: Int
+    ): Call<UserBooks>
+
+    @POST(REGISTER_BOOK)
+    fun registerBook(
+        @Body params: HashMap<String?, Any?>
     ): Call<UserBook>
 
     @GET(USER_RATE_BOOK)
     fun userRateBook(
         @Query(UID) uid: Int,
-        @Query(BOOK_ID) bookId: Int,
+        @Query(BOOK_ID) bookId: Long,
         @Query(Star) star: Int,
     ): Call<SimpleApiResponse>
 
@@ -84,7 +90,7 @@ ApiInterface {
     @GET(FAVORITE)
     fun makeFavorite(
         @Query(UID) uid : Int,
-        @Query(BOOK_ID) bookId : Int,
+        @Query(BOOK_ID) bookId : Long,
         @Query(IS_FAVORITE) isFavorite : Boolean
     ): Call<SimpleApiResponse>
 

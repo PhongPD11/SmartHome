@@ -4,8 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.RoomFragment">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -55,11 +54,30 @@
 
     </com.google.android.material.appbar.MaterialToolbar>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/consBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginVertical="5dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/btnRegister"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/consBtn">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,6 +109,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:textColor="@color/brown_lv2"
                         tools:text="Harry Porter and Philosopher's Stone"
                         android:textStyle="bold"
                         android:textSize="18sp"
@@ -241,45 +260,27 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp">
 
-                        <TextView
-                            android:id="@+id/tvLbBook"
-                            android:layout_width="wrap_content"
+                        <com.example.smartlamp.widget.TextViewParallelLines
+                            android:id="@+id/tvBook"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginHorizontal="10dp"
                             android:layout_marginTop="10dp"
                             android:minWidth="60dp"
-                            android:text="@string/bookLb"
+                            app:titleLabel="@string/bookLb"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"/>
 
-                        <TextView
-                            android:id="@+id/tvBook"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            app:layout_constraintStart_toEndOf="@id/tvLbBook"
-                            app:layout_constraintTop_toTopOf="@id/tvLbBook"
-                            app:layout_constraintBottom_toBottomOf="@id/tvLbBook"/>
-
-                        <TextView
-                            android:id="@+id/tvLbBookId"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="60dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/bookIdLb"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvLbBook"/>
-
-                        <TextView
+                        <com.example.smartlamp.widget.TextViewParallelLines
                             android:id="@+id/tvBookId"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            app:layout_constraintStart_toEndOf="@id/tvLbBookId"
-                            app:layout_constraintTop_toTopOf="@id/tvLbBookId"
-                            app:layout_constraintBottom_toBottomOf="@id/tvLbBookId"/>
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="10dp"
+                            app:titleLabel="@string/bookIdLb"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvBook"/>
+
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/consAuthors"
@@ -288,13 +289,14 @@
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvLbBookId">
+                            app:layout_constraintTop_toBottomOf="@id/tvBookId">
 
                             <TextView
                                 android:id="@+id/tvLbAuthor"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:minWidth="60dp"
+                                android:textSize="14sp"
                                 android:text="@string/authorsLb"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -305,6 +307,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
                                 tools:listitem="@layout/item_tag"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -314,47 +317,56 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/tvLbBookType"
-                            android:layout_width="wrap_content"
+                        <com.example.smartlamp.widget.TextViewParallelLines
+                            android:id="@+id/tvBookType"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginHorizontal="10dp"
                             android:layout_marginTop="10dp"
-                            android:minWidth="60dp"
-                            android:text="@string/typeLb"
+                            app:titleLabel="@string/typeLb"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/consAuthors"/>
 
-                        <TextView
-                            android:id="@+id/tvBookType"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            app:layout_constraintStart_toEndOf="@id/tvLbBookType"
-                            app:layout_constraintTop_toTopOf="@id/tvLbBookType"
-                            app:layout_constraintBottom_toBottomOf="@id/tvLbBookType"/>
-
-                        <TextView
-                            android:id="@+id/tvLbBookMajor"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:minWidth="60dp"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/majorLb"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvLbBookType"/>
-
-                        <TextView
+                        <com.example.smartlamp.widget.TextViewParallelLines
                             android:id="@+id/tvBookMajor"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            app:layout_constraintStart_toEndOf="@id/tvLbBookMajor"
-                            app:layout_constraintTop_toTopOf="@id/tvLbBookMajor"
-                            app:layout_constraintBottom_toBottomOf="@id/tvLbBookMajor"/>
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="10dp"
+                            app:titleLabel="@string/majorLb"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvBookType"/>
 
 
+                        <com.example.smartlamp.widget.TextViewParallelLines
+                            android:id="@+id/tvBookDDC"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="10dp"
+                            app:titleLabel="@string/ddc_lb"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvBookMajor"/>
+
+                        <com.example.smartlamp.widget.TextViewParallelLines
+                            android:id="@+id/tvBookLanguage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="10dp"
+                            app:titleLabel="@string/languageLb"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvBookDDC"/>
+
+                        <com.example.smartlamp.widget.TextViewParallelLines
+                            android:id="@+id/tvBookLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginTop="10dp"
+                            app:titleLabel="@string/location_lb"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvBookLanguage"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
