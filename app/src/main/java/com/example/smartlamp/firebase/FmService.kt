@@ -43,8 +43,8 @@ class FmService : FirebaseMessagingService() {
     private fun sendNotification(title: String?, message: String?) {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = "Your_Channel_ID"
-        val channelName = "Your_Channel_Name"
+        val channelId = "Firebase_notification_ID"
+        val channelName = "Smart_library_notification"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel =

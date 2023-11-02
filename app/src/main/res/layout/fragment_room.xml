@@ -54,7 +54,7 @@
             android:id="@+id/rvDevice"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_book_horizon"/>
+            tools:listitem="@layout/item_book_vertical"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

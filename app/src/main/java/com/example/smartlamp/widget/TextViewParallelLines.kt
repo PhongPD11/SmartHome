@@ -28,6 +28,10 @@ class TextViewParallelLines(context: Context, attrs: AttributeSet) :
             return
         }
 
+        binding?.subTitle?.setOnClickListener {
+            println("VCL")
+        }
+
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding = ItemTextViewParallelLinesBinding.inflate(inflater, this, true)
         var typedArray: TypedArray? = null
@@ -77,7 +81,6 @@ class TextViewParallelLines(context: Context, attrs: AttributeSet) :
             heightMeasureSpec
         )
     }
-
     fun setGravity(gravity: Int){
         binding?.subTitle?.gravity = gravity
     }

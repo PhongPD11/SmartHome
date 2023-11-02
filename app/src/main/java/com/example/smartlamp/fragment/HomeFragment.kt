@@ -16,6 +16,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.FavoriteAdapter
+import com.example.smartlamp.adapter.RecommendationAdapter
+import com.example.smartlamp.adapter.TopAdapter
 import com.example.smartlamp.databinding.DialogYesNoBinding
 import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.*
@@ -23,6 +25,7 @@ import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.NAME
+import com.example.smartlamp.utils.Constants.SELECTED_BOOK
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.HomeViewModel
@@ -59,11 +62,21 @@ class HomeFragment : Fragment() {
     lateinit var sharedPref: SharedPref
 
     private var favorites = ArrayList<BookShowModel>()
-    val favoriteList = ArrayList<BookData>()
+    private val favoriteList = ArrayList<BookData>()
+
+    private var topBooks = ArrayList<BookShowModel>()
+    val topBooksList = ArrayList<BookData>()
+
+    private var recommendations = ArrayList<BookShowModel>()
+    private val recommendationList = ArrayList<BookData>()
+
+
 
     var selectedBook: BookData? = null
 
     private lateinit var favoriteAdapter: FavoriteAdapter
+    private lateinit var recommendationAdapter: RecommendationAdapter
+    private lateinit var topAdapter: TopAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -97,9 +110,38 @@ class HomeFragment : Fragment() {
                 object : RecyclerTouchListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
                         val args = Bundle()
-                        args.putSerializable(IS_FAVORITE, true)
                         selectedBook = favoriteList[position]
-                        args.putSerializable(FAVORITE, selectedBook)
+                        args.putSerializable(SELECTED_BOOK, selectedBook)
+                        findNavController().navigate(R.id.navigation_book_detail, args)
+                    }
+
+                    override fun onLongItemClick(view: View?, position: Int) {}
+                })
+        )
+
+        binding.rvTop.addOnItemTouchListener(
+            RecyclerTouchListener(activity,
+                binding.rvTop,
+                object : RecyclerTouchListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val args = Bundle()
+                        selectedBook = topBooksList[position]
+                        args.putSerializable(SELECTED_BOOK, selectedBook)
+                        findNavController().navigate(R.id.navigation_book_detail, args)
+                    }
+
+                    override fun onLongItemClick(view: View?, position: Int) {}
+                })
+        )
+
+        binding.rvRecommendation.addOnItemTouchListener(
+            RecyclerTouchListener(activity,
+                binding.rvTop,
+                object : RecyclerTouchListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val args = Bundle()
+                        selectedBook = recommendationList[position]
+                        args.putSerializable(SELECTED_BOOK, selectedBook)
                         findNavController().navigate(R.id.navigation_book_detail, args)
                     }
 
@@ -134,6 +176,52 @@ class HomeFragment : Fragment() {
                     favoriteAdapter.notifyDataSetChanged()
                 }
                 if (favorites.isEmpty()) {
+                    binding.tvEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.tvEmpty.visibility = View.GONE
+                }
+            }
+        }
+
+        viewModel.majorBooks.observe(viewLifecycleOwner) {
+            if (it.code == 200) {
+                val listBook = it.data
+                recommendations.clear()
+                recommendationList.clear()
+                recommendationList.addAll(listBook)
+                for (i in listBook.indices) {
+                    val book =
+                        BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
+                    if (listBook[i].imageUrl != null) {
+                        book.image = listBook[i].imageUrl.toString()
+                    }
+                    recommendations.add(book)
+                    recommendationAdapter.notifyDataSetChanged()
+                }
+                if (recommendations.isEmpty()) {
+                    binding.tvEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.tvEmpty.visibility = View.GONE
+                }
+            }
+        }
+
+        viewModel.topBooks.observe(viewLifecycleOwner) {
+            if (it.code == 200) {
+                val listBook = it.data
+                topBooks.clear()
+                topBooksList.clear()
+                topBooksList.addAll(listBook)
+                for (i in listBook.indices) {
+                    val book =
+                        BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
+                    if (listBook[i].imageUrl != null) {
+                        book.image = listBook[i].imageUrl.toString()
+                    }
+                    topBooks.add(book)
+                    topAdapter.notifyDataSetChanged()
+                }
+                if (topBooks.isEmpty()) {
                     binding.tvEmpty.visibility = View.VISIBLE
                 } else {
                     binding.tvEmpty.visibility = View.GONE
@@ -196,11 +284,25 @@ class HomeFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
         favoriteAdapter = FavoriteAdapter(requireContext(), favorites)
+        recommendationAdapter = RecommendationAdapter(requireContext(), recommendations)
+        topAdapter = TopAdapter(requireContext(), topBooks)
         binding.rvFav.apply {
             adapter = favoriteAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         favoriteAdapter.notifyDataSetChanged()
+
+        binding.rvRecommendation.apply {
+            adapter = recommendationAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
+        recommendationAdapter.notifyDataSetChanged()
+
+        binding.rvTop.apply {
+            adapter = topAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
+        topAdapter.notifyDataSetChanged()
     }
 
 

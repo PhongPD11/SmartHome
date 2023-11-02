@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,11 +30,14 @@ import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.BORROWING
 import com.example.smartlamp.utils.Constants.BORROW_EXPIRED
 import com.example.smartlamp.utils.Constants.BORROW_RETURNED
+import com.example.smartlamp.utils.Constants.BY_AUTHOR
 import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_DELIVERY
-import com.example.smartlamp.utils.Constants.IS_FAVORITE
 import com.example.smartlamp.utils.Constants.REGISTER_BORROW
+import com.example.smartlamp.utils.Constants.SEARCH_BY
+import com.example.smartlamp.utils.Constants.SELECTED_BOOK
 import com.example.smartlamp.utils.Constants.UID
+import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.HomeViewModel
@@ -66,6 +68,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     private var isFavorite = false
     private var status = ""
 
+
     private var bookId = 0L
 
     private val authors = ArrayList<String>()
@@ -85,9 +88,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         val singleClickListener = SingleClickListener(this)
         sharedPref = SharedPref(context)
 
-        isFavorite = arguments?.getBoolean(IS_FAVORITE) == true
-        selectedBook = arguments?.get(FAVORITE) as BookData?
-        setIconFavorite(isFavorite)
+        selectedBook = arguments?.get(SELECTED_BOOK) as BookData?
 
         val options: RequestOptions = RequestOptions()
             .centerCrop()
@@ -99,7 +100,22 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
         val userRate = Utils.checkUserRated(bookId, viewModel.userBookList)
         setUserRate(userRate)
+        setIconFavorite(Utils.checkUserFavorite(bookId, viewModel.userBookList))
         statusCheck(bookId, viewModel.userBookList)
+
+        binding.rvAuth.addOnItemTouchListener(
+            RecyclerTouchListener(activity,
+                binding.rvAuth,
+                object : RecyclerTouchListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val args = Bundle()
+                        args.putString(SEARCH_BY, BY_AUTHOR)
+                        viewModel.getBookByAuthor(authors[position])
+                        findNavController().navigate(R.id.navigation_books, args)
+                    }
+                    override fun onLongItemClick(view: View?, position: Int) {}
+                })
+        )
 
         binding.icStar1.setSingleClickListener(singleClickListener)
         binding.icStar2.setSingleClickListener(singleClickListener)
@@ -173,6 +189,13 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         } else {
             binding.tvRated.visibility = View.GONE
         }
+        if (book.amount <= 0) {
+            binding.btnRegister.apply {
+                isEnabled = false
+                text = resources.getString(R.string.fullyBorrowed)
+            }
+        }
+
         authors.clear()
         var author = ""
         for (i in book.author.indices) {
@@ -206,25 +229,6 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         authorAdapter.notifyDataSetChanged()
     }
 
-    private fun showDialogSendSuccess(context: Context) {
-        val dialog = Dialog(context, R.style.CustomDialogTheme)
-        val bindingDialog: DialogSuccessBinding = DialogSuccessBinding.inflate(layoutInflater)
-        dialog.setContentView(bindingDialog.root)
-//        binding.progressBar.visibility = View.GONE
-        val window = dialog.window
-        val params = window?.attributes
-
-        params?.gravity = Gravity.CENTER
-        window?.attributes = params
-
-        bindingDialog.tvTitle.text = getString(R.string.register_success)
-
-        bindingDialog.btnYes.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
     private fun showDialogConfirm(context: Context) {
         val dialog = Dialog(context, R.style.CustomDialogTheme)
         val bindingDialog: DialogConfirmRegisterBinding =
@@ -235,6 +239,10 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
         params?.gravity = Gravity.CENTER
         window?.attributes = params
+
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt()
+        val height = (resources.displayMetrics.heightPixels * 0.35).toInt()
+        dialog.window?.setLayout(width, height)
 
         bindingDialog.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -290,6 +298,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     viewModel.getUserBook(uid)
                     viewModel.getBooks()
                     viewModel.getFavorites(uid)
+                    viewModel.getTopBook()
                 }
             }
 
@@ -325,6 +334,10 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                 if (response.body()?.data != null && response.body()!!.code == 200) {
                     Utils.showSimpleDialog(context!!, getString(R.string.register_success), getString(R.string.register_success))
                     viewModel.getUserBook(sharedPref.getInt(UID))
+                    binding.btnRegister.apply {
+                        isEnabled = false
+                        text = resources.getString(R.string.registered)
+                    }
                 } else {
                     Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
                 }

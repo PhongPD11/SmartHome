@@ -2,17 +2,22 @@ package com.example.smartlamp.api
 
 import com.example.smartlamp.model.*
 import com.example.smartlamp.utils.Constants.ACTIVE_CODE
+import com.example.smartlamp.utils.Constants.AUTHOR_ID
+import com.example.smartlamp.utils.Constants.AUTHOR_NAME
 import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.EMAIL
 import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.ID
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
+import com.example.smartlamp.utils.Constants.LANGUAGE
+import com.example.smartlamp.utils.Constants.MAJOR
 import com.example.smartlamp.utils.Constants.Star
+import com.example.smartlamp.utils.Constants.TYPE
 import com.example.smartlamp.utils.Constants.UID
-import com.example.smartlamp.utils.Urls
 import com.example.smartlamp.utils.Urls.FAVORITE
 import com.example.smartlamp.utils.Urls.FAVORITES
 import com.example.smartlamp.utils.Urls.GET_BOOKS
+import com.example.smartlamp.utils.Urls.GET_TOP_BOOK
 import com.example.smartlamp.utils.Urls.GET_USER_BOOK
 import com.example.smartlamp.utils.Urls.LOGIN
 import com.example.smartlamp.utils.Urls.NOTIFICATION
@@ -45,13 +50,13 @@ ApiInterface {
 
     @GET(VERIFY)
     fun verify(
-        @Query(EMAIL) email : String,
-        @Query(ACTIVE_CODE) activeCode : Int
+        @Query(EMAIL) email: String,
+        @Query(ACTIVE_CODE) activeCode: Int
     ): Call<SimpleApiResponse>
 
     @GET(PROFILE)
     fun profile(
-        @Query(UID) uid : Int
+        @Query(UID) uid: Int
     ): Call<SimpleApiResponse>
 
     @Multipart
@@ -63,7 +68,16 @@ ApiInterface {
 
     //Book
     @GET(GET_BOOKS)
-    fun getBooks(): Call<BookModel>
+    fun getBooks(
+        @Query(AUTHOR_ID) authorId: Int? = null,
+        @Query(AUTHOR_NAME) authorName: String? = "",
+        @Query(TYPE) type: String? = "",
+        @Query(MAJOR) major: String? = "",
+        @Query(LANGUAGE) language: String? = "",
+    ): Call<BookModel>
+
+    @GET(GET_TOP_BOOK)
+    fun getTopBooks(): Call<BookModel>
 
     @GET(GET_USER_BOOK)
     fun getUserBooks(
@@ -84,35 +98,35 @@ ApiInterface {
 
     @GET(FAVORITES)
     fun getFavorites(
-        @Query(UID) uid : Int
+        @Query(UID) uid: Int
     ): Call<BookModel>
 
     @GET(FAVORITE)
     fun makeFavorite(
-        @Query(UID) uid : Int,
-        @Query(BOOK_ID) bookId : Long,
-        @Query(IS_FAVORITE) isFavorite : Boolean
+        @Query(UID) uid: Int,
+        @Query(BOOK_ID) bookId: Long,
+        @Query(IS_FAVORITE) isFavorite: Boolean
     ): Call<SimpleApiResponse>
 
     @GET(NOTIFICATION)
     fun getNotification(
-        @Query(UID) uid : Int
+        @Query(UID) uid: Int
     ): Call<NotificationModel>
 
     @POST(SEND_FCM)
     fun sendFCM(
-        @Query(UID) uid : Int,
-        @Query(FCM) fcm : String,
+        @Query(UID) uid: Int,
+        @Query(FCM) fcm: String,
     ): Call<SimpleApiResponse>
 
     @POST(READ_NOTIFICATION)
     fun readNotification(
-        @Query(ID) id : Int
+        @Query(ID) id: Int
     ): Call<SimpleApiResponse>
 
     @DELETE(NOTIFICATION_DELETE)
     fun deleteNotification(
-        @Query(ID) id : Int
+        @Query(ID) id: Int
     ): Call<SimpleApiResponse>
 }
 

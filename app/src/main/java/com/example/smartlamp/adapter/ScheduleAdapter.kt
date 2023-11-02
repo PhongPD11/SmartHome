@@ -37,14 +37,13 @@ class ScheduleAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = schedules[position]
         val bind = holder.binding
-        var switch: Boolean
+        var switch = false
 
-        bind.tvTime.text = Utils.updateTime(item.hour,item.min)
+//        bind.tvTime.text = Utils.updateTime(item.hour,item.min)
 
-        val timeDisplay = Utils.repeatDisplay(item.repeat)
-        bind.tvRepeat.text = timeDisplay
+//        val timeDisplay = Utils.repeatDisplay(item.repeat)
+//        bind.tvRepeat.text = timeDisplay
 
-        switch = (item.button == 1)
         bind.swDevice.isChecked = switch
 
         bind.swDevice.setOnCheckedChangeListener { _, isChecked ->
@@ -53,7 +52,7 @@ class ScheduleAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            onScheduleClickInterface.onScheduleClick(item, timeDisplay, switch, position)
+//            onScheduleClickInterface.onScheduleClick(item, timeDisplay, switch, position)
         }
     }
 

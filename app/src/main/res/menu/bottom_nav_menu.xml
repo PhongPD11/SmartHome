@@ -11,6 +11,10 @@
         android:icon="@drawable/ic_library"
         android:title="@string/library" />
     <item
+        android:id="@+id/navigation_my_library"
+        android:icon="@drawable/ic_manager"
+        android:title="@string/manage_library" />
+    <item
         android:id="@+id/navigation_notifications"
         android:title="@string/notifications"
         android:icon="@drawable/ic_notification" />

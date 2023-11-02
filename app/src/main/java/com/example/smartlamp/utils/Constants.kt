@@ -33,7 +33,10 @@ object Constants {
     const val IMAGE_URL = "imageUrl"
 
     //book
+    const val SELECTED_BOOK = "selectedBook"
     const val BOOK_ID = "bookId"
+    const val AUTHOR_ID = "authorID"
+    const val AUTHOR_NAME = "authorName"
     const val IS_FAVORITE = "isFavorite"
     const val IS_DELIVERY = "isDelivery"
     const val FAVORITE = "favorite"
@@ -44,6 +47,16 @@ object Constants {
     const val BORROW_EXPIRED = "borrowExpired"
     const val BORROW_REGISTER_EXPIRED = "borrowRegisterExpired"
     const val DELIVERING = "delivering"
+
+    //Search
+    const val SEARCH_BY = "searchBy"
+    const val ALL = "all"
+    const val TYPE = "type"
+    const val LANGUAGE = "language"
+    const val BY_AUTHOR = "byAuthor"
+    const val BY_NAME = "byName"
+    const val BY_TYPE = "byType"
+    const val BY_MAJOR = "byMajor"
 
 
 }

@@ -9,6 +9,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main_color">#9a7b6c</color>
+    <color name="text_color">#555</color>
     <color name="brown_lv2">#895125</color>
     <color name="brown_lv3">#613312</color>
     <color name="hintTextColorLight">#878585</color>

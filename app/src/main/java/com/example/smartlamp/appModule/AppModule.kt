@@ -3,10 +3,6 @@ package com.example.smartlamp.appModule
 import android.content.Context
 import androidx.room.Room
 import com.example.smartlamp.api.ApiInterface
-import com.example.smartlamp.database.ModeDao
-import com.example.smartlamp.database.ModeDatabase
-import com.example.smartlamp.database.UserDao
-import com.example.smartlamp.database.UserDatabase
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Urls.BASE_URL
 import dagger.Module
@@ -57,29 +53,29 @@ object AppModule {
     fun provideApiInterface(retrofit: Retrofit): ApiInterface =
         retrofit.create(ApiInterface::class.java)
 
-    @Provides
-    @Singleton
-    fun provideUserDatabase(@ApplicationContext context: Context) : UserDatabase {
-        return Room.databaseBuilder(context, UserDatabase::class.java, "user_database").build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserDao(userDatabase: UserDatabase) : UserDao {
-        return userDatabase.getUserDao()
-    }
-
-  @Provides
-    @Singleton
-    fun provideModeDatabase(@ApplicationContext context: Context) : ModeDatabase {
-        return Room.databaseBuilder(context, ModeDatabase::class.java, "mode_database").build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideModeDao(modeDatabase: ModeDatabase) : ModeDao {
-        return modeDatabase.getModeDao()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideUserDatabase(@ApplicationContext context: Context) : UserDatabase {
+//        return Room.databaseBuilder(context, UserDatabase::class.java, "user_database").build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideUserDao(userDatabase: UserDatabase) : UserDao {
+//        return userDatabase.getUserDao()
+//    }
+//
+//  @Provides
+//    @Singleton
+//    fun provideModeDatabase(@ApplicationContext context: Context) : ModeDatabase {
+//        return Room.databaseBuilder(context, ModeDatabase::class.java, "mode_database").build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideModeDao(modeDatabase: ModeDatabase) : ModeDao {
+//        return modeDatabase.getModeDao()
+//    }
 
     @Provides
     @Singleton

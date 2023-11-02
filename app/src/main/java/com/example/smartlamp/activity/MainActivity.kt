@@ -1,19 +1,22 @@
 package com.example.smartlamp.activity
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
@@ -22,6 +25,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
+import com.example.smartlamp.services.*
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Urls.LOGIN
@@ -29,7 +33,9 @@ import com.example.smartlamp.viewmodel.HomeViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener,
@@ -74,6 +80,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         navView.setOnItemSelectedListener(this)
 
         navView.menu.findItem(R.id.navigation_notifications).isVisible = signed
+        navView.menu.findItem(R.id.navigation_my_library).isVisible = signed
 
         viewModel.notifications.observe(this, Observer { notifications ->
             val badge = navView.getOrCreateBadge(R.id.navigation_notifications)
@@ -104,12 +111,60 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 }
             }
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver!!, IntentFilter("custom-event"))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(broadcastReceiver!!, IntentFilter("custom-event"))
+
+//        scheduleNotification()
     }
+
+    private fun scheduleNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.SECOND, 10)
+            createNotificationChannel()
+            scheduleNotification(calendar)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun createNotificationChannel() {
+        val name = "Alarm"
+        val des = "Alarm from Smart Library"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel: NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channel = NotificationChannel(channelID, name, importance)
+            channel.description = des
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun scheduleNotification(calendar: Calendar) {
+        val intent = Intent(applicationContext, AlarmReceiver::class.java)
+        intent.putExtra(titleExtra, "Dậy đi ông cháu ơi")
+        intent.putExtra(messageExtra, "Dậy lẹ đê!!!")
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            1,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.navigation_home -> {
-                val bundle = bundleOf("signed" to signed, "name" to name )
+                val bundle = bundleOf("signed" to signed, "name" to name)
                 navController.navigate(R.id.navigation_home, bundle)
                 true
             }
@@ -122,8 +177,12 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 navController.navigate(R.id.navigation_notifications)
                 true
             }
+            R.id.navigation_my_library -> {
+                navController.navigate(R.id.navigation_my_library)
+                true
+            }
             R.id.navigation_user -> {
-                if(signed){
+                if (signed) {
                     navController.navigate(R.id.navigation_profile)
                 } else {
                     navController.navigate(R.id.navigation_auth)
@@ -146,7 +205,8 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             destination.id == R.id.navigation_library ||
             destination.id == R.id.navigation_user ||
             destination.id == R.id.navigation_profile ||
-            destination.id == R.id.navigation_notifications
+            destination.id == R.id.navigation_notifications ||
+            destination.id == R.id.navigation_my_library
         ) {
             binding.navView.visibility = View.VISIBLE
         } else {

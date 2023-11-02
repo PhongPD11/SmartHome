@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             tools:text="Alibaba and 40 brobber asdasdhgdfghfghfgh"
+            android:textColor="@color/text_color"
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +89,7 @@
                 android:layout_height="16dp"
                 android:textSize="12sp"
                 tools:text="4.9"
+                android:textColor="@color/text_color"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />

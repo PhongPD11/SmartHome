@@ -24,7 +24,8 @@
                 android:layout_marginStart="15dp"
                 android:padding="5dp"
                 android:textSize="20sp"
-                android:text="@string/profile_setting"
+                android:textColor="@color/main_color"
+                android:text="@string/notification"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

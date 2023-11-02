@@ -16,12 +16,12 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/iv_menu"
+                android:id="@+id/iv_back"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_menu"
+                android:padding="15dp"
+                android:src="@drawable/ic_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,11 +33,10 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:padding="5dp"
-                android:text="@string/library"
-                android:textColor="@color/main_color"
+                android:text="@string/book"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/iv_menu"
+                app:layout_constraintStart_toEndOf="@id/iv_back"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView

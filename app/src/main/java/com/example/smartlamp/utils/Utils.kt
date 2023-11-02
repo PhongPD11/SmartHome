@@ -4,11 +4,14 @@ import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.model.BookData
+import com.example.smartlamp.model.BookModel
 import com.example.smartlamp.model.UserBookData
+import com.google.android.material.textview.MaterialTextView
 
 class Utils {
     companion object {
@@ -92,6 +95,12 @@ class Utils {
                 userBook.rate ?: 0
             } else 0
         }
+        fun checkUserFavorite(bookId: Long, useBookList: ArrayList<UserBookData>): Boolean {
+            val userBook = useBookList.find { it.bookId == bookId }
+            return if (userBook != null) {
+                userBook.isFavorite ?: false
+            } else false
+        }
 
         fun isFavoriteBook(book: BookData, listFav: ArrayList<BookData>): Boolean {
             return listFav.contains(book)
@@ -116,5 +125,19 @@ class Utils {
             }
             dialog.show()
         }
+
+        fun setBook(booksResponse: BookModel, tvEmpty: MaterialTextView, books : ArrayList<BookData>) {
+            if (booksResponse.code == 200) {
+                val listBook = booksResponse.data
+                books.clear()
+                books.addAll(listBook)
+                if (books.isEmpty()) {
+                    tvEmpty.visibility = View.VISIBLE
+                } else {
+                    tvEmpty.visibility = View.GONE
+                }
+            }
+        }
+
     }
 }

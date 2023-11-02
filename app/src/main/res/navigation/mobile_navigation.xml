@@ -30,6 +30,10 @@
         android:label="Notifications" />
 
     <fragment
+        android:id="@+id/navigation_my_library"
+        android:name="com.example.smartlamp.fragment.MyLibraryFragment" />
+
+    <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.smartlamp.fragment.ProfileFragment"
         android:label="User" />
@@ -38,6 +42,15 @@
         android:id="@+id/navigation_library"
         android:name="com.example.smartlamp.fragment.AllBookFragment" >
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_books"
+        android:name="com.example.smartlamp.fragment.BooksFragment" >
+        <argument
+            android:name="searchBy"
+            app:argType="string"
+            android:defaultValue="all"/>
     </fragment>
 
     <fragment

@@ -10,15 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.BookAdapter
 import com.example.smartlamp.api.ApiInterface
-import com.example.smartlamp.databinding.FragmentAllBookBinding
+import com.example.smartlamp.databinding.FragmentBooksBinding
 import com.example.smartlamp.model.BookData
-import com.example.smartlamp.model.BookModel
 import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.utils.Constants.ALL
+import com.example.smartlamp.utils.Constants.BY_AUTHOR
+import com.example.smartlamp.utils.Constants.BY_MAJOR
+import com.example.smartlamp.utils.Constants.BY_TYPE
 import com.example.smartlamp.utils.Constants.SEARCH_BY
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Utils
-import com.example.smartlamp.utils.Utils.Companion.isFavoriteBook
 import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.tux.wallet.testnet.utils.OnItemSingleClickListener
@@ -26,8 +28,8 @@ import io.tux.wallet.testnet.utils.SingleClickListener
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AllBookFragment : Fragment(), OnItemSingleClickListener {
-    lateinit var binding: FragmentAllBookBinding
+class BooksFragment : Fragment(), OnItemSingleClickListener {
+    lateinit var binding: FragmentBooksBinding
 
     private val viewModel: HomeViewModel by activityViewModels()
 
@@ -37,9 +39,9 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
     @Inject
     lateinit var apiInterface: ApiInterface
 
-    val books = ArrayList<BookData>()
+    var searchBy = ALL
 
-    var isShowMenu = false
+    val books = ArrayList<BookData>()
 
     var selectedBook: BookData? = null
 
@@ -49,11 +51,12 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAllBookBinding.inflate(layoutInflater)
+        binding = FragmentBooksBinding.inflate(layoutInflater)
         val singleClick = SingleClickListener(this)
         sharedPref = SharedPref(context)
 
-        isShowMenu = false
+        searchBy = arguments?.getString(SEARCH_BY).toString()
+
         binding.rvBook.addOnItemTouchListener(
             RecyclerTouchListener(activity,
                 binding.rvBook,
@@ -70,20 +73,40 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
         )
 
         setObserve()
-        setUI()
 
         binding.ivFilter.setOnClickListener(singleClick)
         binding.ivSearch.setOnClickListener(singleClick)
-        binding.ivMenu.setOnClickListener(singleClick)
+        binding.ivBack.setOnClickListener(singleClick)
 
         return binding.root
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setObserve() {
-        viewModel.books.observe(viewLifecycleOwner) {
-            Utils.setBook(it, binding.tvEmpty, books)
-            setUI()
+        when (searchBy) {
+            ALL -> {
+                viewModel.books.observe(viewLifecycleOwner) {
+                    Utils.setBook(it, binding.tvEmpty, books)
+                }
+            }
+            BY_AUTHOR -> {
+                viewModel.authorBook.observe(viewLifecycleOwner) {
+                    Utils.setBook(it, binding.tvEmpty, books)
+                    setUI()
+                }
+            }
+            BY_MAJOR -> {
+                viewModel.majorBooks.observe(viewLifecycleOwner) {
+                    Utils.setBook(it, binding.tvEmpty, books)
+                    setUI()
+                }
+            }
+            BY_TYPE -> {
+                viewModel.majorBooks.observe(viewLifecycleOwner) {
+                    Utils.setBook(it, binding.tvEmpty, books)
+                    setUI()
+                }
+            }
         }
     }
 
@@ -99,15 +122,8 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
 
     override fun onItemClick(view: View) {
         when (view.id) {
-            R.id.iv_menu -> {
-                isShowMenu = !isShowMenu
-                if (isShowMenu) {
-                    binding.consMenu.visibility = View.VISIBLE
-                    binding.rvBook.visibility = View.GONE
-                } else {
-                    binding.consMenu.visibility = View.GONE
-                    binding.rvBook.visibility = View.VISIBLE
-                }
+            R.id.iv_back -> {
+                findNavController().popBackStack()
             }
             R.id.iv_search -> {
 

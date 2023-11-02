@@ -16,15 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp"
-                android:padding="15dp"
-                android:src="@drawable/ic_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_title"
@@ -33,12 +25,13 @@
                 android:gravity="center_vertical"
                 android:padding="5dp"
                 android:textSize="20sp"
+                android:layout_marginTop="20dp"
                 android:text="@string/profile_setting"
                 android:textColor="@color/main_color"
+
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/iv_back"
-                app:layout_constraintLeft_toRightOf="@id/iv_back"
-                app:layout_constraintTop_toTopOf="@id/iv_back" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -52,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_info"
+            android:id="@+id/card_bookshelf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -68,35 +61,35 @@
                 android:paddingBottom="10dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_setting"
+                    android:id="@+id/tv_bookshelf"
                     style="@style/headingTextBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/information"
-                    app:layout_constraintStart_toEndOf="@+id/iv_setting"
-                    app:layout_constraintTop_toTopOf="@id/iv_setting" />
+                    android:text="@string/bookshelf"
+                    app:layout_constraintStart_toEndOf="@+id/iv_book"
+                    app:layout_constraintTop_toTopOf="@id/iv_book" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_setting_desc"
+                    android:id="@+id/tv_bookshelf_desc"
                     style="@style/descText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="4dp"
-                    android:text="@string/update_your_profile"
+                    android:text="@string/manage_your_library"
                     android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_setting"
-                    app:layout_constraintStart_toEndOf="@+id/iv_setting"
-                    app:layout_constraintTop_toBottomOf="@id/tv_setting" />
+                    app:layout_constraintBottom_toBottomOf="@id/iv_book"
+                    app:layout_constraintStart_toEndOf="@+id/iv_book"
+                    app:layout_constraintTop_toBottomOf="@id/tv_bookshelf" />
 
                 <ImageView
-                    android:id="@+id/iv_setting"
+                    android:id="@+id/iv_book"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:padding="2dp"
-                    android:src="@drawable/ic_edit_pro"
+                    android:src="@drawable/ic_my_book"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -118,7 +111,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_pass"
+            android:id="@+id/card_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -134,35 +127,35 @@
                 android:paddingBottom="10dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_profile"
+                    android:id="@+id/tv_schedule"
                     style="@style/headingTextBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/password"
-                    app:layout_constraintStart_toEndOf="@+id/iv_profile"
-                    app:layout_constraintTop_toTopOf="@id/iv_profile" />
+                    android:text="@string/schedule"
+                    app:layout_constraintStart_toEndOf="@+id/iv_schedule"
+                    app:layout_constraintTop_toTopOf="@id/iv_schedule" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_profile_desc"
+                    android:id="@+id/tv_schedule_desc"
                     style="@style/descText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="4dp"
                     android:textSize="12sp"
-                    android:text="@string/change_your_password"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_profile"
-                    app:layout_constraintStart_toEndOf="@+id/iv_profile"
-                    app:layout_constraintTop_toBottomOf="@id/tv_profile" />
+                    android:text="@string/remind_you_to_read_book"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_schedule"
+                    app:layout_constraintStart_toEndOf="@+id/iv_schedule"
+                    app:layout_constraintTop_toBottomOf="@id/tv_schedule" />
 
                 <ImageView
-                    android:id="@+id/iv_profile"
+                    android:id="@+id/iv_schedule"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:padding="2dp"
-                    android:src="@drawable/ic_lock"
+                    android:src="@drawable/ic_schedule"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
