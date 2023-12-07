@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.navigation.NavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.model.BookData
@@ -15,25 +16,18 @@ import com.google.android.material.textview.MaterialTextView
 
 class Utils {
     companion object {
-        private val dotw = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        private val dotw = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
-        fun repeatDisplay(list: ArrayList<Int>): String {
-            var everyDay = true
+        fun repeatDisplay(repeat: String): String {
             var timeDisplay = ""
-            if (list[7] == 1) {
-                timeDisplay = "Once"
-                everyDay = false
+            if (repeat == "Daily" || repeat == "Once") {
+                timeDisplay = repeat
             } else {
-                for (i in 0 until list.size - 1) {
-                    if (list[i] == 1) {
-                        timeDisplay += "${dotw[i]} "
-                    } else {
-                        everyDay = false
+                for (charIndex in repeat.indices) {
+                    if (repeat[charIndex].toString() == "1") {
+                        timeDisplay += "${dotw[charIndex]} "
                     }
                 }
-            }
-            if (everyDay && list[7] == 0) {
-                timeDisplay = "Daily"
             }
             return timeDisplay
         }
@@ -95,6 +89,7 @@ class Utils {
                 userBook.rate ?: 0
             } else 0
         }
+
         fun checkUserFavorite(bookId: Long, useBookList: ArrayList<UserBookData>): Boolean {
             val userBook = useBookList.find { it.bookId == bookId }
             return if (userBook != null) {
@@ -107,9 +102,10 @@ class Utils {
         }
 
 
-        fun showSimpleDialog(context: Context, title: String, subTitle: String) {
+        fun showSimpleDialog(context: Context, title: String, subTitle: String, nav: NavController) {
             val dialog = Dialog(context, R.style.CustomDialogTheme)
-            val bindingDialog: DialogSuccessBinding = DialogSuccessBinding.inflate(LayoutInflater.from(context))
+            val bindingDialog: DialogSuccessBinding =
+                DialogSuccessBinding.inflate(LayoutInflater.from(context))
             dialog.setContentView(bindingDialog.root)
 //        binding.progressBar.visibility = View.GONE
             val window = dialog.window
@@ -118,23 +114,29 @@ class Utils {
             params?.gravity = Gravity.CENTER
             window?.attributes = params
 
-            bindingDialog.tvTitle.text = context.resources.getString(R.string.register_success)
+            bindingDialog.tvTitle.text = title
+            bindingDialog.tvSubTitle.text = subTitle
 
             bindingDialog.btnYes.setOnClickListener {
                 dialog.dismiss()
+                nav.popBackStack()
             }
             dialog.show()
         }
 
-        fun setBook(booksResponse: BookModel, tvEmpty: MaterialTextView, books : ArrayList<BookData>) {
+        fun setBook(
+            booksResponse: BookModel,
+            tvEmpty: MaterialTextView?,
+            books: ArrayList<BookData>
+        ) {
             if (booksResponse.code == 200) {
                 val listBook = booksResponse.data
                 books.clear()
                 books.addAll(listBook)
                 if (books.isEmpty()) {
-                    tvEmpty.visibility = View.VISIBLE
+                    tvEmpty?.visibility = View.VISIBLE
                 } else {
-                    tvEmpty.visibility = View.GONE
+                    tvEmpty?.visibility = View.GONE
                 }
             }
         }

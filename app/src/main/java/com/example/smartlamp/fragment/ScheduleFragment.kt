@@ -12,27 +12,35 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.ScheduleAdapter
+import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.FragmentScheduleBinding
-import com.example.smartlamp.model.ScheduleModel
-import com.example.smartlamp.utils.Utils
+import com.example.smartlamp.model.ScheduleResponse
+import com.example.smartlamp.model.SimpleApiResponse
+import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.utils.Constants.ID
+import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.ScheduleViewModel
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
     ScheduleAdapter.ScheduleClickInterface {
     lateinit var binding: FragmentScheduleBinding
-
-    private val schedules = ArrayList<ScheduleModel>()
-    private var keyList = ArrayList<String>()
+    private val schedules = ArrayList<ScheduleResponse.ScheduleData>()
 
     private val scheduleViewmodel : ScheduleViewModel by activityViewModels()
 
     private lateinit var scheduleAdapter: ScheduleAdapter
+
+    @Inject
+    lateinit var apiInterface: ApiInterface
+
+    @Inject
+    lateinit var sharedPref: SharedPref
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +49,7 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
         binding = FragmentScheduleBinding.inflate(layoutInflater)
 
         binding.fabAdd.setOnClickListener {
-            val bundle = bundleOf("add_schedule" to (keyList.size+1).toString())
+            val bundle = bundleOf("add_schedule" to "add")
             findNavController().navigate(R.id.navigation_schedule_setting, bundle)
         }
 
@@ -49,17 +57,14 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
             findNavController().popBackStack()
         }
 
-//        GlobalScope.launch {
-//            scheduleViewmodel.getAllSchedules()
-//        }
-//
-//        scheduleViewmodel.scheduleList.observe(viewLifecycleOwner){ list ->
-//            schedules.clear()
-//            list.forEach {
-//                val schedule = ScheduleModel(it.date, it.time, it.repeat, it.isOn)
-//                schedules.add(schedule)
-//            }
-//        }
+        scheduleViewmodel.scheduleList.observe(viewLifecycleOwner){ scheduleList ->
+            if (scheduleList != null) {
+                schedules.clear()
+                schedules.addAll(scheduleList)
+                schedules.sortBy { it.id }
+                setUI()
+            }
+        }
 
         setUI()
         return binding.root
@@ -77,14 +82,33 @@ class ScheduleFragment : Fragment(), ScheduleAdapter.SwitchClickInterface,
         scheduleAdapter.notifyDataSetChanged()
     }
 
-    override fun onScheduleClick(schedule: ScheduleModel, repeat: String, switch: Boolean, position: Int) {
-//        val time = Utils.updateTime(schedule.hour,schedule.min)
-//        val bundle = bundleOf("time" to time, "repeat" to repeat, "sw_device" to switch, "schedule" to keyList[position])
-//        findNavController().navigate(R.id.navigation_schedule_setting, bundle)
+    override fun onScheduleClick(position: Int) {
+        val args = Bundle()
+        args.putSerializable(Constants.SELECTED_SCHEDULE, schedules[position])
+        findNavController().navigate(R.id.navigation_schedule_setting, args)
     }
 
     override fun onSwitchClick(position: Int, isChecked: Boolean) {
-        val newState = if (isChecked) 1 else 0
+        val uid = sharedPref.getInt(Constants.UID)
+
+        apiInterface.updateSchedule(hashMapOf(
+            ID to schedules[position].id,
+            Constants.UID to uid,
+            Constants.HOUR_TIME to schedules[position].hourTime,
+            Constants.MINUTE_TIME to schedules[position].minuteTime,
+            Constants.IS_ON to isChecked,
+            Constants.REPEAT to schedules[position].repeat,
+            Constants.TYPE_REPEAT to schedules[position].typeRepeat
+        )).enqueue(object : Callback<SimpleApiResponse> {
+            override fun onResponse(call: Call<SimpleApiResponse>, response: Response<SimpleApiResponse>) {
+                if (response.body()?.code == 200){
+                    scheduleViewmodel.getSchedule(uid)
+                }
+            }
+            override fun onFailure(p0: Call<SimpleApiResponse>, p1: Throwable) {
+
+            }
+        })
     }
 
 }

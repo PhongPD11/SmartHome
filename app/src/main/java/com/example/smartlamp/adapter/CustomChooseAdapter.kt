@@ -40,7 +40,7 @@ class CustomChooseAdapter(
 
         bind.tvDay.text = item.day
 
-        if (item.state == 1) {
+        if (item.state == '1') {
             bind.ivCheck.setImageResource(R.drawable.ic_check_cir)
         }
         else {

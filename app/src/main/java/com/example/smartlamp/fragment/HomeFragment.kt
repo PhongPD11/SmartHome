@@ -180,6 +180,8 @@ class HomeFragment : Fragment() {
                 } else {
                     binding.tvEmpty.visibility = View.GONE
                 }
+            } else if (favorites.isEmpty()) {
+                binding.tvEmpty.visibility = View.VISIBLE
             }
         }
 
@@ -199,10 +201,12 @@ class HomeFragment : Fragment() {
                     recommendationAdapter.notifyDataSetChanged()
                 }
                 if (recommendations.isEmpty()) {
-                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmptySuggest.visibility = View.VISIBLE
                 } else {
-                    binding.tvEmpty.visibility = View.GONE
+                    binding.tvEmptySuggest.visibility = View.GONE
                 }
+            } else {
+                binding.tvEmptySuggest.visibility = View.VISIBLE
             }
         }
 
@@ -222,10 +226,12 @@ class HomeFragment : Fragment() {
                     topAdapter.notifyDataSetChanged()
                 }
                 if (topBooks.isEmpty()) {
-                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmptyTrend.visibility = View.VISIBLE
                 } else {
-                    binding.tvEmpty.visibility = View.GONE
+                    binding.tvEmptyTrend.visibility = View.GONE
                 }
+            } else {
+                binding.tvEmptyTrend.visibility = View.VISIBLE
             }
         }
     }

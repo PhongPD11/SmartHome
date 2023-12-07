@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartlamp.databinding.ItemScheduleBinding
 import com.example.smartlamp.model.ScheduleModel
+import com.example.smartlamp.model.ScheduleResponse
 import com.example.smartlamp.utils.Utils
 
 class ScheduleAdapter(
     var context: Context,
-    var schedules: List<ScheduleModel>,
+    var schedules: List<ScheduleResponse.ScheduleData>,
     private val onSwitchClickInterface: ScheduleAdapter.SwitchClickInterface,
     private val onScheduleClickInterface: ScheduleAdapter.ScheduleClickInterface,
 ) : RecyclerView.Adapter<ScheduleAdapter.ViewHolder>() {
@@ -37,13 +38,16 @@ class ScheduleAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = schedules[position]
         val bind = holder.binding
-        var switch = false
+        var switch = item.isOn
 
-//        bind.tvTime.text = Utils.updateTime(item.hour,item.min)
+        bind.tvTime.text = Utils.updateTime(item.hourTime,item.minuteTime)
 
-//        val timeDisplay = Utils.repeatDisplay(item.repeat)
-//        bind.tvRepeat.text = timeDisplay
-
+        if (item.typeRepeat == "Custom") {
+            val timeDisplay = Utils.repeatDisplay(item.repeat)
+            bind.tvRepeat.text = timeDisplay
+        } else {
+            bind.tvRepeat.text = item.typeRepeat
+        }
         bind.swDevice.isChecked = switch
 
         bind.swDevice.setOnCheckedChangeListener { _, isChecked ->
@@ -52,7 +56,7 @@ class ScheduleAdapter(
         }
 
         holder.itemView.setOnClickListener {
-//            onScheduleClickInterface.onScheduleClick(item, timeDisplay, switch, position)
+            onScheduleClickInterface.onScheduleClick(position)
         }
     }
 
@@ -65,6 +69,6 @@ class ScheduleAdapter(
     }
 
     interface ScheduleClickInterface {
-        fun onScheduleClick(schedule: ScheduleModel, repeat: String, switch: Boolean, position: Int)
+        fun onScheduleClick(position: Int)
     }
 }

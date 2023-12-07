@@ -53,9 +53,9 @@ class BookAdapter(
         var author = ""
         for (i in book.author.indices) {
             if (i < (book.author.size - 1)) {
-                author += book.author[i] + ", "
+                author += book.author[i].authorName + ", "
             } else {
-                author += book.author[i]
+                author += book.author[i].authorName
             }
         }
         binding.tvAuth.text = author
@@ -64,6 +64,11 @@ class BookAdapter(
 
     override fun getItemCount(): Int {
         return books.size
+    }
+
+    fun updateList(list: List<BookData>) {
+        this.books = list
+        notifyDataSetChanged()
     }
 
 }

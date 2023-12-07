@@ -31,13 +31,13 @@ class MyLibraryFragment : Fragment() {
             findNavController().navigate(R.id.navigation_schedule)
         }
 
-//        binding.cardBookshelf.setOnClickListener {
-//            try {
-//                findNavController().navigate(R.id.navigation_change_pass)
-//            } catch (e:Exception){
-//                println(e.message)
-//            }
-//        }
+        binding.cardBookshelf.setOnClickListener {
+            findNavController().navigate(R.id.navigation_book_shelf)
+        }
+
+        binding.cardContact.setOnClickListener {
+            findNavController().navigate(R.id.navigation_contact)
+        }
 
         return binding.root
     }

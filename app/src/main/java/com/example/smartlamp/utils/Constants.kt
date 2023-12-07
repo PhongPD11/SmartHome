@@ -23,6 +23,7 @@ object Constants {
     const val NAME = "name"
     const val LAST_NAME = "lastName"
     const val PASSWORD = "password"
+    const val NEW_PASSWORD = "newPassword"
     const val USERNAME = "username"
     const val FULL_NAME = "fullName"
     const val EMAIL = "email"
@@ -47,6 +48,8 @@ object Constants {
     const val BORROW_EXPIRED = "borrowExpired"
     const val BORROW_REGISTER_EXPIRED = "borrowRegisterExpired"
     const val DELIVERING = "delivering"
+    const val RETURN = "return"
+    const val BORROW = "borrow"
 
     //Search
     const val SEARCH_BY = "searchBy"
@@ -57,6 +60,26 @@ object Constants {
     const val BY_NAME = "byName"
     const val BY_TYPE = "byType"
     const val BY_MAJOR = "byMajor"
+
+
+    //Schedule
+    const val HOUR_TIME = "hourTime"
+    const val MINUTE_TIME = "minuteTime"
+    const val IS_ON = "isOn"
+    const val REPEAT = "repeat"
+    const val TYPE_REPEAT = "typeRepeat"
+    const val CUSTOM = "custom"
+    const val ONCE = "once"
+    const val DAILY = "daily"
+    const val SELECTED_SCHEDULE = "selectedSchedule"
+
+    //Contact
+    const val TITLE = "title"
+    const val CONTENT = "content"
+    const val ENQUIRY_ID = "enquiryId"
+    const val IS_ADMIN = "isAdmin"
+
+
 
 
 }

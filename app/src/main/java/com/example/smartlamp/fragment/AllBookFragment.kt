@@ -3,6 +3,8 @@ package com.example.smartlamp.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.SearchView
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -11,6 +13,7 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.BookAdapter
 import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.FragmentAllBookBinding
+import com.example.smartlamp.model.AuthorData
 import com.example.smartlamp.model.BookData
 import com.example.smartlamp.model.BookModel
 import com.example.smartlamp.utils.Constants
@@ -53,7 +56,12 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
         val singleClick = SingleClickListener(this)
         sharedPref = SharedPref(context)
 
-        isShowMenu = false
+        binding.edtSearch.doOnTextChanged { text, _, _, _ ->
+            if (text?.toString()?.trim()?.isNotEmpty() == true) {
+                filter(text.toString().trim())
+            } else books.let { bookAdapter.updateList(it) }
+        }
+
         binding.rvBook.addOnItemTouchListener(
             RecyclerTouchListener(activity,
                 binding.rvBook,
@@ -74,7 +82,6 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
 
         binding.ivFilter.setOnClickListener(singleClick)
         binding.ivSearch.setOnClickListener(singleClick)
-        binding.ivMenu.setOnClickListener(singleClick)
 
         return binding.root
     }
@@ -97,18 +104,34 @@ class AllBookFragment : Fragment(), OnItemSingleClickListener {
         bookAdapter.notifyDataSetChanged()
     }
 
+    fun filter(text: String?) {
+        val temp: ArrayList<BookData> = ArrayList()
+        for (country in books) {
+            if (text?.let { country.name.startsWith(it, true) } == true ||
+                text?.let { country.bookId.toString().startsWith(it, true) } == true ||
+                text?.let { country.ddc.startsWith(it, true) } == true ||
+                text?.let { country.major.startsWith(it, true) } == true || authorFilter(text, country.author)
+
+            ) {
+                temp.add(country)
+            }
+        }
+        bookAdapter.updateList(temp)
+    }
+
+    fun authorFilter (text: String?, authors: List<AuthorData>) : Boolean {
+        var existBook = false
+        for (author in authors){
+            if (text?.let { author.authorName.startsWith(it, true) } == true) {
+                existBook = true
+                break
+            }
+        }
+        return existBook
+    }
+
     override fun onItemClick(view: View) {
         when (view.id) {
-            R.id.iv_menu -> {
-                isShowMenu = !isShowMenu
-                if (isShowMenu) {
-                    binding.consMenu.visibility = View.VISIBLE
-                    binding.rvBook.visibility = View.GONE
-                } else {
-                    binding.consMenu.visibility = View.GONE
-                    binding.rvBook.visibility = View.VISIBLE
-                }
-            }
             R.id.iv_search -> {
 
             }

@@ -1,35 +1,39 @@
 package com.example.smartlamp.fragment
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.CustomChooseAdapter
+import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.DialogRepeatBinding
 import com.example.smartlamp.databinding.DialogRepeatCustomBinding
-import com.example.smartlamp.databinding.DialogTimeOffBinding
 import com.example.smartlamp.databinding.FragmentScheduleSettingBinding
 import com.example.smartlamp.model.CustomChooseModel
-import com.example.smartlamp.model.Schedule
-import com.example.smartlamp.model.Time
+import com.example.smartlamp.model.ScheduleResponse
+import com.example.smartlamp.model.SimpleApiResponse
+import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.utils.Constants.ID
+import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Utils
+import com.example.smartlamp.viewmodel.ScheduleViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.InternalCoroutinesApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScheduleSettingFragment : Fragment() {
@@ -37,22 +41,30 @@ class ScheduleSettingFragment : Fragment() {
 
     private lateinit var customChooseAdapter: CustomChooseAdapter
 
+    @Inject
+    lateinit var sharedPref: SharedPref
+
+    @Inject
+    lateinit var apiInterface: ApiInterface
+
+    private val scheduleViewmodel : ScheduleViewModel by activityViewModels()
+
+    var selectedSchedule: ScheduleResponse.ScheduleData? = null
+
     private var repeatDisplay = ""
-    private var repeat = ArrayList<Int>()
-    private var key = ""
+    private var repeat = ""
+    private var isAdd = false
     private var hourOn = 0
-    private var hourOff = 0
     private var minOn = 0
-    private var minOff = 0
-    private val daysOfWeek = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    private var typeRepeat = "Once"
+    private val daysOfWeek = arrayOf( "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     private var days = ArrayList<CustomChooseModel>()
     private var newPosition = ""
-
-    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private val ledNodeRef: DatabaseReference = database.getReference("Led")
+    private var id = 0
 
     private var swOn = true
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,25 +75,36 @@ class ScheduleSettingFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        repeatDisplay = arguments?.getString("repeat")!!
-        key = arguments?.getString("schedule")!!
+        isAdd = (arguments?.getString("add_schedule")!!) == "add"
 
-        if (key != ""){
-            binding.tvTime.text = arguments?.getString("time")!!
-            binding.swDevice.isChecked = arguments?.getBoolean("sw_device")!!
-        } else {
+        if (isAdd) {
             hourOn = 7
-            hourOff = 9
             minOn = 0
-            minOff = 0
-            repeat = arrayListOf(0,0,0,0,0,0,0,1)
+            repeat = "0000000"
             repeatDisplay = "Once"
             binding.tvTime.text = Utils.updateTime(hourOn,minOn)
             binding.swDevice.isChecked = true
             newPosition = arguments?.getString("add_schedule")!!
             updateRepeat(repeatDisplay)
-            updateTimeOff()
             updateDays(days, repeat)
+        } else {
+            selectedSchedule = arguments?.get(Constants.SELECTED_SCHEDULE) as ScheduleResponse.ScheduleData?
+            if (selectedSchedule != null) {
+                hourOn = selectedSchedule!!.hourTime
+                minOn = selectedSchedule!!.minuteTime
+                repeat = selectedSchedule!!.repeat
+                repeatDisplay = selectedSchedule!!.typeRepeat
+                typeRepeat = selectedSchedule!!.typeRepeat
+                binding.tvTime.text = Utils.updateTime(hourOn,minOn)
+                binding.swDevice.isChecked = selectedSchedule!!.isOn
+                if (typeRepeat == "Custom") {
+                    updateRepeat(repeat)
+                } else {
+                    updateRepeat(repeatDisplay)
+                }
+                updateDays(days, repeat)
+                id = selectedSchedule!!.id
+            }
         }
 
         binding.consRepeat.setOnClickListener {
@@ -92,20 +115,16 @@ class ScheduleSettingFragment : Fragment() {
             swOn = isChecked
         }
 
+        binding.timePicker.hour = hourOn
+        binding.timePicker.minute = minOn
+
         binding.timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             hourOn = hourOfDay
             minOn = minute
         }
 
-        binding.consTimeOff.setOnClickListener {
-            showTimeOffDialog(requireContext())
-        }
-
         binding.btnSetTime.setOnClickListener {
             saveSetting()
-            Handler().postDelayed({
-                findNavController().popBackStack()
-            },500)
         }
 
         binding.timePicker.setIs24HourView(true)
@@ -113,7 +132,7 @@ class ScheduleSettingFragment : Fragment() {
         return binding.root
     }
 
-    private fun updateDays( days: ArrayList<CustomChooseModel>, repeat: ArrayList<Int>){
+    private fun updateDays(days: ArrayList<CustomChooseModel>, repeat: String){
         days.clear()
         for(i in daysOfWeek.indices){
             val day = CustomChooseModel(daysOfWeek[i],repeat[i])
@@ -128,7 +147,7 @@ class ScheduleSettingFragment : Fragment() {
         val window = dialog.window
         val params = window?.attributes
 
-        when(Utils.repeatDisplay(repeat)){
+        when(typeRepeat){
             "Once" -> {
                 bindingDialog.tvOnce.setTextColor(Color.parseColor("#60A34A"))
                 bindingDialog.consOnce.setBackgroundColor(Color.parseColor("#E5F1E2"))
@@ -145,18 +164,19 @@ class ScheduleSettingFragment : Fragment() {
 
         bindingDialog.consOnce.setOnClickListener {
             dialog.dismiss()
-            repeat[7]=1
-            updateRepeat(Utils.repeatDisplay(repeat))
+            updateRepeat("Once")
+            typeRepeat = "Once"
         }
         bindingDialog.consDaily.setOnClickListener {
             dialog.dismiss()
-            repeat = arrayListOf(1,1,1,1,1,1,1,0)
-            updateRepeat(Utils.repeatDisplay(repeat))
+            updateRepeat("Daily")
+            typeRepeat = "Daily"
         }
 
         bindingDialog.consCustom.setOnClickListener {
             dialog.dismiss()
             showCustomDialog(context)
+            typeRepeat = "Custom"
             updateRepeat(Utils.repeatDisplay(repeat))
         }
 
@@ -166,68 +186,17 @@ class ScheduleSettingFragment : Fragment() {
         dialog.show()
     }
 
-    private fun updateTimeOff(){
-        binding.tvTimeOff.text = Utils.updateTime(hourOff,minOff)
-    }
 
     private fun updateRepeat(repeat : String){
-        binding.tvRepeat.text = repeat
-        binding.tvRepeatTime.text = repeat
-    }
-
-
-    @OptIn(InternalCoroutinesApi::class)
-    private fun showTimeOffDialog(context: Context){
-        val dialog = Dialog(context, R.style.CustomDialogTheme)
-        val bindingDialog: DialogTimeOffBinding = DialogTimeOffBinding.inflate(layoutInflater)
-        dialog.setContentView(bindingDialog.root)
-        val window = dialog.window
-        val params = window?.attributes
-        var pickHourOff = 0
-        var pickMinOff = 0
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            bindingDialog.timeOffPicker.hour = hourOff
-            bindingDialog.timeOffPicker.minute = minOff
-        }
-
-        bindingDialog.timeOffPicker.setOnTimeChangedListener { _, hourOfDay, minute ->
-            pickHourOff = hourOfDay
-            pickMinOff = minute
-        }
-
-        bindingDialog.btnDone.setOnClickListener {
-            dialog.dismiss()
-            hourOff = pickHourOff
-            minOff = pickMinOff
-            updateTimeOff()
-        }
-
-        bindingDialog.btnCancel.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        params?.gravity = Gravity.CENTER
-        window?.attributes = params
-
-        bindingDialog.timeOffPicker.setIs24HourView(true)
-
-        dialog.show()
+        binding.tvRepeat.text = Utils.repeatDisplay(repeat)
+        binding.tvRepeatTime.text = Utils.repeatDisplay(repeat)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showCustomDialog(context: Context) {
-        val repeatCustom = arrayListOf<Int>()
+        var repeatCustom = repeat
         val daysCustom = arrayListOf<CustomChooseModel>()
         daysCustom.addAll(days)
-        if (Utils.repeatDisplay(repeat) == "Daily"){
-            for (i in daysCustom.indices){
-                repeatCustom.add(daysCustom[i].state)
-            }
-            repeatCustom.add(0)
-        } else {
-            repeatCustom.addAll(repeat)
-        }
 
         val dialog = BottomSheetDialog(context, R.style.CustomDialogTheme)
         val bindingDialog: DialogRepeatCustomBinding = DialogRepeatCustomBinding.inflate(layoutInflater)
@@ -235,7 +204,9 @@ class ScheduleSettingFragment : Fragment() {
         customChooseAdapter = CustomChooseAdapter(context, daysCustom, object : CustomChooseAdapter.DayClickInterface {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDayClick(position: Int) {
-                repeatCustom[position] = toggleState(repeatCustom[position])
+                val charArray = repeatCustom.toCharArray()
+                charArray[position] = toggleState(charArray[position])
+                repeatCustom = String(charArray)
                 updateDays(daysCustom, repeatCustom)
                 customChooseAdapter.notifyDataSetChanged()
             }
@@ -257,41 +228,56 @@ class ScheduleSettingFragment : Fragment() {
         }
 
         bindingDialog.btnDone.setOnClickListener {
-            repeat.clear()
-            repeat.addAll(repeatCustom)
-            repeat[7] = 0
+            repeat = repeatCustom
             days.clear()
             days.addAll(daysCustom)
-            updateRepeat(Utils.repeatDisplay(repeat))
+            updateRepeat(repeat)
             dialog.dismiss()
         }
 
         params?.gravity = Gravity.BOTTOM
-        window?.attributes = params
-
         dialog.show()
     }
 
-    private fun toggleState(state: Int): Int {
-        return if (state == 1) 0 else 1
+    private fun toggleState(state: Char): Char {
+        return if (state == '1') '0' else '1'
     }
 
     private fun saveSetting() {
-        if (key != ""){
-            val newState = if (swOn) 1 else 0
-            ledNodeRef.child("schedule/$key/state").setValue(newState)
-            ledNodeRef.child("schedule/$key/repeat").setValue(repeat)
-            ledNodeRef.child("schedule/$key/time/hourOn").setValue(hourOn)
-            ledNodeRef.child("schedule/$key/time/minOn").setValue(minOn)
-            ledNodeRef.child("schedule/$key/time/hourOff").setValue(hourOff)
-            ledNodeRef.child("schedule/$key/time/minOff").setValue(minOff)
+        val uid = sharedPref.getInt(Constants.UID)
+        val map : HashMap<String, Any> = hashMapOf(
+            Constants.UID to uid,
+            Constants.HOUR_TIME to hourOn,
+            Constants.MINUTE_TIME to minOn,
+            Constants.IS_ON to swOn,
+            Constants.REPEAT to repeat,
+            Constants.TYPE_REPEAT to typeRepeat
+        )
+        if(isAdd){
+            apiInterface.setSchedule(map).enqueue(object : Callback<SimpleApiResponse> {
+                override fun onResponse(call: Call<SimpleApiResponse>, response: Response<SimpleApiResponse>) {
+                    if (response.body()?.code == 200){
+                        findNavController().popBackStack()
+                        scheduleViewmodel.getSchedule(uid)
+                    }
+                }
+
+                override fun onFailure(p0: Call<SimpleApiResponse>, p1: Throwable) {
+                }
+            })
         } else {
-            val schedule = Schedule(
-                repeat = repeat,
-                state = 1,
-                time = Time(hourOff, hourOn, minOff, minOn)
-            )
-            ledNodeRef.child("schedule/schedule$newPosition").setValue(schedule)
+            map[ID] = id
+            apiInterface.updateSchedule(map).enqueue(object : Callback<SimpleApiResponse> {
+                override fun onResponse(call: Call<SimpleApiResponse>, response: Response<SimpleApiResponse>) {
+                    if (response.body()?.code == 200){
+                        findNavController().popBackStack()
+                        scheduleViewmodel.getSchedule(uid)
+                    }
+                }
+
+                override fun onFailure(p0: Call<SimpleApiResponse>, p1: Throwable) {
+                }
+            })
         }
     }
 

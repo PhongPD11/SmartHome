@@ -6,7 +6,7 @@ data class UserBookData(
     val uid: Int,
     val createAt: String? = "",
     val createdAt: String? = "",
-    val expireAt: String? = "",
+    val expiredAt: String? = "",
     val returnedAt: String? = "",
     val status: String? = "",
     val rate: Int? = 0,

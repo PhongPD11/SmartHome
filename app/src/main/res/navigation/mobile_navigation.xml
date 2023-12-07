@@ -106,6 +106,42 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_contact"
+        android:name="com.example.smartlamp.fragment.EnquiryListFragment" >
+        <argument
+            android:name="subject"
+            app:argType="string"
+            android:defaultValue=""/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_qr_scan"
+        android:name="com.example.smartlamp.fragment.BorrowFragment" >
+        <argument
+            android:name="from"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="bookId"
+            app:argType="long"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_enquiry"
+        android:name="com.example.smartlamp.fragment.ContactFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_enquiry_detail"
+        android:name="com.example.smartlamp.fragment.ChatFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_book_shelf"
+        android:name="com.example.smartlamp.fragment.BookShelfFragment" >
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_schedule_setting"
         android:name="com.example.smartlamp.fragment.ScheduleSettingFragment" >
 

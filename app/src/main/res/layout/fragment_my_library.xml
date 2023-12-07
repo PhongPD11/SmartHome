@@ -26,7 +26,7 @@
                 android:padding="5dp"
                 android:textSize="20sp"
                 android:layout_marginTop="20dp"
-                android:text="@string/profile_setting"
+                android:text="@string/my_library"
                 android:textColor="@color/main_color"
 
                 android:textStyle="bold"
@@ -95,7 +95,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/iv_setting_go"
+                    android:id="@+id/iv_shelf_go"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_margin="10dp"
@@ -145,7 +145,7 @@
                     android:layout_marginTop="4dp"
                     android:textSize="12sp"
                     android:text="@string/remind_you_to_read_book"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_schedule"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_schedule"
                     app:layout_constraintStart_toEndOf="@+id/iv_schedule"
                     app:layout_constraintTop_toBottomOf="@id/tv_schedule" />
 
@@ -161,7 +161,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/iv_profile_go"
+                    android:id="@+id/iv_schedule_go"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_margin="10dp"
@@ -175,8 +175,9 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_logout"
+            android:id="@+id/card_contact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -185,7 +186,6 @@
             app:cardUseCompatPadding="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -193,26 +193,50 @@
                 android:paddingBottom="10dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_logout"
+                    android:id="@+id/tv_contact"
                     style="@style/headingTextBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="@string/log_out"
-                    app:layout_constraintStart_toEndOf="@+id/iv_logout"
-                    app:layout_constraintTop_toTopOf="@id/iv_logout"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_logout" />
+                    android:text="@string/contact"
+                    app:layout_constraintStart_toEndOf="@+id/iv_contact"
+                    app:layout_constraintTop_toTopOf="@id/iv_contact"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_contact" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_contact_desc"
+                    style="@style/descText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="4dp"
+                    android:textSize="12sp"
+                    android:text="@string/connect_to_solve_problem"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_contact"
+                    app:layout_constraintStart_toEndOf="@+id/iv_contact"
+                    app:layout_constraintTop_toBottomOf="@id/tv_contact" />
 
                 <ImageView
-                    android:id="@+id/iv_logout"
+                    android:id="@+id/iv_contact"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:padding="2dp"
-                    android:src="@drawable/ic_logout"
+                    android:src="@drawable/ic_chat"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_contact_go"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_more"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="#999" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

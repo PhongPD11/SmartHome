@@ -25,7 +25,8 @@
                 android:layout_marginStart="15dp"
                 android:padding="5dp"
                 android:text="@string/profile"
-                android:textSize="20dp"
+                android:textColor="@color/main_color"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -83,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:clipToPadding="true"
+                android:visibility="gone"
                 app:cardCornerRadius="10dp"
                 app:cardUseCompatPadding="true">
 

@@ -6,6 +6,7 @@ import com.example.smartlamp.utils.Constants.AUTHOR_ID
 import com.example.smartlamp.utils.Constants.AUTHOR_NAME
 import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.EMAIL
+import com.example.smartlamp.utils.Constants.ENQUIRY_ID
 import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.ID
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
@@ -14,9 +15,14 @@ import com.example.smartlamp.utils.Constants.MAJOR
 import com.example.smartlamp.utils.Constants.Star
 import com.example.smartlamp.utils.Constants.TYPE
 import com.example.smartlamp.utils.Constants.UID
+import com.example.smartlamp.utils.Urls.BORROW_BOOK
+import com.example.smartlamp.utils.Urls.CHANGE_PASS
+import com.example.smartlamp.utils.Urls.CREATE_ENQUIRY
 import com.example.smartlamp.utils.Urls.FAVORITE
 import com.example.smartlamp.utils.Urls.FAVORITES
 import com.example.smartlamp.utils.Urls.GET_BOOKS
+import com.example.smartlamp.utils.Urls.GET_ENQUIRY
+import com.example.smartlamp.utils.Urls.GET_ENQUIRY_DETAIL
 import com.example.smartlamp.utils.Urls.GET_TOP_BOOK
 import com.example.smartlamp.utils.Urls.GET_USER_BOOK
 import com.example.smartlamp.utils.Urls.LOGIN
@@ -26,6 +32,9 @@ import com.example.smartlamp.utils.Urls.PROFILE
 import com.example.smartlamp.utils.Urls.READ_NOTIFICATION
 import com.example.smartlamp.utils.Urls.REGISTER
 import com.example.smartlamp.utils.Urls.REGISTER_BOOK
+import com.example.smartlamp.utils.Urls.RETURN_BOOK
+import com.example.smartlamp.utils.Urls.SCHEDULE
+import com.example.smartlamp.utils.Urls.SEND_ENQUIRY
 import com.example.smartlamp.utils.Urls.SEND_FCM
 import com.example.smartlamp.utils.Urls.USER_RATE_BOOK
 import com.example.smartlamp.utils.Urls.VERIFY
@@ -66,6 +75,11 @@ ApiInterface {
         @Part("model") model: RequestBody
     ): Call<UserResponseModel>
 
+    @PUT(CHANGE_PASS)
+    fun changePassword(
+        @Body params: HashMap<String?, Any?>
+    ): Call<SimpleApiResponse>
+
     //Book
     @GET(GET_BOOKS)
     fun getBooks(
@@ -88,6 +102,19 @@ ApiInterface {
     fun registerBook(
         @Body params: HashMap<String?, Any?>
     ): Call<UserBook>
+
+    @GET(BORROW_BOOK)
+    fun borrowBook(
+        @Header("Authorization") authorization: String,
+        @Query("bookId") bookId: Long,
+        @Query("uid") uid: Int
+    ): Call<SimpleApiResponse>
+    @GET(RETURN_BOOK)
+    fun returnBook(
+        @Header("Authorization") authorization: String,
+        @Query("bookId") bookId: Long,
+        @Query("uid") uid: Int
+    ): Call<SimpleApiResponse>
 
     @GET(USER_RATE_BOOK)
     fun userRateBook(
@@ -128,6 +155,47 @@ ApiInterface {
     fun deleteNotification(
         @Query(ID) id: Int
     ): Call<SimpleApiResponse>
+
+    @POST(SCHEDULE)
+    fun setSchedule(
+        @Body params: HashMap<String, Any>
+    ): Call<SimpleApiResponse>
+
+    @PUT(SCHEDULE)
+    fun updateSchedule(
+        @Body params: HashMap<String, Any>
+    ): Call<SimpleApiResponse>
+
+    @DELETE(SCHEDULE)
+    fun deleteSchedule(
+        @Query(ID) id: Int
+    ): Call<SimpleApiResponse>
+
+    @GET(SCHEDULE)
+    fun getSchedule(
+        @Query(UID) uid: Int
+    ): Call<ScheduleResponse>
+
+    @POST(SEND_ENQUIRY)
+    fun sendEnquiry(
+        @Body params: HashMap<String, Any>
+    ): Call<SimpleApiResponse>
+
+    @POST(CREATE_ENQUIRY)
+    fun createEnquiry(
+        @Body params: HashMap<String, Any>
+    ): Call<SimpleApiResponse>
+
+    @GET(GET_ENQUIRY)
+    fun getEnquiry(
+        @Query(UID) uid: Int
+    ): Call<EnquiryResponse>
+
+    @GET(GET_ENQUIRY_DETAIL)
+    fun getEnquiryDetail(
+        @Query(ENQUIRY_ID) id: Int
+    ): Call<EnquiryDetailResponse>
+
 }
 
 

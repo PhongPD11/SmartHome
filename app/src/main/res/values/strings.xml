@@ -43,6 +43,7 @@
     <string name="email_error">Enter your username</string>
     <string name="first_error">Enter your first name</string>
     <string name="password_error">Enter password</string>
+    <string name="password_wrong">Password wrong</string>
     <string name="password_confirm_error">Password mismatch</string>
     <string name="register">Register</string>
     <string name="register_success">Register Successfully!</string>
@@ -73,6 +74,8 @@
     <string name="hint_code">ex: 345678</string>
     <string name="save">Save</string>
     <string name="favorite_empty">Your favorite list is currently empty.</string>
+    <string name="top_empty">Top list is currently empty.</string>
+    <string name="recommendation_empty">Recommendation list is currently empty.</string>
     <string name="notification">Notification</string>
     <string name="notification_empty">Your notification is empty</string>
     <string name="book_empty">Books is empty</string>
@@ -81,6 +84,8 @@
     <string name="authors">Authors</string>
     <string name="tag">Tag:</string>
     <string name="bookLb">Book:</string>
+    <string name="statusLb">Status:</string>
+    <string name="expireLb">Expire At:</string>
     <string name="bookIdLb">Book ID:</string>
     <string name="typeLb">Type:</string>
     <string name="majorLb">Major:</string>
@@ -103,6 +108,7 @@
     //Book
     <string name="registered">Registered</string>
     <string name="borrowing">Borrowing</string>
+    <string name="return_book">Return</string>
     <string name="fullyBorrowed">Fully Borrowed</string>
     <string name="borrow_expired">You must return this book to library!</string>
     <string name="bookshelf">Bookshelf</string>
@@ -110,5 +116,25 @@
     <string name="remind_you_to_read_book">Remind you to read book</string>
     <string name="my_library">My Library</string>
     <string name="manage_library">Manage Library</string>
+    <string name="contact">Contact</string>
+    <string name="list_is_empty">List is empty</string>
+    <string name="new_contact">New Contact</string>
+    <string name="enquiry">Enquiry</string>
+    <string name="full_name">Full Name</string>
+    <string name="subject">Subject</string>
+    <string name="description">Description</string>
+    <string name="send">Send</string>
+    <string name="connect_to_solve_problem">Connect Us to solve Your problem</string>
+    <string name="adminLb">Admin:</string>
+    <string name="userLb">User:</string>
+    <string name="text_here">Text here</string>
+    <string name="send_enquiry_successfully">Send Enquiry Successfully</string>
+    <string name="book_shelf">Book Shelf</string>
+    <string name="user_book_empty">Book Shelf list is empty</string>
+    <string name="you_borrowed_this_book">You borrowed this book</string>
+    <string name="you_registered_this_book">You registered this book</string>
+    <string name="out_of_book">All books are currently checked out. Please check back later.</string>
+    <string name="borrow">Borrow</string>
+    <string name="search_here">Search here ...</string>
 
 </resources>

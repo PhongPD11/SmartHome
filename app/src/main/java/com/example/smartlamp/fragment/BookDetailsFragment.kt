@@ -27,6 +27,7 @@ import com.example.smartlamp.model.UserBook
 import com.example.smartlamp.model.UserBookData
 import com.example.smartlamp.utils.Constants.ADDRESS
 import com.example.smartlamp.utils.Constants.BOOK_ID
+import com.example.smartlamp.utils.Constants.BORROW
 import com.example.smartlamp.utils.Constants.BORROWING
 import com.example.smartlamp.utils.Constants.BORROW_EXPIRED
 import com.example.smartlamp.utils.Constants.BORROW_RETURNED
@@ -34,6 +35,7 @@ import com.example.smartlamp.utils.Constants.BY_AUTHOR
 import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_DELIVERY
 import com.example.smartlamp.utils.Constants.REGISTER_BORROW
+import com.example.smartlamp.utils.Constants.RETURN
 import com.example.smartlamp.utils.Constants.SEARCH_BY
 import com.example.smartlamp.utils.Constants.SELECTED_BOOK
 import com.example.smartlamp.utils.Constants.UID
@@ -101,6 +103,15 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         val userRate = Utils.checkUserRated(bookId, viewModel.userBookList)
         setUserRate(userRate)
         setIconFavorite(Utils.checkUserFavorite(bookId, viewModel.userBookList))
+
+        if (selectedBook!!.amount == 0) {
+            binding.consStatus.visibility = View.VISIBLE
+            binding.tvStatus.text = getString(R.string.out_of_book)
+            binding.btnRegister.apply {
+                isEnabled = false
+                text = resources.getString(R.string.fullyBorrowed)
+            }
+        }
         statusCheck(bookId, viewModel.userBookList)
 
         binding.rvAuth.addOnItemTouchListener(
@@ -123,6 +134,9 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         binding.icStar4.setSingleClickListener(singleClickListener)
         binding.icStar5.setSingleClickListener(singleClickListener)
 
+        binding.btnBorrow.setSingleClickListener(singleClickListener)
+        binding.btnReturn.setSingleClickListener(singleClickListener)
+
         binding.btnRegister.setSingleClickListener(singleClickListener)
 
         binding.ivBack.setSingleClickListener(singleClickListener)
@@ -137,24 +151,40 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         if (userBook?.status != null) {
             when (userBook.status) {
                 REGISTER_BORROW -> {
-                    binding.btnRegister.apply {
+                    binding.cardRating.visibility = View.GONE
+                    binding.cons1Btn.visibility = View.VISIBLE
+                    binding.cons2Btn.visibility = View.GONE
+                    binding.btnReturn.apply {
                         isEnabled = false
-                        text = resources.getString(R.string.registered)
+                        text = resources.getString(R.string.you_registered_this_book)
                     }
+                    binding.consStatus.visibility = View.VISIBLE
+                    binding.tvStatus.text = getString(R.string.you_registered_this_book)
                 }
                 BORROWING -> {
-                    binding.btnRegister.apply {
-                        isEnabled = false
-                        text = resources.getString(R.string.borrowing)
+                    binding.cons1Btn.visibility = View.VISIBLE
+                    binding.cons2Btn.visibility = View.GONE
+                    binding.btnReturn.apply {
+                        isEnabled = true
+                        text = resources.getString(R.string.return_book)
                     }
+                    binding.consStatus.visibility = View.VISIBLE
+                    binding.tvStatus.text = getString(R.string.you_borrowed_this_book)
                 }
-                BORROW_RETURNED -> {}
+                BORROW_RETURNED -> {
+
+                }
                 BORROW_EXPIRED -> {
-                    binding.btnRegister.apply {
-                        isEnabled = false
-                        text = resources.getString(R.string.borrow_expired)
-                        setBackgroundColor(R.color.red)
+                    binding.cons1Btn.visibility = View.VISIBLE
+                    binding.cons2Btn.visibility = View.GONE
+                    binding.btnReturn.apply {
+                        text = context.getString(R.string.return_book)
                     }
+                    binding.consStatus.visibility = View.VISIBLE
+                    binding.tvStatus.text = resources.getString(R.string.borrow_expired)
+                }
+                else -> {
+                    binding.cardRating.visibility = View.GONE
                 }
             }
         }
@@ -199,11 +229,11 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         authors.clear()
         var author = ""
         for (i in book.author.indices) {
-            authors.add(book.author[i])
+            authors.add(book.author[i].authorName)
             author += if (i < (book.author.size - 1)) {
-                book.author[i] + ", "
+                book.author[i].authorName + ", "
             } else {
-                book.author[i]
+                book.author[i].authorName
             }
         }
         binding.tvAuth.text = author
@@ -299,6 +329,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     viewModel.getBooks()
                     viewModel.getFavorites(uid)
                     viewModel.getTopBook()
+                    Utils.showSimpleDialog(context!!, "Rating", "Thank you for rating!", findNavController())
                 }
             }
 
@@ -321,6 +352,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     isFavorite = !isFavorite
                 }
                 viewModel.getFavorites(uid)
+                viewModel.getUserBook(uid)
                 setIconFavorite(isFavorite)
             }
 
@@ -332,7 +364,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         apiInterface.registerBook(map).enqueue(object : Callback<UserBook> {
             override fun onResponse(call: Call<UserBook>, response: Response<UserBook>) {
                 if (response.body()?.data != null && response.body()!!.code == 200) {
-                    Utils.showSimpleDialog(context!!, getString(R.string.register_success), getString(R.string.register_success))
+                    Utils.showSimpleDialog(context!!, "", getString(R.string.register_success), findNavController())
                     viewModel.getUserBook(sharedPref.getInt(UID))
                     binding.btnRegister.apply {
                         isEnabled = false
@@ -371,6 +403,18 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
             }
             R.id.btnRegister -> {
                 showDialogConfirm(requireContext())
+            }
+            R.id.btnReturn -> {
+                val args = Bundle()
+                args.putString("from", RETURN)
+                args.putLong(BOOK_ID, selectedBook!!.bookId)
+                findNavController().navigate(R.id.navigation_qr_scan, args)
+            }
+            R.id.btnBorrow -> {
+                val args = Bundle()
+                args.putString("from", BORROW)
+                args.putLong(BOOK_ID, selectedBook!!.bookId)
+                findNavController().navigate(R.id.navigation_qr_scan, args)
             }
         }
     }

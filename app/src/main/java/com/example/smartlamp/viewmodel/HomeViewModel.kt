@@ -36,6 +36,7 @@ class HomeViewModel @Inject constructor(
 
     val favorites = MutableLiveData<BookModel>()
     var favoriteList = ArrayList<BookData>()
+    var emptyFav = true
 
     val topBooks = MutableLiveData<BookModel>()
     var topBooksList = ArrayList<BookData>()
@@ -50,6 +51,7 @@ class HomeViewModel @Inject constructor(
     val authorBook = MutableLiveData<BookModel>()
     var authorBookList = ArrayList<BookData>()
 
+    var allBooks = ArrayList<BookData>()
     val books = MutableLiveData<BookModel>()
     val notifications = MutableLiveData<List<NotificationModel.Data>?>()
 
@@ -60,6 +62,9 @@ class HomeViewModel @Inject constructor(
                 favoriteList.clear()
                 if (response.body()?.data != null) {
                     favoriteList = response.body()?.data!!
+                    emptyFav = false
+                } else if (response.body()?.message == "empty"){
+                    emptyFav = true
                 }
             }
             override fun onFailure(call: Call<BookModel>, t: Throwable) {
@@ -137,6 +142,9 @@ class HomeViewModel @Inject constructor(
         bookRepository.getBooks().enqueue(object: Callback<BookModel> {
             override fun onResponse(call: Call<BookModel>, response: Response<BookModel>) {
                 books.value = response.body()
+                if (response.body()?.data != null) {
+                    allBooks = response.body()?.data!!
+                }
             }
             override fun onFailure(call: Call<BookModel>, t: Throwable) {
                 t.printStackTrace()
@@ -152,9 +160,10 @@ class HomeViewModel @Inject constructor(
                 ) {
                     if (response.body()?.data != null) {
                         notifications.value = response.body()!!.data
+                    } else {
+                        notifications.value = null
                     }
                 }
-
                 override fun onFailure(call: Call<NotificationModel>, t: Throwable) {
                     t.printStackTrace()
                 }
@@ -162,3 +171,4 @@ class HomeViewModel @Inject constructor(
     }
 
 }
+

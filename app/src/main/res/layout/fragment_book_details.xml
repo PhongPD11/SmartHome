@@ -62,13 +62,83 @@
         android:layout_marginVertical="5dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
-            app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/btnRegister"
-            android:textAllCaps="false"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cons1Btn"
+            android:visibility="gone"
             android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/btnReturn"
+                android:textAllCaps="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/return_book"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cons2Btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/col50"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <Button
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/col50"
+                android:id="@+id/btnRegister"
+                android:textAllCaps="false"
+                android:layout_width="0dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_height="wrap_content"
+                android:text="@string/register"/>
+
+            <Button
+                app:layout_constraintStart_toEndOf="@id/col50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/btnBorrow"
+                android:textAllCaps="false"
+                android:layout_width="0dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_height="wrap_content"
+                android:text="@string/borrow"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cons_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:paddingVertical="5dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register"/>
+            android:textColor="@color/red"
+            android:text="@string/you_borrowed_this_book"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -76,7 +146,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/cons_status"
         app:layout_constraintBottom_toTopOf="@id/consBtn">
 
         <LinearLayout
@@ -91,8 +161,6 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/consDetail"
