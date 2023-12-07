@@ -12,6 +12,8 @@ data class ResponseProfileModel (
         val classId: Int,
         val major: String,
         val token: String,
-        val imageUrl: String?=""
+        val imageUrl: String?="",
+        val status: String,
+        val penaltyCount: Int
     )
 }

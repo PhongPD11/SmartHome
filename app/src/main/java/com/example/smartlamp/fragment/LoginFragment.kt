@@ -1,10 +1,13 @@
 package com.example.smartlamp.fragment
 
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.smartlamp.R
 import com.example.smartlamp.activity.MainActivity
+import com.example.smartlamp.databinding.DialogVerifyEmailBinding
 import com.example.smartlamp.databinding.FragmentLoginBinding
 import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.CLASS_ID
@@ -21,6 +25,7 @@ import com.example.smartlamp.utils.Constants.EMAIL
 import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.FULL_NAME
 import com.example.smartlamp.utils.Constants.IMAGE_URL
+import com.example.smartlamp.utils.Constants.IS_LOCK
 import com.example.smartlamp.utils.Constants.LAST_NAME
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.MAJOR
@@ -44,6 +49,7 @@ class LoginFragment : Fragment() {
     lateinit var sharedPref: SharedPref
     private val accountViewModel: AccountViewModel by activityViewModels()
 
+    var email = ""
     private var username = ""
     private var pass = ""
     override fun onCreateView(
@@ -97,30 +103,80 @@ class LoginFragment : Fragment() {
                 if (!data.imageUrl.isNullOrEmpty()){
                     sharedPref.putString(IMAGE_URL, data.imageUrl)
                 }
+                sharedPref.putBoolean(IS_LOCK, data.status == "Khóa")
                 sharedPref.putString(USERNAME, username)
                 sharedPref.putString(PASSWORD, pass)
                 val intent = Intent(requireContext(), MainActivity::class.java)
                 startActivity(intent)
             } else {
-                when (it.message) {
-                    Constants.USER_NOT_FOUND -> {
+                when {
+                    Constants.USER_NOT_FOUND == it.message -> {
                         binding.layUsername.apply {
                             error = getString(R.string.user_not_found)
                             isErrorEnabled = true
                         }
                     }
-                    Constants.INVALID_PASSWORD -> {
+                    Constants.INVALID_PASSWORD == it.message -> {
                         binding.layPassword.apply {
                             error = getString(R.string.invalid_password)
                             isErrorEnabled = true
                         }
+                    }
+                    it.message.contains("notVerify") -> {
+                        val emailMatch = Regex("email: (\\S+)").find(it.message)
+                        email = emailMatch?.groupValues?.get(1).toString()
+                        if (!email.isNullOrEmpty()){
+                            showVerifyDialog(requireContext(), email)
+                        } else Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                     }
                     else -> Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
 
+        accountViewModel.isVerifySuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                username = binding.etUsername.text.toString()
+                pass = binding.etPassword.text.toString()
+                loginUser(username, pass)
+            } else {
+                showVerifyDialog(requireContext(), email)
+            }
+        }
+
         return binding.root
+    }
+
+    private fun showVerifyDialog(context: Context, email: String) {
+        val dialog = Dialog(context, R.style.CustomDialogTheme)
+        val bindingDialog: DialogVerifyEmailBinding =
+            DialogVerifyEmailBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingDialog.root)
+        val window = dialog.window
+        val params = window?.attributes
+        bindingDialog.btnYes.isEnabled = false
+        var code = 0
+
+        bindingDialog.etCode.doAfterTextChanged { text ->
+            if (text != null) {
+                if (text.length != 6) {
+                    bindingDialog.btnYes.isEnabled = false
+                } else {
+                    bindingDialog.btnYes.isEnabled = true
+                    code = text.toString().toInt()
+                }
+            }
+        }
+
+        bindingDialog.btnYes.setOnClickListener {
+            accountViewModel.verifyMail(email, code)
+            dialog.dismiss()
+        }
+
+        params?.gravity = Gravity.CENTER
+        window?.attributes = params
+
+        dialog.show()
     }
 
     private fun TextInputEditText.onText(): String {

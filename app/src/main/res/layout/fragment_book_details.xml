@@ -231,6 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:clipToPadding="true"
+                android:visibility="gone"
                 app:cardCornerRadius="10dp"
                 app:cardUseCompatPadding="true">
 

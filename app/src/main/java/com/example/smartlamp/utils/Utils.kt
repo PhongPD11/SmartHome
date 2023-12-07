@@ -2,6 +2,7 @@ package com.example.smartlamp.utils
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.model.BookData
 import com.example.smartlamp.model.BookModel
 import com.example.smartlamp.model.UserBookData
+import com.example.smartlamp.utils.Constants.LOGIN
 import com.google.android.material.textview.MaterialTextView
 
 class Utils {
@@ -119,6 +121,9 @@ class Utils {
 
             bindingDialog.btnYes.setOnClickListener {
                 dialog.dismiss()
+
+            }
+            dialog.setOnDismissListener {
                 nav.popBackStack()
             }
             dialog.show()
@@ -138,6 +143,14 @@ class Utils {
                 } else {
                     tvEmpty?.visibility = View.GONE
                 }
+            }
+        }
+
+        fun loginToNavigate(sharedPref: SharedPref, nav: NavController, resId: Int, args: Bundle?) {
+            if (!sharedPref.getBoolean(LOGIN)) {
+                nav.navigate(R.id.navigation_auth)
+            } else {
+                nav.navigate(resId, args)
             }
         }
 

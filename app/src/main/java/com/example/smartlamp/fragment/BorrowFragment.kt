@@ -34,12 +34,15 @@ import com.example.smartlamp.model.SimpleApiResponse
 import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.ACTIVE_CODE
 import com.example.smartlamp.utils.Constants.BOOK_ID
+import com.example.smartlamp.utils.Constants.BORROW
 import com.example.smartlamp.utils.Constants.ENQUIRY_ID
 import com.example.smartlamp.utils.Constants.IS_ADMIN
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
+import com.example.smartlamp.utils.Utils
 import com.example.smartlamp.viewmodel.ContactViewModel
+import com.example.smartlamp.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.tux.wallet.testnet.utils.OnItemSingleClickListener
 import io.tux.wallet.testnet.utils.SingleClickListener
@@ -67,6 +70,8 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
 
     @Inject
     lateinit var apiInterface: ApiInterface
+
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -114,45 +119,57 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
     }
 
     private fun action(text: String){
-        if (from == "Borrow") {
-            Toast.makeText(requireContext(), "borrow", Toast.LENGTH_SHORT).show()
-            apiInterface.borrowBook(text, bookId, uid).enqueue(object : Callback<SimpleApiResponse> {
-                override fun onResponse(
-                    call: Call<SimpleApiResponse>,
-                    response: Response<SimpleApiResponse>
-                ) {
-                    if (response.body()?.code == 200) {
-                        findNavController().popBackStack()
-                    } else {
-                        Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
+        val bookIdMatch = Regex("bookId: (\\d+)").find(text)
+        val jwtMatch = Regex("jwt: (\\S+)").find(text)
 
-                override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
-            codeScanner.releaseResources()
+        val bookIdQR = bookIdMatch?.groupValues?.get(1)
+        val jwtQR = jwtMatch?.groupValues?.get(1)
+        val token = "Bearer $jwtQR"
+
+        if (bookIdQR == bookId.toString()) {
+            if (from == BORROW) {
+                apiInterface.borrowBook(token, bookId, uid).enqueue(object : Callback<SimpleApiResponse> {
+                    override fun onResponse(
+                        call: Call<SimpleApiResponse>,
+                        response: Response<SimpleApiResponse>
+                    ) {
+                        if (response.body()?.code == 200) {
+                            viewModel.getUserBook(uid)
+                            Utils.showSimpleDialog(context!!, "Borrow Book", "Borrow successfully!", findNavController())
+                        } else {
+                            Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
+                        t.printStackTrace()
+                    }
+                })
+                codeScanner.releaseResources()
+            } else {
+                apiInterface.returnBook(token, bookId, uid).enqueue(object : Callback<SimpleApiResponse> {
+                    override fun onResponse(
+                        call: Call<SimpleApiResponse>,
+                        response: Response<SimpleApiResponse>
+                    ) {
+                        if (response.body()?.code == 200) {
+                            viewModel.getUserBook(uid)
+                            Utils.showSimpleDialog(context!!, "Return Book", "Return successfully!", findNavController())
+                        } else {
+                            Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
+                        t.printStackTrace()
+                    }
+                })
+                codeScanner.releaseResources()
+            }
         } else {
-            Toast.makeText(requireContext(), "return $text", Toast.LENGTH_SHORT).show()
-            apiInterface.returnBook(text, bookId, uid).enqueue(object : Callback<SimpleApiResponse> {
-                override fun onResponse(
-                    call: Call<SimpleApiResponse>,
-                    response: Response<SimpleApiResponse>
-                ) {
-                    if (response.body()?.code == 200) {
-                        findNavController().popBackStack()
-                    } else {
-                        Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
-            codeScanner.releaseResources()
+            Toast.makeText(context, "BookId mismatch!", Toast.LENGTH_SHORT).show()
         }
+
     }
 
 
@@ -166,30 +183,6 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
     override fun onPause() {
         codeScanner.releaseResources()
         super.onPause()
-    }
-
-
-    private fun send() {
-        apiInterface.sendEnquiry(
-            hashMapOf(
-                IS_ADMIN to false,
-            )
-        ).enqueue(object : Callback<SimpleApiResponse> {
-            override fun onResponse(
-                call: Call<SimpleApiResponse>,
-                response: Response<SimpleApiResponse>
-            ) {
-                if (response.body()?.code == 200) {
-
-                } else {
-                    Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
     }
 
 

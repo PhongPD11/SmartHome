@@ -17,6 +17,8 @@ object Constants {
 
 
     //account
+    const val NOT_VERIFY = "notVerify"
+    const val IS_LOCK = "isLock"
     const val FCM = "fcm"
     const val LOGIN = "login"
     const val ADDRESS = "address"

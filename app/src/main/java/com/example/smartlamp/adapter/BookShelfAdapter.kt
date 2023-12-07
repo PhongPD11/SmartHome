@@ -49,29 +49,29 @@ class BookShelfAdapter(
                 bind.tvStatus.setText("Registering")
             }
             "borrowing" -> {
-                bind.tvTime.setText(ConvertTime.formatDate(item.expiredAt, "dd MMM yyyy - HH:mm"))
+                bind.tvTime.setText(ConvertTime.formatDate(item.expireAt, "dd MMM yyyy - HH:mm"))
                 bind.tvStatus.setText("Borrowing")
             }
             "delivering" -> {
-                bind.tvTime.setText(ConvertTime.formatDate(item.expiredAt, "dd MMM yyyy - HH:mm"))
+                bind.tvTime.setText(ConvertTime.formatDate(item.expireAt, "dd MMM yyyy"))
                 bind.tvStatus.setText("Delivering")
             }
             "borrowReturned" -> {
                 bind.tvTime.apply {
-                    setText(ConvertTime.formatDate(item.returnedAt, "dd MMM yyyy - HH:mm"))
+                    setText(ConvertTime.formatDate(item.returnedAt, "dd MMM yyyy"))
                     setTitleText("Returned At:")
                 }
                 bind.tvStatus.setText("Returned")
             }
             "borrowExpired" -> {
-                bind.tvTime.setText(ConvertTime.formatDate(item.expiredAt, "dd MMM yyyy - HH:mm"))
+                bind.tvTime.setText(ConvertTime.formatDate(item.expireAt, "dd MMM yyyy"))
                 bind.tvStatus.apply {
                     setText("Borrow Expired")
                     setTextColor(resources.getColor(R.color.red))
                 }
             }
             "borrowRegisterExpired" -> {
-                bind.tvTime.setText(ConvertTime.formatDateExtra(item.createAt, "dd MMM yyyy - HH:mm"))
+                bind.tvTime.setText(ConvertTime.formatDateExtra(item.createAt, "dd MMM yyyy"))
                 bind.tvStatus.apply {
                     setText("Register Expired")
                     setTextColor(resources.getColor(R.color.red))

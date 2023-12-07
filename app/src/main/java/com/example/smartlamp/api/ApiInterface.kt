@@ -64,9 +64,9 @@ ApiInterface {
     ): Call<SimpleApiResponse>
 
     @GET(PROFILE)
-    fun profile(
+    fun getProfile(
         @Query(UID) uid: Int
-    ): Call<SimpleApiResponse>
+    ): Call<ResponseProfileModel>
 
     @Multipart
     @PUT(PROFILE)
@@ -109,6 +109,7 @@ ApiInterface {
         @Query("bookId") bookId: Long,
         @Query("uid") uid: Int
     ): Call<SimpleApiResponse>
+
     @GET(RETURN_BOOK)
     fun returnBook(
         @Header("Authorization") authorization: String,

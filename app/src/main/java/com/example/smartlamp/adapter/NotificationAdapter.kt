@@ -53,6 +53,9 @@ class NotificationAdapter(
             NotificationType.CONGRATS.status -> {
                 bind.ivType.setImageResource(NotificationType.CONGRATS.imageResource)
             }
+            NotificationType.NOTIFY.status -> {
+                bind.ivType.setImageResource(NotificationType.NOTIFY.imageResource)
+            }
         }
         if (item.isRead) {
             bind.constNotification.alpha = 0.8F

@@ -9,8 +9,10 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartlamp.R
 import com.example.smartlamp.api.ApiInterface
+import com.example.smartlamp.model.ResponseProfileModel
 import com.example.smartlamp.model.SimpleApiResponse
 import com.example.smartlamp.model.WeatherModel
+import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.UID
@@ -20,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -27,14 +30,14 @@ import javax.inject.Inject
 @SuppressLint("CustomSplashScreen")
 class SplashscreenActivity : AppCompatActivity() {
     var weather = ArrayList<WeatherModel>()
-    lateinit var sharePref : SharedPref
+    lateinit var sharedPref : SharedPref
 
     @Inject
     lateinit var apiInterface: ApiInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharePref = SharedPref(this)
+        sharedPref = SharedPref(this)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -50,21 +53,51 @@ class SplashscreenActivity : AppCompatActivity() {
                     return@addOnCompleteListener
                 }
                 val token: String = task.result.token
-                if (sharePref.getBoolean(LOGIN)) {
-                    val uid = sharePref.getInt(UID)
-                    apiInterface.sendFCM(uid, token).enqueue(object : retrofit2.Callback<SimpleApiResponse> {
+                if (sharedPref.getBoolean(LOGIN)) {
+                    val uid = sharedPref.getInt(UID)
+                    
+                    apiInterface.getProfile(uid).enqueue(object : Callback<ResponseProfileModel>{
+                        override fun onResponse(
+                            call: Call<ResponseProfileModel>,
+                            response: Response<ResponseProfileModel>
+                        ) {
+                            if (response.body()?.code == 200 && response.body()?.data != null) {
+                                val data = response.body()!!.data
+                                val firstName = data.fullName.substring(0, data.fullName.indexOf(" "))
+                                val lastName = data.fullName.substring(firstName.length.plus(1) ?: 0)
+                                sharedPref.putString(Constants.NAME, firstName)
+                                sharedPref.putString(Constants.LAST_NAME, lastName)
+                                sharedPref.putString(Constants.FULL_NAME, data.fullName)
+                                sharedPref.putString(Constants.EMAIL, data.email)
+                                sharedPref.putInt(Constants.CLASS_ID, data.classId)
+                                sharedPref.putString(Constants.MAJOR, data.major)
+                                sharedPref.putInt(UID, data.uid)
+                                if (!data.imageUrl.isNullOrEmpty()){
+                                    sharedPref.putString(Constants.IMAGE_URL, data.imageUrl)
+                                }
+                                sharedPref.putBoolean(Constants.IS_LOCK, data.status == "Khóa")
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseProfileModel>, t: Throwable) {
+                            t.printStackTrace()
+                        }
+                    })
+
+                    apiInterface.sendFCM(uid, token).enqueue(object : Callback<SimpleApiResponse> {
                         override fun onResponse(
                             call: Call<SimpleApiResponse>,
                             response: Response<SimpleApiResponse>
                         ) {
                             if (response.body()?.data != null) {
-                                sharePref.putString(FCM, token)
+                                sharedPref.putString(FCM, token)
                             }
                         }
                         override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
                             t.printStackTrace()
                         }
                     })
+                    
                 }
             }
 

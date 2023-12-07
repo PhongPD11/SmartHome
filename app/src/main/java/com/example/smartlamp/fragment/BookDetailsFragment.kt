@@ -3,6 +3,7 @@ package com.example.smartlamp.fragment
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,7 +20,6 @@ import com.example.smartlamp.R
 import com.example.smartlamp.adapter.AuthorBookAdapter
 import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.DialogConfirmRegisterBinding
-import com.example.smartlamp.databinding.DialogSuccessBinding
 import com.example.smartlamp.databinding.FragmentBookDetailsBinding
 import com.example.smartlamp.model.BookData
 import com.example.smartlamp.model.SimpleApiResponse
@@ -30,10 +30,11 @@ import com.example.smartlamp.utils.Constants.BOOK_ID
 import com.example.smartlamp.utils.Constants.BORROW
 import com.example.smartlamp.utils.Constants.BORROWING
 import com.example.smartlamp.utils.Constants.BORROW_EXPIRED
+import com.example.smartlamp.utils.Constants.BORROW_REGISTER_EXPIRED
 import com.example.smartlamp.utils.Constants.BORROW_RETURNED
 import com.example.smartlamp.utils.Constants.BY_AUTHOR
-import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_DELIVERY
+import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.REGISTER_BORROW
 import com.example.smartlamp.utils.Constants.RETURN
 import com.example.smartlamp.utils.Constants.SEARCH_BY
@@ -124,6 +125,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                         viewModel.getBookByAuthor(authors[position])
                         findNavController().navigate(R.id.navigation_books, args)
                     }
+
                     override fun onLongItemClick(view: View?, position: Int) {}
                 })
         )
@@ -146,7 +148,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     }
 
     @SuppressLint("ResourceAsColor")
-    private fun statusCheck(bookId: Long, useBookList : ArrayList<UserBookData>){
+    private fun statusCheck(bookId: Long, useBookList: ArrayList<UserBookData>) {
         val userBook = useBookList.find { it.bookId == bookId }
         if (userBook?.status != null) {
             when (userBook.status) {
@@ -160,8 +162,11 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     }
                     binding.consStatus.visibility = View.VISIBLE
                     binding.tvStatus.text = getString(R.string.you_registered_this_book)
+                    binding.tvStatus.setTextColor(Color.parseColor("#9cfa9c"))
                 }
+
                 BORROWING -> {
+                    binding.cardRating.visibility = View.VISIBLE
                     binding.cons1Btn.visibility = View.VISIBLE
                     binding.cons2Btn.visibility = View.GONE
                     binding.btnReturn.apply {
@@ -170,11 +175,15 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     }
                     binding.consStatus.visibility = View.VISIBLE
                     binding.tvStatus.text = getString(R.string.you_borrowed_this_book)
+                    binding.tvStatus.setTextColor(Color.parseColor("#9cfa9c"))
                 }
-                BORROW_RETURNED -> {
 
+                BORROW_RETURNED -> {
+                    binding.cardRating.visibility = View.VISIBLE
                 }
+
                 BORROW_EXPIRED -> {
+                    binding.cardRating.visibility = View.VISIBLE
                     binding.cons1Btn.visibility = View.VISIBLE
                     binding.cons2Btn.visibility = View.GONE
                     binding.btnReturn.apply {
@@ -182,7 +191,22 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     }
                     binding.consStatus.visibility = View.VISIBLE
                     binding.tvStatus.text = resources.getString(R.string.borrow_expired)
+                    binding.cardRating.visibility = View.VISIBLE
+
                 }
+                BORROW_REGISTER_EXPIRED -> {
+                    binding.cardRating.visibility = View.VISIBLE
+                    binding.cons1Btn.visibility = View.VISIBLE
+                    binding.cons2Btn.visibility = View.GONE
+                    binding.btnReturn.apply {
+                        text = context.getString(R.string.return_book)
+                    }
+                    binding.consStatus.visibility = View.VISIBLE
+                    binding.tvStatus.text = resources.getString(R.string.borrow_expired)
+                    binding.cardRating.visibility = View.VISIBLE
+
+                }
+
                 else -> {
                     binding.cardRating.visibility = View.GONE
                 }
@@ -329,7 +353,12 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     viewModel.getBooks()
                     viewModel.getFavorites(uid)
                     viewModel.getTopBook()
-                    Utils.showSimpleDialog(context!!, "Rating", "Thank you for rating!", findNavController())
+                    Utils.showSimpleDialog(
+                        context!!,
+                        "Rating",
+                        "Thank you for rating!",
+                        findNavController()
+                    )
                 }
             }
 
@@ -364,7 +393,12 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         apiInterface.registerBook(map).enqueue(object : Callback<UserBook> {
             override fun onResponse(call: Call<UserBook>, response: Response<UserBook>) {
                 if (response.body()?.data != null && response.body()!!.code == 200) {
-                    Utils.showSimpleDialog(context!!, "", getString(R.string.register_success), findNavController())
+                    Utils.showSimpleDialog(
+                        context!!,
+                        "",
+                        getString(R.string.register_success),
+                        findNavController()
+                    )
                     viewModel.getUserBook(sharedPref.getInt(UID))
                     binding.btnRegister.apply {
                         isEnabled = false
@@ -374,6 +408,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onFailure(call: Call<UserBook>, t: Throwable) {
                 t.printStackTrace()
             }
@@ -384,39 +419,54 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         when (view.id) {
             R.id.iv_back -> findNavController().popBackStack()
             R.id.ivFavorite -> {
-                makeFavorite()
+                if (sharedPref.getBoolean(LOGIN)) {
+                    makeFavorite()
+                } else {
+                    findNavController().navigate(R.id.navigation_auth)
+                }
             }
+
             R.id.ic_star1 -> {
                 rating(1)
             }
+
             R.id.ic_star2 -> {
                 rating(2)
             }
+
             R.id.ic_star3 -> {
                 rating(3)
             }
+
             R.id.ic_star4 -> {
                 rating(4)
             }
+
             R.id.ic_star5 -> {
                 rating(5)
             }
+
             R.id.btnRegister -> {
-                showDialogConfirm(requireContext())
+                if (sharedPref.getBoolean(LOGIN)) {
+                    showDialogConfirm(requireContext())
+                } else {
+                    findNavController().navigate(R.id.navigation_auth)
+                }
             }
+
             R.id.btnReturn -> {
                 val args = Bundle()
                 args.putString("from", RETURN)
                 args.putLong(BOOK_ID, selectedBook!!.bookId)
-                findNavController().navigate(R.id.navigation_qr_scan, args)
+                Utils.loginToNavigate(sharedPref, findNavController(), R.id.navigation_qr_scan, args)
             }
+
             R.id.btnBorrow -> {
                 val args = Bundle()
                 args.putString("from", BORROW)
                 args.putLong(BOOK_ID, selectedBook!!.bookId)
-                findNavController().navigate(R.id.navigation_qr_scan, args)
+                Utils.loginToNavigate(sharedPref, findNavController(), R.id.navigation_qr_scan, args)
             }
         }
     }
-
 }
