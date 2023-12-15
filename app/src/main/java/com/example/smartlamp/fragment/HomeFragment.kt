@@ -56,7 +56,19 @@ class HomeFragment : Fragment() {
         "“If you only read the books that everyone else is reading, you can only think what everyone else is thinking.”",
         "―Haruki Murakami"
     )
-    private val listQuote = listOf<Quote>(quote, quote2, quote3, quote4)
+    private val quote5 = Quote(
+        "“Reading should not be presented to children as a chore, a duty. It should be offered as a gift.”",
+        "―Kate DiCamillo"
+    )
+    private val quote6 = Quote(
+        "“I think books are like people, in the sense that they’ll turn up in your life when you most need them.”",
+        "―Emma Thompson"
+    )
+    private val quote7 = Quote(
+        "Books are mirrors: You only see in them what you already have inside you.",
+        "―Carlos Ruiz Zafón, The Shadow of the Wind"
+    )
+    private val listQuote = listOf<Quote>(quote, quote2, quote3, quote4, quote5, quote6, quote7)
 
     @Inject
     lateinit var sharedPref: SharedPref
@@ -92,6 +104,10 @@ class HomeFragment : Fragment() {
 
         if (signed) {
             binding.cvFavorite.visibility = View.VISIBLE
+            binding.cvSuggest.visibility = View.VISIBLE
+        } else {
+            binding.cvFavorite.visibility = View.GONE
+            binding.cvSuggest.visibility = View.GONE
         }
 
         val name = sharedPref.getString(NAME)

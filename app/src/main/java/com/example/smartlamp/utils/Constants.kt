@@ -62,6 +62,9 @@ object Constants {
     const val BY_NAME = "byName"
     const val BY_TYPE = "byType"
     const val BY_MAJOR = "byMajor"
+    const val BY_LANGUAGE = "byLanguage"
+    const val BY_LOCATION = "byLocation"
+    const val KEY_SEARCH = "keySearch"
 
 
     //Schedule

@@ -111,6 +111,7 @@
     <string name="return_book">Return</string>
     <string name="fullyBorrowed">Fully Borrowed</string>
     <string name="borrow_expired">You must return this book to library!</string>
+    <string name="outOfBook">This book has been borrowed already.</string>
     <string name="bookshelf">Bookshelf</string>
     <string name="manage_your_library">Manage your library</string>
     <string name="remind_you_to_read_book">Remind you to read book</string>

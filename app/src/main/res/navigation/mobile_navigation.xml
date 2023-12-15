@@ -51,6 +51,10 @@
             android:name="searchBy"
             app:argType="string"
             android:defaultValue="all"/>
+        <argument
+            android:name="keySearch"
+            app:argType="string"
+            android:defaultValue=""/>
     </fragment>
 
     <fragment

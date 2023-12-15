@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ItemBookVerticalBinding
+import com.example.smartlamp.fragment.BooksFragment
 import com.example.smartlamp.model.BookData
 
 
 class BookAdapter(
     var context: Context,
-    var books: List<BookData>
+    var books: List<BookData>,
+    private val onBookClickInterface: BookClickInterface
 ) : RecyclerView.Adapter<BookAdapter.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
@@ -59,6 +61,10 @@ class BookAdapter(
             }
         }
         binding.tvAuth.text = author
+
+        holder.itemView.setOnClickListener {
+            onBookClickInterface.onBookClick(book)
+        }
     }
 
 
@@ -69,6 +75,10 @@ class BookAdapter(
     fun updateList(list: List<BookData>) {
         this.books = list
         notifyDataSetChanged()
+    }
+
+    interface BookClickInterface {
+        fun onBookClick(book: BookData)
     }
 
 }

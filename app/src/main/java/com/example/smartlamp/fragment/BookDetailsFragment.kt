@@ -70,6 +70,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     private var isDelivery = false
     private var isFavorite = false
     private var status = ""
+    private var amount = -1
 
 
     private var bookId = 0L
@@ -113,6 +114,8 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                 text = resources.getString(R.string.fullyBorrowed)
             }
         }
+
+
         statusCheck(bookId, viewModel.userBookList)
 
         binding.rvAuth.addOnItemTouchListener(
@@ -144,6 +147,8 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         binding.ivBack.setSingleClickListener(singleClickListener)
         binding.ivFavorite.setSingleClickListener(singleClickListener)
 
+        binding.tvBookType.onClickSubTitle(findNavController(), R.id.navigation_books)
+
         return binding.root
     }
 
@@ -151,6 +156,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     private fun statusCheck(bookId: Long, useBookList: ArrayList<UserBookData>) {
         val userBook = useBookList.find { it.bookId == bookId }
         if (userBook?.status != null) {
+            status = userBook.status
             when (userBook.status) {
                 REGISTER_BORROW -> {
                     binding.cardRating.visibility = View.GONE
@@ -180,6 +186,17 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
                 BORROW_RETURNED -> {
                     binding.cardRating.visibility = View.VISIBLE
+                    if (amount <= 0) {
+                        binding.cons1Btn.visibility = View.VISIBLE
+                        binding.cons2Btn.visibility = View.GONE
+                        binding.btnReturn.apply {
+                            text = context.getString(R.string.fullyBorrowed)
+                            isEnabled = false
+                        }
+                        binding.consStatus.visibility = View.VISIBLE
+                        binding.tvStatus.text = resources.getString(R.string.outOfBook)
+                        binding.cardRating.visibility = View.VISIBLE
+                    }
                 }
 
                 BORROW_EXPIRED -> {
@@ -209,6 +226,16 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
                 else -> {
                     binding.cardRating.visibility = View.GONE
+                    if (amount <= 0) {
+                        binding.cons1Btn.visibility = View.VISIBLE
+                        binding.cons2Btn.visibility = View.GONE
+                        binding.btnReturn.apply {
+                            text = context.getString(R.string.fullyBorrowed)
+                            isEnabled = false
+                        }
+                        binding.consStatus.visibility = View.VISIBLE
+                        binding.tvStatus.text = resources.getString(R.string.outOfBook) 
+                    }
                 }
             }
         }
@@ -243,6 +270,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         } else {
             binding.tvRated.visibility = View.GONE
         }
+        amount = book.amount
         if (book.amount <= 0) {
             binding.btnRegister.apply {
                 isEnabled = false

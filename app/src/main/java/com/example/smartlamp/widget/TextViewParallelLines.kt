@@ -4,13 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Typeface
+import android.os.Bundle
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.NavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ItemTextViewParallelLinesBinding
+import com.example.smartlamp.utils.Constants
+import com.example.smartlamp.utils.Constants.KEY_SEARCH
 
 
 class TextViewParallelLines(context: Context, attrs: AttributeSet) :
@@ -103,5 +107,30 @@ class TextViewParallelLines(context: Context, attrs: AttributeSet) :
 
     fun setTextBold() {
         binding?.subTitle?.setTypeface(binding?.subTitle?.typeface, Typeface.BOLD)
+    }
+
+    fun onClickSubTitle(navController: NavController?, id : Int ?){
+         if (navController != null && id != null) {
+             val args = Bundle()
+             args.putString(KEY_SEARCH, binding?.subTitle?.text.toString())
+             when (binding?.title?.text) {
+                 resources.getString(R.string.typeLb) -> {
+                     args.putString(Constants.SEARCH_BY, Constants.BY_TYPE)
+                 }
+                 resources.getString(R.string.majorLb) -> {
+                     args.putString(Constants.SEARCH_BY, Constants.BY_MAJOR)
+                 }
+                 resources.getString(R.string.majorLb) -> {
+                     args.putString(Constants.SEARCH_BY, Constants.BY_MAJOR)
+                 }
+                 resources.getString(R.string.languageLb) -> {
+                     args.putString(Constants.SEARCH_BY, Constants.BY_LANGUAGE)
+                 }
+                 resources.getString(R.string.location_lb) -> {
+                     args.putString(Constants.SEARCH_BY, Constants.BY_LOCATION)
+                 }
+             }
+             navController.navigate(id, args)
+         }
     }
 }

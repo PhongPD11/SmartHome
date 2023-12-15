@@ -28,7 +28,7 @@ import io.tux.wallet.testnet.utils.SingleClickListener
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class BooksFragment : Fragment(), OnItemSingleClickListener {
+class BooksFragment : Fragment(), OnItemSingleClickListener, BookAdapter.BookClickInterface {
     lateinit var binding: FragmentBooksBinding
 
     private val viewModel: HomeViewModel by activityViewModels()
@@ -75,7 +75,6 @@ class BooksFragment : Fragment(), OnItemSingleClickListener {
         setObserve()
 
         binding.ivFilter.setOnClickListener(singleClick)
-        binding.ivSearch.setOnClickListener(singleClick)
         binding.ivBack.setOnClickListener(singleClick)
 
         return binding.root
@@ -112,7 +111,7 @@ class BooksFragment : Fragment(), OnItemSingleClickListener {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUI() {
-        bookAdapter = BookAdapter(requireContext(), books)
+        bookAdapter = BookAdapter(requireContext(), books, this)
         binding.rvBook.apply {
             adapter = bookAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -125,13 +124,14 @@ class BooksFragment : Fragment(), OnItemSingleClickListener {
             R.id.iv_back -> {
                 findNavController().popBackStack()
             }
-            R.id.iv_search -> {
-
-            }
             R.id.iv_filter -> {
 
             }
         }
+    }
+
+    override fun onBookClick(book: BookData) {
+        TODO("Not yet implemented")
     }
 
 }
