@@ -201,13 +201,14 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.majorBooks.observe(viewLifecycleOwner) {
+        viewModel.books.observe(viewLifecycleOwner) {
             if (it.code == 200) {
                 val listBook = it.data
                 recommendations.clear()
                 recommendationList.clear()
-                recommendationList.addAll(listBook)
+//                recommendationList.addAll(listBook)
                 for (i in listBook.indices) {
+
                     val book =
                         BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
                     if (listBook[i].imageUrl != null) {

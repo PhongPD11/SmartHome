@@ -182,6 +182,7 @@
                             android:id="@+id/etClassId"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:hint="@string/classIdHint"
                             android:inputType="numberDecimal" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -201,6 +202,7 @@
                             android:id="@+id/etMajor"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:hint="@string/electrical_electronics"
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>

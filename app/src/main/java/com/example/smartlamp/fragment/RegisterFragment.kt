@@ -222,6 +222,16 @@ class RegisterFragment : Fragment() {
                 binding.layFirstName.error = resources.getString(R.string.first_error)
             }
 
+            binding.etMajor.onText().isEmpty() -> {
+                isValidate = false
+                binding.layFirstName.error = "Enter your major"
+            }
+
+            binding.etClassId.onText().isEmpty() && binding.etEmail.text.toString().contains("student") -> {
+                isValidate = false
+                binding.layFirstName.error = "Enter your class ID"
+            }
+
             else -> {
                 if (isValidate) {
                     val email = binding.etEmail.text.toString()

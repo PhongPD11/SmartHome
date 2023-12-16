@@ -67,7 +67,7 @@
     <string name="information">Information</string>
     <string name="change_your_password">Change your password</string>
     <string name="new_password">New Password</string>
-    <string name="class_id">Class ID</string>
+    <string name="class_id">Class ID (Student)</string>
     <string name="major">Major</string>
     <string name="email_confirmation">Email Confirmation</string>
     <string name="verification_guide">Enter your verification to complete registration!</string>
@@ -137,5 +137,7 @@
     <string name="out_of_book">All books are currently checked out. Please check back later.</string>
     <string name="borrow">Borrow</string>
     <string name="search_here">Search here ...</string>
+    <string name="electrical_electronics">Điện - Điện tử</string>
+    <string name="classIdHint">191191</string>
 
 </resources>

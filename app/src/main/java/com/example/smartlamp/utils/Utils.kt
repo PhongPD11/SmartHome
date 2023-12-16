@@ -146,6 +146,22 @@ class Utils {
             }
         }
 
+        fun setRecommendationBook(
+            major: String,
+            booksResponse: BookModel,
+            books: ArrayList<BookData>
+        ){
+            if (booksResponse.code == 200) {
+                val listBook = booksResponse.data
+                books.clear()
+                for (i in listBook.indices) {
+                    when (major) {
+
+                    }
+                }
+            }
+        }
+
         fun loginToNavigate(sharedPref: SharedPref, nav: NavController, resId: Int, args: Bundle?) {
             if (!sharedPref.getBoolean(LOGIN)) {
                 nav.navigate(R.id.navigation_auth)
