@@ -57,51 +57,12 @@ class RegisterFragment : Fragment() {
             sendRegister()
         }
 
-        binding.etFirstName.doAfterTextChanged { text ->
-            val notValidate: Boolean =
-                Validations.nameValidate(text.toString().trim(), binding.layFirstName)
-            if (!notValidate) {
-                binding.layFirstName.error = null
-                binding.layFirstName.isErrorEnabled = false
-                isValidate = true
-            } else {
-                isValidate = false
-            }
-        }
 
         binding.etMajor.doAfterTextChanged { text ->
 
         }
 
-        binding.etLastName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pattern = Regex("^[A-Z][a-zA-Z]*$")
-                val name = s.toString().trim()
-                if (name.isNotEmpty()) {
-                    if (pattern.matches(name)) {
-                        binding.layLastName.error = null
-                        binding.layLastName.isErrorEnabled = false
-                        isValidate = true
-                    } else {
-                        isValidate = false
-                        binding.layLastName.error = "Your name is Invalid"
-                        binding.layLastName.isErrorEnabled = true
-                    }
-
-                } else {
-                    isValidate = true
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    isValidate = true
-                }
-            }
-        })
 
         binding.etEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -167,6 +128,7 @@ class RegisterFragment : Fragment() {
             if (accountViewModel.isSuccess) {
                 showVerifyDialog(requireContext(), emailRegister)
             } else {
+                binding.progressBar.visibility = View.GONE
                 when (it.message) {
                     EXIST_USERNAME -> {
                         binding.layUsername.apply {
@@ -224,12 +186,12 @@ class RegisterFragment : Fragment() {
 
             binding.etMajor.onText().isEmpty() -> {
                 isValidate = false
-                binding.layFirstName.error = "Enter your major"
+                binding.layMajor.error = "Enter your major"
             }
 
             binding.etClassId.onText().isEmpty() && binding.etEmail.text.toString().contains("student") -> {
                 isValidate = false
-                binding.layFirstName.error = "Enter your class ID"
+                binding.layClassId.error = "Enter your class ID"
             }
 
             else -> {

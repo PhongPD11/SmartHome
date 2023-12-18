@@ -64,6 +64,7 @@ object Constants {
     const val BY_MAJOR = "byMajor"
     const val BY_LANGUAGE = "byLanguage"
     const val BY_LOCATION = "byLocation"
+    const val BY_PUBLICATION_YEAR = "byPublicationYear"
     const val KEY_SEARCH = "keySearch"
 
 

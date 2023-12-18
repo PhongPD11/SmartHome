@@ -116,7 +116,7 @@
     <string name="manage_your_library">Manage your library</string>
     <string name="remind_you_to_read_book">Remind you to read book</string>
     <string name="my_library">My Library</string>
-    <string name="manage_library">Manage Library</string>
+    <string name="manage_library">Manage</string>
     <string name="contact">Contact</string>
     <string name="list_is_empty">List is empty</string>
     <string name="new_contact">New Contact</string>
@@ -137,7 +137,7 @@
     <string name="out_of_book">All books are currently checked out. Please check back later.</string>
     <string name="borrow">Borrow</string>
     <string name="search_here">Search here ...</string>
-    <string name="electrical_electronics">Điện - Điện tử</string>
-    <string name="classIdHint">191191</string>
+    <string name="electrical_electronics">ex: Điện - Điện tử</string>
+    <string name="classIdHint">ex: 191191</string>
 
 </resources>

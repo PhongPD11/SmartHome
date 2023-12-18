@@ -68,6 +68,8 @@ class NotificationsFragment : Fragment() {
         sharedPref = SharedPref(context)
         uid = sharedPref.getInt(UID)
 
+        viewModel.getNotify(uid)
+
         binding.swRefresh.setOnRefreshListener {
             binding.swRefresh.isRefreshing = false
             binding.progressBar.visibility = View.VISIBLE

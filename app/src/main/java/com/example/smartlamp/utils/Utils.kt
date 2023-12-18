@@ -116,8 +116,19 @@ class Utils {
             params?.gravity = Gravity.CENTER
             window?.attributes = params
 
-            bindingDialog.tvTitle.text = title
-            bindingDialog.tvSubTitle.text = subTitle
+            if (title.isNotEmpty()) {
+                bindingDialog.tvTitle.apply {
+                    text = title
+                    visibility = View.VISIBLE
+                }
+            }
+
+            if (subTitle.isNotEmpty()) {
+                bindingDialog.tvSubTitle.apply {
+                    text = subTitle
+                    visibility = View.VISIBLE
+                }
+            }
 
             bindingDialog.btnYes.setOnClickListener {
                 dialog.dismiss()

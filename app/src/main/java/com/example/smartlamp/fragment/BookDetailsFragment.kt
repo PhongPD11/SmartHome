@@ -74,6 +74,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
 
     private var bookId = 0L
+    private var isReturn = true
 
     private val authors = ArrayList<String>()
 
@@ -147,8 +148,8 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
         binding.ivBack.setSingleClickListener(singleClickListener)
         binding.ivFavorite.setSingleClickListener(singleClickListener)
 
-        binding.tvBookType.onClickSubTitle(findNavController(), R.id.navigation_books)
-
+        binding.tvBook.preventSubTitleClick()
+        binding.tvBookId.preventSubTitleClick()
         return binding.root
     }
 
@@ -163,9 +164,9 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     binding.cons1Btn.visibility = View.VISIBLE
                     binding.cons2Btn.visibility = View.GONE
                     binding.btnReturn.apply {
-                        isEnabled = false
-                        text = resources.getString(R.string.you_registered_this_book)
+                        text = resources.getString(R.string.borrow)
                     }
+                    isReturn = false
                     binding.consStatus.visibility = View.VISIBLE
                     binding.tvStatus.text = getString(R.string.you_registered_this_book)
                     binding.tvStatus.setTextColor(Color.parseColor("#9cfa9c"))
@@ -383,8 +384,8 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     viewModel.getTopBook()
                     Utils.showSimpleDialog(
                         context!!,
-                        "Rating",
                         "Thank you for rating!",
+                        "",
                         findNavController()
                     )
                 }
@@ -423,8 +424,8 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                 if (response.body()?.data != null && response.body()!!.code == 200) {
                     Utils.showSimpleDialog(
                         context!!,
-                        "",
                         getString(R.string.register_success),
+                        "",
                         findNavController()
                     )
                     viewModel.getUserBook(sharedPref.getInt(UID))
@@ -484,7 +485,11 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
             R.id.btnReturn -> {
                 val args = Bundle()
-                args.putString("from", RETURN)
+                if (isReturn) {
+                    args.putString("from", RETURN)
+                } else {
+                    args.putString("from", BORROW)
+                }
                 args.putLong(BOOK_ID, selectedBook!!.bookId)
                 Utils.loginToNavigate(sharedPref, findNavController(), R.id.navigation_qr_scan, args)
             }

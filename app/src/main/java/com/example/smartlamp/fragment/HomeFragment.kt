@@ -206,9 +206,8 @@ class HomeFragment : Fragment() {
                 val listBook = it.data
                 recommendations.clear()
                 recommendationList.clear()
-//                recommendationList.addAll(listBook)
+                recommendationList.addAll(listBook)
                 for (i in listBook.indices) {
-
                     val book =
                         BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
                     if (listBook[i].imageUrl != null) {

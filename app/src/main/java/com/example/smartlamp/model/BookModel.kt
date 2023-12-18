@@ -20,6 +20,7 @@ data class BookData(
     val major: String,
     val language: String,
     val ddc: String,
+    val publicationYear: Int,
     val status: String,
     val borrowingPeriod: Int,
     val bookLocation: String

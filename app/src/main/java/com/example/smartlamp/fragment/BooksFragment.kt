@@ -15,8 +15,12 @@ import com.example.smartlamp.model.BookData
 import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.ALL
 import com.example.smartlamp.utils.Constants.BY_AUTHOR
+import com.example.smartlamp.utils.Constants.BY_LANGUAGE
+import com.example.smartlamp.utils.Constants.BY_LOCATION
 import com.example.smartlamp.utils.Constants.BY_MAJOR
+import com.example.smartlamp.utils.Constants.BY_PUBLICATION_YEAR
 import com.example.smartlamp.utils.Constants.BY_TYPE
+import com.example.smartlamp.utils.Constants.KEY_SEARCH
 import com.example.smartlamp.utils.Constants.SEARCH_BY
 import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
@@ -40,6 +44,7 @@ class BooksFragment : Fragment(), OnItemSingleClickListener, BookAdapter.BookCli
     lateinit var apiInterface: ApiInterface
 
     var searchBy = ALL
+    var searchKey = ""
 
     val books = ArrayList<BookData>()
 
@@ -56,6 +61,7 @@ class BooksFragment : Fragment(), OnItemSingleClickListener, BookAdapter.BookCli
         sharedPref = SharedPref(context)
 
         searchBy = arguments?.getString(SEARCH_BY).toString()
+        searchKey = arguments?.getString(KEY_SEARCH).toString()
 
         binding.rvBook.addOnItemTouchListener(
             RecyclerTouchListener(activity,
@@ -86,6 +92,7 @@ class BooksFragment : Fragment(), OnItemSingleClickListener, BookAdapter.BookCli
             ALL -> {
                 viewModel.books.observe(viewLifecycleOwner) {
                     Utils.setBook(it, binding.tvEmpty, books)
+                    setUI()
                 }
             }
             BY_AUTHOR -> {
@@ -95,15 +102,73 @@ class BooksFragment : Fragment(), OnItemSingleClickListener, BookAdapter.BookCli
                 }
             }
             BY_MAJOR -> {
-                viewModel.majorBooks.observe(viewLifecycleOwner) {
-                    Utils.setBook(it, binding.tvEmpty, books)
-                    setUI()
+                viewModel.books.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        val listBook = it.data
+                        books.clear()
+                        for (i in listBook.indices) {
+                            if (listBook[i].major == searchKey) {
+                                books.add(listBook[i])
+                            }
+                        }
+                        setUI()
+                    }
                 }
             }
             BY_TYPE -> {
-                viewModel.majorBooks.observe(viewLifecycleOwner) {
-                    Utils.setBook(it, binding.tvEmpty, books)
-                    setUI()
+                viewModel.books.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        val listBook = it.data
+                        books.clear()
+                        for (i in listBook.indices) {
+                            if (listBook[i].type == searchKey) {
+                                books.add(listBook[i])
+                            }
+                        }
+                        setUI()
+                    }
+                }
+            }
+            BY_LOCATION -> {
+                viewModel.books.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        val listBook = it.data
+                        books.clear()
+                        for (i in listBook.indices) {
+                            if (listBook[i].bookLocation == searchKey) {
+                                books.add(listBook[i])
+                            }
+                        }
+                        setUI()
+                    }
+                }
+            }
+            BY_LANGUAGE -> {
+                viewModel.books.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        val listBook = it.data
+                        books.clear()
+                        for (i in listBook.indices) {
+                            if (listBook[i].language == searchKey) {
+                                books.add(listBook[i])
+                            }
+                        }
+                        setUI()
+                    }
+                }
+            }
+            BY_PUBLICATION_YEAR -> {
+                viewModel.books.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        val listBook = it.data
+                        books.clear()
+                        for (i in listBook.indices) {
+                            if (listBook[i].publicationYear.toString() == searchKey) {
+                                books.add(listBook[i])
+                            }
+                        }
+                        setUI()
+                    }
                 }
             }
         }

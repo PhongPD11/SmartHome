@@ -85,6 +85,9 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
         bookId = arguments?.getLong(BOOK_ID)!!.toLong()
         uid = sharedPref.getInt(UID)
 
+        if (from != BORROW) {
+            binding.tvTitle.text = resources.getString(R.string.return_book)
+        }
 
         setupPermission()
         codeScanner(requireContext())
@@ -119,11 +122,10 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
     }
 
     private fun action(text: String){
-        val bookIdMatch = Regex("bookId: (\\d+)").find(text)
-        val jwtMatch = Regex("jwt: (\\S+)").find(text)
+        val parts = text.split(",")
 
-        val bookIdQR = bookIdMatch?.groupValues?.get(1)
-        val jwtQR = jwtMatch?.groupValues?.get(1)
+        val bookIdQR = parts[0]
+        val jwtQR = parts[1]
         val token = "Bearer $jwtQR"
 
         if (bookIdQR == bookId.toString()) {
@@ -135,7 +137,7 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
                     ) {
                         if (response.body()?.code == 200) {
                             viewModel.getUserBook(uid)
-                            Utils.showSimpleDialog(context!!, "Borrow Book", "Borrow successfully!", findNavController())
+                            Utils.showSimpleDialog(context!!, "Borrow successfully!", "", findNavController())
                         } else {
                             Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
                         }
@@ -154,7 +156,7 @@ class BorrowFragment : Fragment(), OnItemSingleClickListener {
                     ) {
                         if (response.body()?.code == 200) {
                             viewModel.getUserBook(uid)
-                            Utils.showSimpleDialog(context!!, "Return Book", "Return successfully!", findNavController())
+                            Utils.showSimpleDialog(context!!, "Return successfully!","", findNavController())
                         } else {
                             Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()
                         }

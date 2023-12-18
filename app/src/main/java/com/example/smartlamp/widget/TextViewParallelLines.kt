@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ItemTextViewParallelLinesBinding
 import com.example.smartlamp.utils.Constants
@@ -69,6 +70,29 @@ class TextViewParallelLines(context: Context, attrs: AttributeSet) :
             binding?.title?.typeface = titleTypeface
             binding?.subTitle?.typeface = subTitleTypeface
 
+            binding?.subTitle?.setOnClickListener{
+                val args = Bundle()
+                args.putString(KEY_SEARCH, binding?.subTitle?.text.toString())
+                when (binding?.title?.text) {
+                    resources.getString(R.string.typeLb) -> {
+                        args.putString(Constants.SEARCH_BY, Constants.BY_TYPE)
+                    }
+                    resources.getString(R.string.majorLb) -> {
+                        args.putString(Constants.SEARCH_BY, Constants.BY_MAJOR)
+                    }
+                    resources.getString(R.string.majorLb) -> {
+                        args.putString(Constants.SEARCH_BY, Constants.BY_MAJOR)
+                    }
+                    resources.getString(R.string.languageLb) -> {
+                        args.putString(Constants.SEARCH_BY, Constants.BY_LANGUAGE)
+                    }
+                    resources.getString(R.string.location_lb) -> {
+                        args.putString(Constants.SEARCH_BY, Constants.BY_LOCATION)
+                    }
+                }
+                findNavController().navigate(R.id.navigation_books, args)
+            }
+
         } finally {
             typedArray?.recycle()
         }
@@ -109,28 +133,7 @@ class TextViewParallelLines(context: Context, attrs: AttributeSet) :
         binding?.subTitle?.setTypeface(binding?.subTitle?.typeface, Typeface.BOLD)
     }
 
-    fun onClickSubTitle(navController: NavController?, id : Int ?){
-         if (navController != null && id != null) {
-             val args = Bundle()
-             args.putString(KEY_SEARCH, binding?.subTitle?.text.toString())
-             when (binding?.title?.text) {
-                 resources.getString(R.string.typeLb) -> {
-                     args.putString(Constants.SEARCH_BY, Constants.BY_TYPE)
-                 }
-                 resources.getString(R.string.majorLb) -> {
-                     args.putString(Constants.SEARCH_BY, Constants.BY_MAJOR)
-                 }
-                 resources.getString(R.string.majorLb) -> {
-                     args.putString(Constants.SEARCH_BY, Constants.BY_MAJOR)
-                 }
-                 resources.getString(R.string.languageLb) -> {
-                     args.putString(Constants.SEARCH_BY, Constants.BY_LANGUAGE)
-                 }
-                 resources.getString(R.string.location_lb) -> {
-                     args.putString(Constants.SEARCH_BY, Constants.BY_LOCATION)
-                 }
-             }
-             navController.navigate(id, args)
-         }
+    fun preventSubTitleClick(){
+        binding?.subTitle?.isEnabled = false
     }
 }

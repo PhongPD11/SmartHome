@@ -2,11 +2,18 @@ package com.example.smartlamp.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.example.smartlamp.R
 import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.model.ResponseProfileModel
@@ -26,11 +33,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 @SuppressLint("CustomSplashScreen")
 class SplashscreenActivity : AppCompatActivity() {
     var weather = ArrayList<WeatherModel>()
-    lateinit var sharedPref : SharedPref
+    lateinit var sharedPref: SharedPref
 
     @Inject
     lateinit var apiInterface: ApiInterface
@@ -55,16 +63,18 @@ class SplashscreenActivity : AppCompatActivity() {
                 val token: String = task.result.token
                 if (sharedPref.getBoolean(LOGIN)) {
                     val uid = sharedPref.getInt(UID)
-                    
-                    apiInterface.getProfile(uid).enqueue(object : Callback<ResponseProfileModel>{
+
+                    apiInterface.getProfile(uid).enqueue(object : Callback<ResponseProfileModel> {
                         override fun onResponse(
                             call: Call<ResponseProfileModel>,
                             response: Response<ResponseProfileModel>
                         ) {
                             if (response.body()?.code == 200 && response.body()?.data != null) {
                                 val data = response.body()!!.data
-                                val firstName = data.fullName.substring(0, data.fullName.indexOf(" "))
-                                val lastName = data.fullName.substring(firstName.length.plus(1) ?: 0)
+                                val firstName =
+                                    data.fullName.substring(0, data.fullName.indexOf(" "))
+                                val lastName =
+                                    data.fullName.substring(firstName.length.plus(1) ?: 0)
                                 sharedPref.putString(Constants.NAME, firstName)
                                 sharedPref.putString(Constants.LAST_NAME, lastName)
                                 sharedPref.putString(Constants.FULL_NAME, data.fullName)
@@ -72,7 +82,7 @@ class SplashscreenActivity : AppCompatActivity() {
                                 sharedPref.putInt(Constants.CLASS_ID, data.classId)
                                 sharedPref.putString(Constants.MAJOR, data.major)
                                 sharedPref.putInt(UID, data.uid)
-                                if (!data.imageUrl.isNullOrEmpty()){
+                                if (!data.imageUrl.isNullOrEmpty()) {
                                     sharedPref.putString(Constants.IMAGE_URL, data.imageUrl)
                                 }
                                 sharedPref.putBoolean(Constants.IS_LOCK, data.status == "Khóa")
@@ -93,19 +103,58 @@ class SplashscreenActivity : AppCompatActivity() {
                                 sharedPref.putString(FCM, token)
                             }
                         }
+
                         override fun onFailure(call: Call<SimpleApiResponse>, t: Throwable) {
                             t.printStackTrace()
                         }
                     })
-                    
+
                 }
             }
 
         setContentView(R.layout.activity_splashscreen)
-        Handler().postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }, 2000)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_REQUEST_CODE
+                )
+
+            } else {
+                Handler().postDelayed({
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                }, 2000)
+            }
+        }
+    }
+
+    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 1
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Handler().postDelayed({
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }, 2000)
+            } else {
+
+            }
+        }
     }
 
 }
