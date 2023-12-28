@@ -22,6 +22,7 @@ import com.example.smartlamp.model.WeatherModel
 import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.FCM
 import com.example.smartlamp.utils.Constants.LOGIN
+import com.example.smartlamp.utils.Constants.STATUS
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.SharedPref
 import com.google.firebase.FirebaseApp
@@ -71,10 +72,8 @@ class SplashscreenActivity : AppCompatActivity() {
                         ) {
                             if (response.body()?.code == 200 && response.body()?.data != null) {
                                 val data = response.body()!!.data
-                                val firstName =
-                                    data.fullName.substring(0, data.fullName.indexOf(" "))
-                                val lastName =
-                                    data.fullName.substring(firstName.length.plus(1) ?: 0)
+                                val  firstName = data.fullName.substring(data.fullName.lastIndexOf(" ") + 1)
+                                val  lastName = data.fullName.substring(0, data.fullName.lastIndexOf(" "))
                                 sharedPref.putString(Constants.NAME, firstName)
                                 sharedPref.putString(Constants.LAST_NAME, lastName)
                                 sharedPref.putString(Constants.FULL_NAME, data.fullName)

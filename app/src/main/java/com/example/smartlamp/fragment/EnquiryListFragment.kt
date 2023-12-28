@@ -60,6 +60,7 @@ class EnquiryListFragment : Fragment(), OnItemSingleClickListener {
                         val args = Bundle()
                         viewModel.getEnquiryDetail(enquiryList[position].id)
                         args.putString("subject", enquiryList[position].title)
+                        args.putString("status", enquiryList[position].status)
                         findNavController().navigate(R.id.navigation_enquiry_detail, args)
                     }
                     override fun onLongItemClick(view: View?, position: Int) {

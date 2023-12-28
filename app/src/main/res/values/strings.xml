@@ -139,5 +139,11 @@
     <string name="search_here">Search here ...</string>
     <string name="electrical_electronics">ex: Điện - Điện tử</string>
     <string name="classIdHint">ex: 191191</string>
+    <string name="phoneLb">Phone Number:</string>
+    <string name="phoneHint">Ex: 0966334455</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="logout">Logout</string>
+    <string name="lock_des">Your account has been locked. Please contact support for further assistance.</string>
+    <string name="problem_solved">Problem is solved</string>
 
 </resources>

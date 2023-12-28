@@ -8,25 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlamp.R
 import com.example.smartlamp.adapter.ChatAdapter
-import com.example.smartlamp.adapter.EnquiryAdapter
 import com.example.smartlamp.api.ApiInterface
 import com.example.smartlamp.databinding.FragmentChatBinding
-import com.example.smartlamp.databinding.FragmentEnquiryListBinding
 import com.example.smartlamp.model.EnquiryDetailResponse
-import com.example.smartlamp.model.EnquiryResponse
 import com.example.smartlamp.model.SimpleApiResponse
 import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.ENQUIRY_ID
 import com.example.smartlamp.utils.Constants.IS_ADMIN
 import com.example.smartlamp.utils.Constants.UID
-import com.example.smartlamp.utils.RecyclerTouchListener
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.viewmodel.ContactViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +59,12 @@ class ChatFragment : Fragment(), OnItemSingleClickListener {
         uid = sharedPref.getInt(UID)
 
         binding.tvTitle.text = arguments?.getString("subject").toString()
+        val status = arguments?.getString("status").toString()
+
+        if (status == "Đóng") {
+            binding.cardChat.visibility = View.GONE
+            binding.btnSend.setText(getString(R.string.problem_solved))
+        }
 
         binding.ivBack.setOnClickListener(singleClick)
         binding.btnSend.setOnClickListener(singleClick)

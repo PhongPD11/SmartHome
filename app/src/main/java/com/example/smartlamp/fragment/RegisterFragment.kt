@@ -198,7 +198,7 @@ class RegisterFragment : Fragment() {
                 if (isValidate) {
                     val email = binding.etEmail.text.toString()
                     val pass = binding.etPassword.text.toString()
-                    val fullName = "${binding.etFirstName.onText()} ${binding.etLastName.onText()}"
+                    val fullName = "${binding.etLastName.onText()} ${binding.etFirstName.onText()}"
                     val major = binding.etMajor.onText()
                     val classID = binding.etClassId.onText()
                     val username = binding.etUsername.onText()

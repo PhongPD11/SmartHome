@@ -2,14 +2,17 @@ package com.example.smartlamp.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.smartlamp.utils.Constants.ADDRESS
 import com.example.smartlamp.utils.Constants.CLASS_ID
 import com.example.smartlamp.utils.Constants.EMAIL
 import com.example.smartlamp.utils.Constants.FULL_NAME
+import com.example.smartlamp.utils.Constants.IS_LOCK
 import com.example.smartlamp.utils.Constants.LAST_NAME
 import com.example.smartlamp.utils.Constants.LOGIN
 import com.example.smartlamp.utils.Constants.MAJOR
 import com.example.smartlamp.utils.Constants.NAME
 import com.example.smartlamp.utils.Constants.PASSWORD
+import com.example.smartlamp.utils.Constants.PHONE_NUMBER
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.Constants.USERNAME
 
@@ -27,7 +30,10 @@ class SharedPref(context: Context?) {
         editor.putString(EMAIL, "")
         editor.putInt(CLASS_ID, 0)
         editor.putString(MAJOR, "")
+        editor.putString(ADDRESS, "")
+        editor.putString(PHONE_NUMBER, "")
         editor.putInt(UID, 0)
+        editor.putBoolean(IS_LOCK, false)
         editor.putString(NAME, "")
         editor.putString(LAST_NAME, "")
         editor.putString(USERNAME, "")

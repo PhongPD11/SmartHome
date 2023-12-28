@@ -84,6 +84,10 @@
         android:name="com.example.smartlamp.fragment.ScheduleFragment" />
 
     <fragment
+        android:id="@+id/navigation_lock"
+        android:name="com.example.smartlamp.fragment.LockFragment" />
+
+    <fragment
         android:id="@+id/navigation_auth"
         android:name="com.example.smartlamp.fragment.AuthFragment" >
 
@@ -114,6 +118,10 @@
         android:name="com.example.smartlamp.fragment.EnquiryListFragment" >
         <argument
             android:name="subject"
+            app:argType="string"
+            android:defaultValue=""/>
+        <argument
+            android:name="status"
             app:argType="string"
             android:defaultValue=""/>
     </fragment>

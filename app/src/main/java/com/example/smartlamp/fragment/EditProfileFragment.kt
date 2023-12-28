@@ -71,7 +71,7 @@ class EditProfileFragment : Fragment() {
     private var fullName = ""
     private var firstName = ""
     private var lastName = ""
-    private var classId = 0
+    private var classId = -1
     private var major = ""
     private var file: MultipartBody.Part? = null
 
@@ -97,17 +97,6 @@ class EditProfileFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        binding.etFirstName.doAfterTextChanged { text ->
-            val notValidate: Boolean =
-                Validations.nameValidate(text.toString().trim(), binding.layFirstName)
-            if (!notValidate) {
-                binding.layFirstName.error = null
-                binding.layFirstName.isErrorEnabled = false
-                isValidate = true
-            } else {
-                isValidate = false
-            }
-        }
 
         binding.etEmail.setText(sharedPref.getString(EMAIL))
         binding.etFirstName.setText(sharedPref.getString(NAME))
@@ -121,51 +110,6 @@ class EditProfileFragment : Fragment() {
 
         Glide.with(this).load(sharedPref.getString(IMAGE_URL)).apply(options).into(binding.ivAvatar)
 
-        binding.etMajor.doAfterTextChanged { text ->
-
-        }
-
-        binding.etLastName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pattern = Regex("^[A-Z][a-zA-Z]*( [a-zA-Z]*)?$")
-                val name = s.toString().trim()
-                if (name.isNotEmpty()) {
-                    if (pattern.matches(name)) {
-                        binding.layLastName.error = null
-                        binding.layLastName.isErrorEnabled = false
-                        isValidate = true
-                    } else {
-                        isValidate = false
-                        binding.layLastName.error = "Your name is Invalid"
-                        binding.layLastName.isErrorEnabled = true
-                    }
-
-                } else {
-                    isValidate = true
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    isValidate = true
-                }
-            }
-        })
-
-        binding.etEmail.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
-
         binding.ivAvatar.setOnClickListener {
             openImageChooser()
         }
@@ -178,27 +122,21 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun sendUpdate() {
-        when {
-            binding.etFirstName.onText().isEmpty() -> {
-                isValidate = false
-                binding.layFirstName.error = resources.getString(R.string.first_error)
-            }
-
-            else -> {
-                if (isValidate) {
-                    val uid = sharedPref.getInt(UID)
-                    firstName = binding.etFirstName.onText()
-                    lastName = binding.etLastName.onText()
-                    fullName = "$firstName $lastName"
-                    major = binding.etMajor.onText()
-                    classId = binding.etClassId.onText().toInt()
-
-                    saveProfile(uid, fullName, major, classId)
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-            }
+        val uid = sharedPref.getInt(UID)
+        firstName = binding.etFirstName.onText()
+        lastName = binding.etLastName.onText()
+        fullName = "$lastName $firstName"
+        major = binding.etMajor.onText()
+        if (binding.etClassId.onText().isNotEmpty()) {
+            classId = binding.etClassId.onText().toInt()
+            saveProfile(uid, fullName, major, classId)
+        } else {
+            saveProfile(uid, fullName, major, null)
         }
+
+        binding.progressBar.visibility = View.VISIBLE
     }
+
 
     private fun showDialogSendSuccess(context: Context) {
         val dialog = Dialog(context, R.style.CustomDialogTheme)
@@ -225,7 +163,7 @@ class EditProfileFragment : Fragment() {
         uid: Int,
         fullName: String,
         major: String,
-        classID: Int
+        classID: Int?
     ) {
 
         val profile = UserEditModel(classID, fullName, major, uid)
@@ -240,11 +178,13 @@ class EditProfileFragment : Fragment() {
                 if (response.body()?.code == 200) {
                     val data = response.body()?.data
                     showDialogSendSuccess(requireContext())
-                    sharedPref.putString(NAME, firstName)
-                    sharedPref.putString(LAST_NAME, lastName)
-                    sharedPref.putString(FULL_NAME, fullName)
-                    sharedPref.putInt(CLASS_ID, classId)
-                    sharedPref.putString(MAJOR, major)
+                    localSaveString(NAME, firstName)
+                    localSaveString(LAST_NAME, lastName)
+                    localSaveString(FULL_NAME, fullName)
+                    if (classId != -1) {
+                        sharedPref.putInt(CLASS_ID, classId)
+                    }
+                    localSaveString(MAJOR, major)
                     data?.imageUrl?.let { sharedPref.putString(IMAGE_URL, it) }
 
                 } else {
@@ -256,6 +196,12 @@ class EditProfileFragment : Fragment() {
                 t.printStackTrace()
             }
         })
+    }
+
+    private fun localSaveString(key: String, data: String){
+        if (data.isNotEmpty()){
+            sharedPref.putString(key,data)
+        }
     }
 
     private fun showAvatar(url: String) {

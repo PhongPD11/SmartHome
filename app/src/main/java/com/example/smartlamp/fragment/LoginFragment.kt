@@ -91,8 +91,8 @@ class LoginFragment : Fragment() {
         accountViewModel.loginModel.observe(viewLifecycleOwner) {
             if (sharedPref.getBoolean(LOGIN)) {
                 val data = it.data
-                val firstName = data.fullName.substring(0, data.fullName.indexOf(" "))
-                val lastName = data.fullName.substring(firstName.length + 1)
+                val  firstName = data.fullName.substring(data.fullName.lastIndexOf(" ") + 1)
+                val  lastName = data.fullName.substring(0, data.fullName.lastIndexOf(" "))
                 sharedPref.putString(NAME, firstName)
                 sharedPref.putString(LAST_NAME, lastName)
                 sharedPref.putString(FULL_NAME, data.fullName)

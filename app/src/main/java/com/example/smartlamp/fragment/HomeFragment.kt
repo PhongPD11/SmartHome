@@ -23,7 +23,9 @@ import com.example.smartlamp.databinding.FragmentHomeBinding
 import com.example.smartlamp.model.*
 import com.example.smartlamp.utils.Constants.FAVORITE
 import com.example.smartlamp.utils.Constants.IS_FAVORITE
+import com.example.smartlamp.utils.Constants.IS_LOCK
 import com.example.smartlamp.utils.Constants.LOGIN
+import com.example.smartlamp.utils.Constants.MAJOR
 import com.example.smartlamp.utils.Constants.NAME
 import com.example.smartlamp.utils.Constants.SELECTED_BOOK
 import com.example.smartlamp.utils.RecyclerTouchListener
@@ -82,8 +84,6 @@ class HomeFragment : Fragment() {
     private var recommendations = ArrayList<BookShowModel>()
     private val recommendationList = ArrayList<BookData>()
 
-
-
     var selectedBook: BookData? = null
 
     private lateinit var favoriteAdapter: FavoriteAdapter
@@ -105,6 +105,9 @@ class HomeFragment : Fragment() {
         if (signed) {
             binding.cvFavorite.visibility = View.VISIBLE
             binding.cvSuggest.visibility = View.VISIBLE
+            if (sharedPref.getBoolean(IS_LOCK)) {
+                findNavController().navigate(R.id.navigation_lock)
+            }
         } else {
             binding.cvFavorite.visibility = View.GONE
             binding.cvSuggest.visibility = View.GONE
@@ -206,15 +209,17 @@ class HomeFragment : Fragment() {
                 val listBook = it.data
                 recommendations.clear()
                 recommendationList.clear()
-                recommendationList.addAll(listBook)
                 for (i in listBook.indices) {
-                    val book =
-                        BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
-                    if (listBook[i].imageUrl != null) {
-                        book.image = listBook[i].imageUrl.toString()
+                    if (listBook[i].major == sharedPref.getString(MAJOR)) {
+                        val book =
+                            BookShowModel("", listBook[i].name, listBook[i].rated, listBook[i].bookId)
+                        if (listBook[i].imageUrl != null) {
+                            book.image = listBook[i].imageUrl.toString()
+                        }
+                        recommendations.add(book)
+                        recommendationList.add(listBook[i])
+                        recommendationAdapter.notifyDataSetChanged()
                     }
-                    recommendations.add(book)
-                    recommendationAdapter.notifyDataSetChanged()
                 }
                 if (recommendations.isEmpty()) {
                     binding.tvEmptySuggest.visibility = View.VISIBLE

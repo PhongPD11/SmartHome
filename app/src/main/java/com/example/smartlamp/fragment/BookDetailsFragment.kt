@@ -35,6 +35,7 @@ import com.example.smartlamp.utils.Constants.BORROW_RETURNED
 import com.example.smartlamp.utils.Constants.BY_AUTHOR
 import com.example.smartlamp.utils.Constants.IS_DELIVERY
 import com.example.smartlamp.utils.Constants.LOGIN
+import com.example.smartlamp.utils.Constants.PHONE_NUMBER
 import com.example.smartlamp.utils.Constants.REGISTER_BORROW
 import com.example.smartlamp.utils.Constants.RETURN
 import com.example.smartlamp.utils.Constants.SEARCH_BY
@@ -67,6 +68,7 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
     private lateinit var authorAdapter: AuthorBookAdapter
 
     private var address = ""
+    private var phoneNum = ""
     private var isDelivery = false
     private var isFavorite = false
     private var status = ""
@@ -339,17 +341,25 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
 
         bindingDialog.btnYes.setOnClickListener {
             if (isDelivery) {
+                bindingDialog.etPhone.setText(sharedPref.getString(PHONE_NUMBER))
+                bindingDialog.etAddress.setText(sharedPref.getString(ADDRESS))
                 address = bindingDialog.etAddress.text.toString()
-                if (address.isNullOrEmpty()) {
-                    bindingDialog.tvError.visibility = View.VISIBLE
-                } else {
-                    bindingDialog.tvError.visibility = View.GONE
+                phoneNum = bindingDialog.etPhone.text.toString()
+                if (address.isEmpty()) {
+                    Toast.makeText(context, resources.getString(R.string.enter_address), Toast.LENGTH_SHORT).show()
+                } else if (phoneNum.isEmpty()){
+                    Toast.makeText(context, resources.getString(R.string.enter_phone_number), Toast.LENGTH_SHORT).show()
+                } else if (phoneNum.length <=9){
+                    Toast.makeText(context, "Invalid Number Phone", Toast.LENGTH_SHORT).show()
+                }
+                else {
                     dialog.dismiss()
                     registerBook(
                         hashMapOf(
                             UID to sharedPref.getInt(UID),
                             BOOK_ID to bookId,
                             ADDRESS to address,
+                            PHONE_NUMBER to phoneNum,
                             IS_DELIVERY to isDelivery
                         )
                     )
@@ -432,6 +442,10 @@ class BookDetailsFragment : Fragment(), OnItemSingleClickListener {
                     binding.btnRegister.apply {
                         isEnabled = false
                         text = resources.getString(R.string.registered)
+                    }
+                    if (phoneNum.isNotEmpty() && address.isNotEmpty()){
+                        sharedPref.putString(ADDRESS, address)
+                        sharedPref.putString(PHONE_NUMBER, phoneNum)
                     }
                 } else {
                     Toast.makeText(context, response.body()?.message, Toast.LENGTH_SHORT).show()

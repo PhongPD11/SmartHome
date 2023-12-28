@@ -7,7 +7,7 @@ data class UserResponseModel(
 )
 
 data class UserEditModel(
-    var classId: Int,
+    var classId: Int?,
     var fullName: String = "",
     var major: String = "",
     var uid: Int,

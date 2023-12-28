@@ -1,5 +1,6 @@
 package com.example.smartlamp.activity
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +9,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.Color.*
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -16,6 +20,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -26,6 +31,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.smartlamp.R
 import com.example.smartlamp.databinding.ActivityMainBinding
 import com.example.smartlamp.services.*
+import com.example.smartlamp.utils.Constants
 import com.example.smartlamp.utils.Constants.UID
 import com.example.smartlamp.utils.SharedPref
 import com.example.smartlamp.utils.Urls.LOGIN
@@ -58,6 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private var signed = false
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -81,6 +88,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
 
         navView.menu.findItem(R.id.navigation_notifications).isVisible = signed
         navView.menu.findItem(R.id.navigation_my_library).isVisible = signed
+
+        if (sharedPref.getBoolean(Constants.IS_LOCK)){
+            navController.navigate(R.id.navigation_lock)
+        }
 
         viewModel.notifications.observe(this, Observer { notifications ->
             val badge = navView.getOrCreateBadge(R.id.navigation_notifications)
@@ -139,6 +150,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             manager.createNotificationChannel(channel)
         }
     }
+    @SuppressLint("ScheduleExactAlarm")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun scheduleNotification(calendar: Calendar) {
         val intent = Intent(applicationContext, AlarmReceiver::class.java)
